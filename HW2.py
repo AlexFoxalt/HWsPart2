@@ -13,8 +13,8 @@
 
 from flask import Flask
 from faker import Faker
-import random
-import csv
+from random import randint
+from csv import reader
 
 fake = Faker('UK')
 
@@ -56,7 +56,7 @@ def get_random_students():
     students = []
     res = []
 
-    for repeat in range(random.randint(5, 20)):  # Generate the whole list.
+    for repeat in range(randint(5, 20)):  # Generate the whole list.
         students.append(fake.name())
 
     for num, student in enumerate(students):  # Every student get his index number.
@@ -73,7 +73,7 @@ def get_average_stats():
     :return: Information about students as str.
     """
     with open('hw.csv') as f:
-        reader = list(csv.reader(f))
+        reader = list(reader(f))
         total_height = 0
         total_weight = 0
 
