@@ -17,6 +17,8 @@ from random import randint
 import csv
 
 fake = Faker('UK')
+INCH_TO_CM = 2.54
+POUNDS_TO_KG = 2.205
 
 app = Flask(__name__)
 
@@ -82,8 +84,8 @@ def get_avr_data():
             total_weight += float(row[2])
 
         number_of_students = int(reader[-2][0])  # Parse the total number of students as int.
-        total_height = total_height * 2.54 / number_of_students  # inch > cm.
-        total_weight = total_weight / 2.205 / number_of_students  # pounds > kg.
+        total_height = total_height * INCH_TO_CM / number_of_students  # inch > cm.
+        total_weight = total_weight / POUNDS_TO_KG / number_of_students  # pounds > kg.
 
         res = f'Average height = {round(total_height, 2)} cm.<br>' \
               f'Average weight = {round(total_weight, 2)} kg.'
