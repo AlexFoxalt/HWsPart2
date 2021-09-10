@@ -14,7 +14,7 @@
 from flask import Flask
 from faker import Faker
 from random import randint
-from csv import reader
+import csv
 
 fake = Faker('UK')
 
@@ -73,7 +73,7 @@ def get_average_stats():
     :return: Information about students as str.
     """
     with open('hw.csv') as f:
-        reader = list(reader(f))
+        reader = list(csv.reader(f))
         total_height = 0
         total_weight = 0
 
