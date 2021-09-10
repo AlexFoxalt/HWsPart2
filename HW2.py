@@ -1,6 +1,6 @@
 """HW2 Чернышов Алексей"""
 
-#  1. Установить git. Результат: git --version                                                                 ✔done
+#  1. Установить git. Результат: git version 2.24.1.windows.2                                                  ✔done
 
 #  2. Зарегистрироваться на github.com или другом аналогичном сервисе.                                         ✔done
 #  Результат: https://github.com/AlexFoxalt/HillelHomeworksPart2
