@@ -82,8 +82,8 @@ def get_average_stats():
             total_weight += float(row[2])
 
         number_of_students = int(reader[-2][0])  # Parse the total number of students as int.
-        total_height = round(total_height * 2.54) / number_of_students  # inch > cm.
-        total_weight = round(total_weight / 2.205) / number_of_students  # pounds > kg.
+        total_height = total_height * 2.54 / number_of_students  # inch > cm.
+        total_weight = total_weight / 2.205 / number_of_students  # pounds > kg.
 
         res = f'Average height = {round(total_height, 2)} cm.<br>' \
               f'Average weight = {round(total_weight, 2)} kg.'
@@ -91,4 +91,4 @@ def get_average_stats():
         return res
 
 
-app.run(debug=True)
+app.run()
