@@ -67,7 +67,7 @@ def get_random_students():
     return '<br>'.join(res)
 
 
-@app.route("/avr_data")
+# @app.route("/avr_data")
 def get_avr_data():
     """
     Parse data from Excel file. Calculate an average data. Transform data into required values.
@@ -75,13 +75,13 @@ def get_avr_data():
     :return: Information about students as str.
     """
     with open('hw.csv') as file:
-        reader = list(csv.reader(file))
+        reader = list(csv.DictReader(file))
         total_height = 0
         total_weight = 0
 
         for row in reader[1:-1]:  # Since first item is a names of columns and last one is an empty list.
-            total_height += float(row[1])
-            total_weight += float(row[2])
+            total_height += float(row[' "Height(Inches)"'])
+            total_weight += float(row[' "Weight(Pounds)"'])
 
         number_of_students = len(reader) - 2  # Parse the total number of students as int.
 
@@ -94,4 +94,6 @@ def get_avr_data():
         return res
 
 
-app.run()
+# app.run()
+
+print(get_avr_data())
