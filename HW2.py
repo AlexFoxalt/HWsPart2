@@ -94,6 +94,4 @@ def get_avr_data():
         return res
 
 
-# app.run()
-
-print(get_avr_data())
+app.run()
