@@ -7,11 +7,6 @@ class CachedItem:
         self.data = data
         self.counter = counter
 
-    def __str__(self):
-        return f'KEY ------>  {self.key}' \
-               f'DATA ----->  {self.data}\n' \
-               f'COUNTER -->  {self.counter}'
-
     def __eq__(self, other):
         return self.key == other
 
