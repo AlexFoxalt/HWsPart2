@@ -72,8 +72,8 @@ def get_avr_data():
 
     :return: Information about students as str.
     """
-    with open('hw.csv') as f:
-        reader = list(csv.reader(f))
+    with open('hw.csv') as file:
+        reader = list(csv.reader(file))
         total_height = 0
         total_weight = 0
 
