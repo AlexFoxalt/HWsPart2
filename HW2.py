@@ -32,7 +32,7 @@ def landing():
            "Possible routes:<br>" \
            "/pipfile<br>" \
            "/students<br>" \
-           "/average"
+           "/avr_data"
 
 
 @app.route("/pipfile")
@@ -65,8 +65,8 @@ def get_random_students():
     return '<br>'.join(res)
 
 
-@app.route("/average")
-def get_average_stats():
+@app.route("/avr_data")
+def get_avr_data():
     """
     Parse data from Excel file. Calculate an average data. Transform data into required values.
 
