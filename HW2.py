@@ -83,7 +83,9 @@ def get_avr_data():
             total_height += float(row[1])
             total_weight += float(row[2])
 
-        number_of_students = int(reader[-2][0])  # Parse the total number of students as int.
+        number_of_students = len(reader) - 2  # Parse the total number of students as int.
+        print(number_of_students)
+
         total_height = total_height * INCH_TO_CM / number_of_students  # inch > cm.
         total_weight = total_weight / POUNDS_TO_KG / number_of_students  # pounds > kg.
 
