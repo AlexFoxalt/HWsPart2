@@ -15,17 +15,17 @@ def parse_params(arg: dict):
     :param arg: Expected dict of params parsed from URL string.
     :return: Values of 3 options for password generator machine.
     """
-    try:
-        length = int(arg.get('length', 10)) if int(arg.get('length', 10)) in range(1, 101) else 10
+    try:  # If no 'length' or some trash cases like 'length=sdsada'
+        length = int(arg.get('length', 10)) if int(arg.get('length', 10)) in range(1, 101) else 10  # 1<=len<=100
     except ValueError:
         length = 10
 
-    try:
+    try:  # Same as str.18
         digits = int(arg.get('digits', 0))
     except ValueError:
         digits = 0
 
-    try:
+    try:  # Same as str.18
         specials = int(arg.get('specials', 0))
     except ValueError:
         specials = 0
@@ -43,15 +43,15 @@ def get_password():
 
     :return: Random password as .html file.
     """
-    params = request.args
+    params = request.args  # Dict of params here
 
-    length, digits, specials = parse_params(params)
+    length, digits, specials = parse_params(params)  # [0]length, [1]digits, [2]specials
 
-    string_generator = [*UPPER_LETTERS, *LOWER_LETTERS]
+    string_generator = [*UPPER_LETTERS, *LOWER_LETTERS]  # Standard options for generator
 
     if digits:
         string_generator.extend(DIGITS)
-        digits = '✔ Digits included'
+        digits = '✔ Digits included'  # Just for informativeness of response.
     else:
         digits = '✘ Digits NOT included'
 
