@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title -%}
+    {% if title %}
+    <title>My Site - {{ title }}</title>
+    {% else %}
+    <title>My Site</title>
+    {% endif %}
+    {% endblock %}
+
+<style>
+h1 {
+font-family: FreeMono, monospace;
+font-size: 300  %;
+}
+
+h3 {
+font-family: FreeMono, monospace;
+font-size: 300  %;
+}
+
+p{
+font-family: monospace;
+font-size: 16pt;
+}
+</style>
+
+</head>
+<body>
+
+{% block content %}
+<h1>{{ name }}</h1>
+
+{% if data %}
+<h3>Response:</h3>
+<p>{{ data }}</p>
+
+{% else %}
+<p>Use next URLs for the properly work of site: <br><br>
+
+    <a href="/password"><b>/password</b></a> = Returns the random password with length = 10 <br>
+    params: length=[1:100 <font color="727272">(default=10)</font>],
+    digits=[0:1 <font color="727272">(default=0)</font>],
+    specials=[0:1 <font color="727272">(default=0)</font>]<br><br>
+
+    <a href="/bitcoin_rate"><b>/bitcoin_rate</b></a> = Returns the actual rate of Bitcoin from https://bitpay.com/api/rates<br>
+    params: code=[<font color="727272">(default=USD)</font>]<br><br>
+
+    <a href="/codes"><b>/codes</b></a> = To find out all possible codes for BTC rates</p>
+
+{% endif %}
+{% endblock %}
+
+</body>
+</html>
