@@ -59,7 +59,7 @@ def get_password():
         string_generator.extend(SPECIALS)
         specials = '✔ Specials included'
     else:
-        specials = '✘ Specials not included'
+        specials = '✘ Specials NOT included'
 
     password = ''.join(random.choices(string_generator, k=length))
 

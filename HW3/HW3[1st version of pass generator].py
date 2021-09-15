@@ -56,7 +56,7 @@ def string_generator(arg: dict):
         possible_elements.extend(SPECIALS)
         specials_status = '✔ Specials included'
     else:
-        specials_status = '✘ Specials not included'
+        specials_status = '✘ Specials NOT included'
 
     return possible_elements, digits_status, specials_status
 
