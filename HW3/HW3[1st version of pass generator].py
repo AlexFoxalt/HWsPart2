@@ -145,10 +145,9 @@ def get_codes():
 
     try:
         response = get(url).json()
-        print(response)
     except Exception as e:
         print(f'Error occurred: {e}')
-        return render_template('error.html', error_code='Connection with server was lost.')
+        return render_template('error.html', error_code='The request was unsuccessful.')
 
     return render_template('codes.html', iter=response)
 
