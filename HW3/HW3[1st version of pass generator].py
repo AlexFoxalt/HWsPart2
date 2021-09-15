@@ -44,15 +44,21 @@ def string_generator(arg: dict):
     :param arg: Expected a dict of parsed params from url.
     :return: List of possible elements.
     """
-    possible_elements = [*UPPER_LETTERS, *LOWER_LETTERS]
+    possible_elements = [*UPPER_LETTERS, *LOWER_LETTERS]  # Standard options for generator
 
     if 'digits' in arg and arg['digits'] == '1':
         possible_elements.extend(DIGITS)
+        digits_status = '✔ Digits included'  # Just for informativeness of response.
+    else:
+        digits_status = '✘ Digits NOT included'
 
     if 'specials' in arg and arg['specials'] == '1':
         possible_elements.extend(SPECIALS)
+        specials_status = '✔ Specials included'
+    else:
+        specials_status = '✘ Specials not included'
 
-    return possible_elements
+    return possible_elements, digits_status, specials_status
 
 
 app = Flask(__name__)
@@ -79,17 +85,20 @@ def get_password():
     for param, value in request.args.items():
         params.update({param: value})
 
-    try:
+    try:  # If no 'length' or some trash cases like 'length=sdsada'
         length = int(params['length'])
-        if length not in range(1, 101):
+        if length not in range(1, 101):  # 1<=len<=100
             raise Exception('Invalid value of "length" parameter.')
     except Exception as e:
         print(f'Error occurred: {e}')
-        length = 10
+        length = 10  # All error cases lead 'length' to default value
 
-    possible_symbols = string_generator(params)
+    possible_symbols, digits_status, specials_status = string_generator(params)  # list, str, str
 
-    res = ''.join(random.choices(possible_symbols, k=length))
+    res = f"Length = {length}", \
+          f"{digits_status}", \
+          f"{specials_status}", \
+          f"Password: {''.join(random.choices(possible_symbols, k=length))}"
 
     return render_template('base.html',
                            title="Password Generator",
@@ -119,7 +128,8 @@ def get_bitcoin_rate():
             return render_template('base.html',
                                    title='BTC actual rate',
                                    name='BTC rates',
-                                   data=f'From BTC to {item["code"]} >>> {item["rate"]}')
+                                   data=[f'From BTC to {item["code"]} >>> {item["rate"]}'])  # List cus in our case
+            # Jinja sample iter passed objects and here we don't want to iter string by letters.
 
     return render_template('error.html', error_code='No matches found! Try again with another code.')
 

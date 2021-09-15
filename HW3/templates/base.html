@@ -35,8 +35,12 @@ font-size: 16pt;
 
 {% if data %}
 <h3>Response:</h3>
-<p>{{ data }}</p>
 
+{% for item in data %}
+<p>{{ item }}<br></p>
+{% endfor %}
+
+<a href="/">On main page</a>
 {% else %}
 <p>Use next URLs for the properly work of site: <br><br>
 
