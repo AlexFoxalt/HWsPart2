@@ -129,7 +129,7 @@ def get_bitcoin_rate():
                                    title='BTC actual rate',
                                    name='BTC rates',
                                    data=[f'From BTC to {item["code"]} >>> {item["rate"]}'])  # List cus in our case
-            # Jinja sample iter passed objects and here we don't want to iter string by letters.
+            # Jinja sample will iter passed objects and here we don't want to iter string by letters.
 
     return render_template('error.html', error_code='No matches found! Try again with another code.')
 
