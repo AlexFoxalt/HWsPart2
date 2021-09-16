@@ -27,7 +27,7 @@
 # с тем, что такое шаблоны и как они рендерятся: https://pythonru.com/uroki/6-shablony-vo-flask
 
 import string
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 import random
 from requests import get
 
@@ -35,6 +35,7 @@ UPPER_LETTERS = string.ascii_uppercase
 LOWER_LETTERS = string.ascii_lowercase
 DIGITS = string.digits
 SPECIALS = string.punctuation
+DEFAULT_LENGTH = 10
 
 
 def string_generator(arg: dict):
@@ -71,7 +72,7 @@ def landing():
 
     :return: Some info about possible routes.
     """
-    return render_template('base.html', title='Main Page', name='My site')
+    return Response(render_template('base.html', title='Main Page', name='My site'), status=200)
 
 
 @app.route("/password")
@@ -81,9 +82,7 @@ def get_password():
 
     :return: Random password as .html file.
     """
-    params = {}
-    for param, value in request.args.items():
-        params.update({param: value})
+    params = dict(request.args)
 
     try:  # If no 'length' or some trash cases like 'length=sdsada'
         length = int(params['length'])
@@ -91,7 +90,7 @@ def get_password():
             raise Exception('Invalid value of "length" parameter.')
     except Exception as e:
         print(f'Error occurred: {e}')
-        length = 10  # All error cases lead 'length' to default value
+        length = DEFAULT_LENGTH  # All error cases lead 'length' to default value
 
     possible_symbols, digits_status, specials_status = string_generator(params)  # list, str, str
 
@@ -100,10 +99,10 @@ def get_password():
           f"{specials_status}", \
           f"Password: {''.join(random.choices(possible_symbols, k=length))}"
 
-    return render_template('base.html',
-                           title="Password Generator",
-                           name='Password Generator',
-                           data=res)
+    return Response(render_template('base.html',
+                                    title="Password Generator",
+                                    name='Password Generator',
+                                    data=res), status=200)
 
 
 @app.route("/bitcoin_rate")
@@ -121,17 +120,19 @@ def get_bitcoin_rate():
         response = get(url).json()
     except Exception as e:
         print(f'Error occurred:  {e}')
-        return render_template('error.html', error_code='The request was unsuccessful.')
+        return Response(render_template('error.html', error_code='The request was unsuccessful.'), status=500)
 
     for item in response:
         if item['code'] == code:
-            return render_template('base.html',
-                                   title='BTC actual rate',
-                                   name='BTC rates',
-                                   data=[f'From BTC to {item["code"]} >>> {item["rate"]}'])  # List cus in our case
-            # Jinja sample will iter passed objects and here we don't want to iter string by letters.
+            return Response(render_template('base.html',
+                                            title='BTC actual rate',
+                                            name='BTC rates',
+                                            data=[f'From BTC to {item["code"]} >>> {item["rate"]}']),
+                            status=200)  # List cus in our case Jinja sample will iter passed objects and here we
+            # don't want to iter string by letters.
 
-    return render_template('error.html', error_code='No matches found! Try again with another code.')
+    return Response(render_template('error.html', error_code='No matches found! Try again with another code.'),
+                    status=400)
 
 
 @app.route("/codes")
@@ -147,9 +148,9 @@ def get_codes():
         response = get(url).json()
     except Exception as e:
         print(f'Error occurred: {e}')
-        return render_template('error.html', error_code='The request was unsuccessful.')
+        return Response(render_template('error.html', error_code='The request was unsuccessful.'), status=500)
 
-    return render_template('codes.html', iter=response)
+    return Response(render_template('codes.html', iter=response), status=200)
 
 
 if __name__ == "__main__":

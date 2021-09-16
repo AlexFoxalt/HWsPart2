@@ -6,6 +6,7 @@ UPPER_LETTERS = string.ascii_uppercase
 LOWER_LETTERS = string.ascii_lowercase
 DIGITS = string.digits
 SPECIALS = string.punctuation
+DEFAULT_LENGTH = 10
 
 
 def parse_params(arg: dict):
@@ -16,9 +17,10 @@ def parse_params(arg: dict):
     :return: Values of 3 options for password generator machine.
     """
     try:  # If no 'length' or some trash cases like 'length=sdsada'
-        length = int(arg.get('length', 10)) if int(arg.get('length', 10)) in range(1, 101) else 10  # 1<=len<=100
+        length = int(arg.get('length', DEFAULT_LENGTH)) if int(arg.get('length', DEFAULT_LENGTH)) in range(1, 101) \
+            else DEFAULT_LENGTH  # 1<=len<=100
     except ValueError:
-        length = 10
+        length = DEFAULT_LENGTH
 
     try:  # Same as str.18
         digits = int(arg.get('digits', 0))
