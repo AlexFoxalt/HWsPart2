@@ -44,7 +44,7 @@ def get_pipfile():
 
     :return: File's content as string.
     """
-    with open('Pipfile.lock', 'r') as file:
+    with open('../Pipfile.lock', 'r') as file:
         return file.read()
 
 
