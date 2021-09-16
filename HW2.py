@@ -67,7 +67,7 @@ def get_random_students():
     return '<br>'.join(res)
 
 
-# @app.route("/avr_data")
+@app.route("/avr_data")
 def get_avr_data():
     """
     Parse data from Excel file. Calculate an average data. Transform data into required values.
