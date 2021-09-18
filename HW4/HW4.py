@@ -7,4 +7,4 @@ def some_foo(arg: str):
     print(arg)
 
 
-some_foo("Content for merging into master")
+some_foo("Content for merging into master.")
