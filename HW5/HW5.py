@@ -30,6 +30,11 @@ def index():
 
 @app.route('/unique_names')
 def get_unique_names():
+    """
+    Fetch information about unique names of people from DB
+
+    :return: Response as HTML file.
+    """
     query = queries.UniqueNameQuery
     res = format_counter_to_int(execute_query(query))
     return render_template('unique_names.html', title='Unique names', data=res, menu=MENU_BUTTONS)
@@ -37,6 +42,11 @@ def get_unique_names():
 
 @app.route('/tracks_count')
 def get_tracks_count():
+    """
+    Fetch information about total number of tracks from DB
+
+    :return: Response as HTML file.
+    """
     query = queries.TracksCountQuery
     res = format_counter_to_int(execute_query(query))
     return render_template('tracks_count.html', title='Track counter', data=res, menu=MENU_BUTTONS)
@@ -45,6 +55,12 @@ def get_tracks_count():
 @app.route('/customers')
 @use_kwargs(customers_params, location='query')
 def get_customers(text):
+    """
+    Fetch and search information by filter, that can be set by user in URL string, in DB
+
+    :param text: Filter parameter as str
+    :return: Response as HTML file
+    """
     fields = execute_query(queries.GetFieldsQuery)
 
     query = queries.CustomersNoParamQuery
@@ -60,6 +76,11 @@ def get_customers(text):
 
 @app.route('/sales')
 def get_sales():
+    """
+    Fetch information about sales of all items from DB
+
+    :return: Response as HTML file
+    """
     field_1_to_count = 'UnitPrice'
     field_2_to_count = 'Quantity'
 
@@ -71,6 +92,11 @@ def get_sales():
 
 @app.route('/genres')
 def get_genres():
+    """
+    Fetch information about total duration about tracks and sorted by genres
+
+    :return: Response as HTML file
+    """
     fields = ('Duration', 'Genre')
     query = queries.GenresQuery
     data = execute_query(query)

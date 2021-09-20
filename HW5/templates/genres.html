@@ -14,9 +14,8 @@
     
     {% for item in data %}
         <tr class="customers">
-            {% for value in item %}
-              <td class="customers_item"> {{ value }} seconds</td>
-            {% endfor %}
+            <td class="customers_item"> ~ {{ item[0] }} seconds</td>
+            <td class="customers_item"> {{ item[1] }} </td>
         </tr>
     {% endfor %}
 

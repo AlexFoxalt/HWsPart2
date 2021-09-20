@@ -29,6 +29,13 @@ customers_params = {
 
 
 def execute_query(query, args=()):
+    """
+    DB request
+
+    :param query: Request Key as str
+    :param args:
+    :return: SQL object as list
+    """
     with sqlite3.connect('chinook.db') as conn:
         cur = conn.cursor()
         cur.execute(query, args)
@@ -38,8 +45,20 @@ def execute_query(query, args=()):
 
 
 def format_counter_to_int(arg: list):
+    """
+    Makes beautiful response from SQL object
+
+    :param arg: SQL object as list
+    :return: Response as int
+    """
     return int(arg[0][0])
 
 
 def format_counter_to_float(arg: list):
+    """
+    Makes beautiful response from SQL object
+
+    :param arg: SQL object as list
+    :return: Response as float
+    """
     return float(arg[0][0])

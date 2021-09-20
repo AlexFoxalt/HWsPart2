@@ -13,6 +13,12 @@ GetFieldsQuery = "SELECT name FROM PRAGMA_TABLE_INFO( 'customers' )"
 
 
 def add_params_to_customers_query(text: str):
+    """
+    Generate SQL request to DB with filter.
+
+    :param text: Filter as str
+    :return: SQL request as str
+    """
     return f"WHERE FirstName IN ('{text}') OR " \
            f"LastName IN ('{text}') OR " \
            f"Company IN ('{text}') OR " \
@@ -23,4 +29,11 @@ def add_params_to_customers_query(text: str):
 
 
 def add_params_to_sales_query(arg1: str, arg2: str):
+    """
+    Generate SQL request to DB with two arguments which will need to be multiplied
+
+    :param arg1: First multiplier as name of column from DB as str
+    :param arg2: Second multiplier as name of column from DB as str
+    :return: SQL request as str
+    """
     return f"SELECT sum({arg1} * {arg2}) as total from invoice_items"
