@@ -1,3 +1,5 @@
+from utils import execute_query
+
 UniqueNameQuery = 'SELECT COUNT ( DISTINCT FirstName ) AS counter FROM customers'
 
 TracksCountQuery = 'SELECT count( Name ) AS counter FROM tracks'
@@ -19,14 +21,16 @@ def add_params_to_customers_query(text: str):
     :param text: Filter as str
     :return: SQL request as str
     """
-    return f"WHERE FirstName LIKE ('%{text}%') OR " \
-           f"LastName LIKE ('%{text}%') OR " \
-           f"Company LIKE ('%{text}%') OR " \
-           f"Address LIKE ('%{text}%') OR " \
-           f"City LIKE ('%{text}%') OR " \
-           f"State LIKE ('%{text}%') OR " \
-           f"Country LIKE ('%{text}%') OR " \
-           f"Email LIKE ('%{text}%')"
+
+    Fields = execute_query(GetFieldsQuery)
+
+    start = 'WHERE '
+    query = []
+
+    for field in Fields:
+        query.append(f"{field[0]} LIKE ('%{text}%')")
+
+    return start + ' OR '.join(query)
 
 
 def add_params_to_sales_query(arg1: str, arg2: str):
