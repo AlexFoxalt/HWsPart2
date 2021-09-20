@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 @app.errorhandler(status_codes.HTTP_422_UNPROCESSABLE_ENTITY)
 @app.errorhandler(status_codes.HTTP_404_NOT_FOUND)
-def error_404(err):
+def error(err):
     return Response(render_template('error.html', code=err.code, menu=MENU_BUTTONS), status=err.code)
 
 
