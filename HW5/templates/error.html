@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+
+
+{% if code == 404 %}
+<h2 class="error"> Page not Found! Code: {{ code }} </h2>
+{%elif code == 422 %}
+<h2 class="error"> Invalid Parameters! Code: {{ code }}</h2>
+{% endif %}
+
+{% endblock %}
