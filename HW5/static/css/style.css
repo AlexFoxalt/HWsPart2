@@ -26,8 +26,11 @@ h3.comment {
 
 table.styled-table {
    text-align: center;
-   width: 100%;
+   width: 99%;
+   margin-right: auto;
+   margin-left: auto;
    border: 3px solid grey;
+   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
 } 
 
 table.genres-table {
@@ -36,6 +39,7 @@ table.genres-table {
    margin-right: auto;
    margin-left: auto;
    border: 3px solid grey;
+   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
 } 
 
 td.customers_item {
