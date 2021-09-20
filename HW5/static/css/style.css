@@ -90,3 +90,24 @@ ul.exercise {
   padding-top: 15px;
   padding-bottom: 15px;
 }
+
+.search-form {
+  text-align: center;
+}
+
+input.search-field {
+  border: 1px solid black;
+  padding: 15px;
+  font-size: 20px;
+  font-family: "Century Gothic";
+}
+
+input.search-button {
+  padding: 15px;
+  font-size: 20px;
+  font-family: "Fantasy";
+  font-weight: bold;
+}
+input.search-button:hover {
+  cursor: pointer;
+}
