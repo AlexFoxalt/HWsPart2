@@ -24,9 +24,16 @@ h3.comment {
   font-size: 16px;
 }
 
-.styled-table {
+table.styled-table {
    text-align: center;
    width: 100%;
+} 
+
+table.genres-table {
+   text-align: center;
+   width: 45%;
+   margin-right: auto;
+   margin-left: auto;
 } 
 
 td.customers_item {
