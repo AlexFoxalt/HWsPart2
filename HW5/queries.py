@@ -4,7 +4,7 @@ TracksCountQuery = 'SELECT count( Name ) AS counter FROM tracks'
 
 CustomersNoParamQuery = 'SELECT * FROM customers '
 
-GenresQuery = "SELECT ( SUM ( tracks.Milliseconds ) / 6000 ), genres.Name " \
+GenresQuery = "SELECT ( SUM ( tracks.Milliseconds ) / 1000 ), genres.Name " \
             "FROM tracks " \
             "INNER JOIN genres ON tracks.GenreId=genres.GenreId " \
             "GROUP BY tracks.GenreId"

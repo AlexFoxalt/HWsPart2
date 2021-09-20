@@ -71,7 +71,7 @@ def get_sales():
 
 @app.route('/genres')
 def get_genres():
-    fields = ('Genre', 'Duration')
+    fields = ('Duration', 'Genre')
     query = queries.GenresQuery
     data = execute_query(query)
     return render_template('genres.html', title='Genres', fields=fields, data=data, menu=MENU_BUTTONS)
