@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+
+{% if text %}
+    <h1>Customers for '{{text}}' request key</h1>
+{% else %}
+    <h1>Customers</h1>
+    <form action="/customers" method="get" class="search-form">
+        <input class="search-field" type="text" name="text" value="" placeholder="Enter text" required/>
+        <input class="search-button" type="submit" value="Search">
+    </form>
+    <h3 class="comment">You can set search parameter in url string with 'text=' key.<br>
+        <i>Ex.: http...?text=Odesa</i></h3>
+{% endif %}
+
+
+
+<table class="styled-table">
+    
+    <tr class="menu">
+        {% for column_name in fields %}
+            <td class="customers_item"><b>{{column_name[0]}}</b></td>
+        {% endfor %}
+    </tr>
+    
+    {% for item in data %}
+        <tr class="customers">
+            {% for value in item %}
+                {% if value  %}
+                    <td class="customers_item">{{ value }}</td>
+                {% else %}
+                    <td class="customers_item">-</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+
+{% endblock %}

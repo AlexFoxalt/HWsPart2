@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+
+<h1>{{ data }}</h1>
+<ul class="exercise">
+{% for item in exercises %}
+	<li class="exercise">{{ item }}</li>		
+{% endfor %}
+</ul>
+
+
+
+{% endblock %}

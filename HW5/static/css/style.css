@@ -1,0 +1,119 @@
+h2.error {
+  color: indianred;
+  background: lightgrey;
+  font-size: 75px;
+}
+
+h1 {
+  position: center;
+  color: darkred;
+  font-family: "Garamond";
+  background: #CECECE;
+  padding: 10px;
+  text-align: center;
+}
+
+h3.normal {
+  color: black;
+  font-size: 30px;
+  text-align: center;
+}
+
+h3.comment {
+  color: grey;
+  font-size: 16px;
+}
+
+table.styled-table {
+   text-align: center;
+   width: 99%;
+   margin-right: auto;
+   margin-left: auto;
+   border: 3px solid grey;
+   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+} 
+
+table.genres-table {
+   text-align: center;
+   width: 45%;
+   margin-right: auto;
+   margin-left: auto;
+   border: 3px solid grey;
+   box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+} 
+
+td.customers_item {
+  height: 50px;
+  border-bottom: 1px solid #ddd;
+  padding: 2px;
+}
+
+tr.menu {
+  background: grey;
+  font-size: 20px;
+  font-family: 'Trebuchet MS';
+}
+
+tr.customers {
+  font-size: 18px;
+  background: #C7C7C7;
+}
+tr.customers:hover {
+  background: #FFFFAA;
+}
+
+ul.mainmenu {
+  list-style: none;
+  background: #3F4137;
+  height: 60px;
+  margin: 0;
+  padding: 0;
+  color: #fdc073;
+  font-size: 20px;
+  overflow: hidden;
+}
+ul.mainmenu li {
+  float: left;
+  margin: 18px 40px 0 50px;
+}
+ul.mainmenu li.last {float: right;}
+
+ul.mainmenu li a {
+  color: #fdc073;
+  text-decoration: none;
+}
+ul.mainmenu li a:hover {
+  color: #FDA83D;
+}
+li.exercise {
+  font-size: 19px;
+  color: #313131;
+  font-family: "Century Gothic";
+  margin-bottom: 10px;
+}
+ul.exercise {
+  background: #f0e7bb;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.search-form {
+  text-align: center;
+}
+
+input.search-field {
+  border: 1px solid black;
+  padding: 15px;
+  font-size: 20px;
+  font-family: "Century Gothic";
+}
+
+input.search-button {
+  padding: 15px;
+  font-size: 20px;
+  font-family: "Fantasy";
+  font-weight: bold;
+}
+input.search-button:hover {
+  cursor: pointer;
+}

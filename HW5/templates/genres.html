@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+{{ super() }}
+
+<h1>Genres analytics</h1>
+
+<table class="genres-table">
+    <tr class="menu">
+        {% for column_name in fields %}
+            <td class="customers_item"><b>{{ column_name }}</b></td>
+        {% endfor %}
+    </tr>
+    
+    {% for item in data %}
+        <tr class="customers">
+            <td class="customers_item"> ~ {{ item[0] }} seconds</td>
+            <td class="customers_item"> {{ item[1] }} </td>
+        </tr>
+    {% endfor %}
+
+{% endblock %}
