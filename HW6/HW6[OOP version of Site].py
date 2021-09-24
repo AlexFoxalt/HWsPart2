@@ -31,7 +31,6 @@ def before_request():
 
 @app.teardown_appcontext
 def close_db(err):
-    """Закрываем соединение с БД, если оно было установлено"""
     if hasattr(g, 'link_db'):
         g.link_db.close()
 
