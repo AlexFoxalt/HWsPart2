@@ -5,7 +5,6 @@ from utils import FormatMyResPls
 
 class FDataBase:
     def __init__(self, db):
-        self.__db = db
         self.__cur = db.cursor()
 
     def getTracks(self, limit):
