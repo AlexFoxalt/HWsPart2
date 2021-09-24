@@ -1,5 +1,4 @@
-import sqlite3
-from flask import Flask, Response, g
+from flask import Flask, Response
 from webargs.flaskparser import use_kwargs
 import status_codes
 from utils import int_limit, int_limit_and_genre_type
