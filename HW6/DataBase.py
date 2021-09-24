@@ -1,6 +1,22 @@
-from flask import abort, redirect
+import sqlite3
+
+from flask import abort, redirect, g
 from queries import TracksNoLimitQuery, ArtistsNoLimitQuery, TopCityByGenre, AddLimitQuery
 from utils import FormatMyResPls
+
+
+def connect_db(app):
+    """Find our DB in local files"""
+    conn = sqlite3.connect(app.config['DATABASE'])
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def get_db(app):
+    """Set connection with DB if it not exists"""
+    if not hasattr(g, 'link_db'):
+        g.link_db = connect_db(app)
+    return g.link_db
 
 
 class FDataBase:

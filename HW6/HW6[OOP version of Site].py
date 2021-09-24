@@ -3,7 +3,7 @@ from flask import Flask, Response, g
 from webargs.flaskparser import use_kwargs
 import status_codes
 from utils import int_limit, int_limit_and_genre_type
-from DataBase import FDataBase
+from DataBase import FDataBase, get_db
 
 DATABASE = '../chinook.db'
 DEBUG = True
@@ -11,20 +11,6 @@ dbase = None
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-
-
-def connect_db():
-    """Find our DB in local files"""
-    conn = sqlite3.connect(app.config['DATABASE'])
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def get_db():
-    """Set connection with DB if it not exists"""
-    if not hasattr(g, 'link_db'):
-        g.link_db = connect_db()
-    return g.link_db
 
 
 @app.errorhandler(status_codes.HTTP_404_NOT_FOUND)
@@ -40,7 +26,7 @@ def error(err):
 @app.before_request
 def before_request():
     global dbase
-    db = get_db()
+    db = get_db(app)
     dbase = FDataBase(db)
 
 
