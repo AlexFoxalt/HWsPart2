@@ -7,9 +7,9 @@ class FDataBase:
     def __init__(self, db):
         self.__cur = db.cursor()
 
-    def getTracks(self, limit):
-        if limit:
-            self.__cur.execute(TracksNoLimitQuery + AddLimitQuery, (limit, ))
+    def getTracks(self, count):
+        if count:
+            self.__cur.execute(TracksNoLimitQuery + AddLimitQuery, (count, ))
         else:
             self.__cur.execute(TracksNoLimitQuery)
         res = self.__cur.fetchall()
@@ -18,9 +18,9 @@ class FDataBase:
         else:
             return abort(422)
 
-    def getArtists(self, limit):
-        if limit:
-            self.__cur.execute(ArtistsNoLimitQuery + AddLimitQuery, (limit, ))
+    def getArtists(self, count):
+        if count:
+            self.__cur.execute(ArtistsNoLimitQuery + AddLimitQuery, (count, ))
         else:
             self.__cur.execute(ArtistsNoLimitQuery)
         res = self.__cur.fetchall()
@@ -29,10 +29,10 @@ class FDataBase:
         else:
             return abort(422)
 
-    def getStats(self, limit, genre):
+    def getStats(self, count, genre):
         if genre:
-            if limit:
-                self.__cur.execute(TopCityByGenre + AddLimitQuery, (genre, limit))
+            if count:
+                self.__cur.execute(TopCityByGenre + AddLimitQuery, (genre, count))
             else:
                 self.__cur.execute(TopCityByGenre, (genre, ))
         else:

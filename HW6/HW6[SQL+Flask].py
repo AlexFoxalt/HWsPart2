@@ -29,34 +29,34 @@ def error(err):
 
 @app.route("/greatest_hits")
 @use_kwargs(int_limit, location='query')
-def get_greatest_hits(limit: int):
-    if not limit:
+def get_greatest_hits(count: int):
+    if not count:
         res = execute_query(TracksNoLimitQuery)
         return FormatMyResPls(res)
     else:
-        res = execute_query(TracksNoLimitQuery + AddLimitQuery, (limit,))
+        res = execute_query(TracksNoLimitQuery + AddLimitQuery, (count,))
         return FormatMyResPls(res)
 
 
 @app.route("/greatest_artists")
 @use_kwargs(int_limit, location='query')
-def get_greatest_artists(limit: int):
-    if not limit:
+def get_greatest_artists(count: int):
+    if not count:
         res = execute_query(ArtistsNoLimitQuery)
         return FormatMyResPls(res)
     else:
-        res = execute_query(ArtistsNoLimitQuery + AddLimitQuery, (limit, ))
+        res = execute_query(ArtistsNoLimitQuery + AddLimitQuery, (count, ))
         return FormatMyResPls(res)
 
 
 @app.route("/stats_by_city")
 @use_kwargs(int_limit_and_genre_type, location='query')
-def get_stats_by_city(limit: int, genre: str):
+def get_stats_by_city(count: int, genre: str):
     if genre:
-        if not limit:
+        if not count:
             res = execute_query(TopCityByGenre, (genre, ))
         else:
-            res = execute_query(TopCityByGenre + AddLimitQuery, (genre, limit))
+            res = execute_query(TopCityByGenre + AddLimitQuery, (genre, count))
     else:
         return redirect('https://everynoise.com/')
     if not res:

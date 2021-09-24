@@ -2,14 +2,14 @@ import sqlite3
 from webargs import fields
 
 int_limit = {
-    "limit": fields.Int(
+    "count": fields.Int(
         required=False,
         missing=None
     )
 }
 
 int_limit_and_genre_type = {
-    "limit": fields.Int(
+    "count": fields.Int(
         required=False,
         missing=None
     ),

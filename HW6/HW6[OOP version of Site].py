@@ -46,20 +46,20 @@ def before_request():
 
 @app.route("/greatest_hits")
 @use_kwargs(int_limit, location='query')
-def get_greatest_hits(limit: int):
-    return dbase.getTracks(limit)
+def get_greatest_hits(count: int):
+    return dbase.getTracks(count)
 
 
 @app.route("/greatest_artists")
 @use_kwargs(int_limit, location='query')
-def get_greatest_artists(limit: int):
-    return dbase.getArtists(limit)
+def get_greatest_artists(count: int):
+    return dbase.getArtists(count)
 
 
 @app.route("/stats_by_city")
 @use_kwargs(int_limit_and_genre_type, location='query')
-def get_stats_by_city(limit: int, genre: str):
-    return dbase.getStats(limit, genre)
+def get_stats_by_city(count: int, genre: str):
+    return dbase.getStats(count, genre)
 
 
 if __name__ == '__main__':
