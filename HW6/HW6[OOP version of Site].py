@@ -13,12 +13,12 @@ app.config.from_object(__name__)
 
 
 @app.errorhandler(status_codes.HTTP_404_NOT_FOUND)
-def error(err):
+def error_404(err):
     return Response('404 Not found', status=err.code)
 
 
 @app.errorhandler(status_codes.HTTP_422_UNPROCESSABLE_ENTITY)
-def error(err):
+def error_422(err):
     return Response('422 Invalid parameters', status=err.code)
 
 
