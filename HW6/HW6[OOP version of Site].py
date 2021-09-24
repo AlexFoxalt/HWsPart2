@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, g
 from webargs.flaskparser import use_kwargs
 import status_codes
 from utils import int_limit, int_limit_and_genre_type
@@ -27,6 +27,13 @@ def before_request():
     global dbase
     db = get_db(app)
     dbase = FDataBase(db)
+
+
+@app.teardown_appcontext
+def close_db(err):
+    """Закрываем соединение с БД, если оно было установлено"""
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
 
 
 @app.route("/greatest_hits")
