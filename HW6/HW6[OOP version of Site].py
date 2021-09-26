@@ -1,7 +1,7 @@
 from flask import Flask, Response, g
 from webargs.flaskparser import use_kwargs
 import status_codes
-from utils import int_limit, int_limit_and_genre_type
+from utils import int_limit, genre_type
 from DataBase import FDataBase, get_db
 
 DATABASE = '../chinook.db'
@@ -24,9 +24,8 @@ def error_422(err):
 
 @app.before_request
 def before_request():
-    global dbase
     db = get_db(app)
-    dbase = FDataBase(db)
+    app.dbase = FDataBase(db)
 
 
 @app.teardown_appcontext
@@ -38,19 +37,19 @@ def close_db(err):
 @app.route("/greatest_hits")
 @use_kwargs(int_limit, location='query')
 def get_greatest_hits(count: int):
-    return dbase.getTracks(count)
+    return app.dbase.getTracks(count)
 
 
 @app.route("/greatest_artists")
 @use_kwargs(int_limit, location='query')
 def get_greatest_artists(count: int):
-    return dbase.getArtists(count)
+    return app.dbase.getArtists(count)
 
 
 @app.route("/stats_by_city")
-@use_kwargs(int_limit_and_genre_type, location='query')
+@use_kwargs(dict(**int_limit, **genre_type), location='query')
 def get_stats_by_city(count: int, genre: str):
-    return dbase.getStats(count, genre)
+    return app.dbase.getStats(count, genre)
 
 
 if __name__ == '__main__':

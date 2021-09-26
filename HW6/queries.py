@@ -2,15 +2,16 @@ TracksNoLimitQuery = """
 SELECT tracks.Name, (tracks.UnitPrice * invoice_items.Quantity) as Summ, invoice_items.Quantity
 FROM tracks
 INNER JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
-ORDER BY invoice_items.Quantity DESC
+GROUP BY tracks.Name
+ORDER BY Summ DESC
 """
 
 ArtistsNoLimitQuery = """
-SELECT tracks.Composer
+SELECT tracks.Composer, (tracks.UnitPrice * invoice_items.Quantity) as Summ
 FROM tracks
 INNER JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
 GROUP BY tracks.Composer
-ORDER BY invoice_items.Quantity DESC
+ORDER BY Summ DESC
 """
 
 
@@ -22,7 +23,7 @@ INNER JOIN invoice_items ON tracks.TrackId = invoice_items.TrackId
 INNER JOIN invoices ON invoice_items.InvoiceId = invoices.InvoiceId
 WHERE genres.Name = ?
 GROUP BY invoices.BillingCity
-ORDER BY count(genres.Name) DESC
+ORDER BY (tracks.UnitPrice * invoice_items.Quantity) DESC
 """
 
 

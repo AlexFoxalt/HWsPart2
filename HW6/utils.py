@@ -8,11 +8,7 @@ int_limit = {
     )
 }
 
-int_limit_and_genre_type = {
-    "count": fields.Int(
-        required=False,
-        missing=None
-    ),
+genre_type = {
     "genre": fields.Str(
         required=False,
         missing=None
@@ -30,4 +26,4 @@ def execute_query(query, args=()):
 
 
 def FormatMyResPls(res):
-    return '<br>'.join(str(num + 1) + '. ' + str(item[0]) for num, item in enumerate(res))
+    return '<br>'.join(str(num) + '. ' + str(item[0]) for num, item in enumerate(res, 1))
