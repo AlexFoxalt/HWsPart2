@@ -12,7 +12,7 @@ from flask import Flask, Response, redirect, abort
 from webargs.flaskparser import use_kwargs
 from queries import TracksNoLimitQuery, ArtistsNoLimitQuery, TopCityByGenre, AddLimitQuery
 import status_codes
-from utils import int_limit, execute_query, int_limit_and_genre_type, FormatMyResPls
+from utils import int_limit, execute_query, genre_type, FormatMyResPls
 
 app = Flask(__name__)
 
@@ -50,7 +50,7 @@ def get_greatest_artists(count: int):
 
 
 @app.route("/stats_by_city")
-@use_kwargs(int_limit_and_genre_type, location='query')
+@use_kwargs(dict(**int_limit, **genre_type), location='query')
 def get_stats_by_city(count: int, genre: str):
     if genre:
         if not count:
