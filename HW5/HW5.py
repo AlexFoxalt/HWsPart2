@@ -11,8 +11,7 @@ from flask import Flask, render_template, abort, Response
 from utils import execute_query, format_counter_to_int, format_counter_to_float, customers_params, EX_TEXT, MENU_BUTTONS
 from webargs.flaskparser import use_kwargs
 import queries
-import status_codes
-
+from TechFiles import status_codes
 
 app = Flask(__name__)
 

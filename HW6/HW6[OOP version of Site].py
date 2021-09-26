@@ -1,6 +1,6 @@
 from flask import Flask, Response, g
 from webargs.flaskparser import use_kwargs
-import status_codes
+from TechFiles import status_codes
 from utils import int_limit, genre_type
 from DataBase import FDataBase, get_db
 

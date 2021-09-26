@@ -17,7 +17,7 @@ genre_type = {
 
 
 def execute_query(query, args=()):
-    with sqlite3.connect('../chinook.db') as conn:
+    with sqlite3.connect('../TechFiles/chinook.db') as conn:
         cur = conn.cursor()
         cur.execute(query, args)
         conn.commit()

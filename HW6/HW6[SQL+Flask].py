@@ -11,7 +11,7 @@
 from flask import Flask, Response, redirect, abort
 from webargs.flaskparser import use_kwargs
 from queries import TracksNoLimitQuery, ArtistsNoLimitQuery, TopCityByGenre, AddLimitQuery
-import status_codes
+from TechFiles import status_codes
 from utils import int_limit, execute_query, genre_type, FormatMyResPls
 
 app = Flask(__name__)
