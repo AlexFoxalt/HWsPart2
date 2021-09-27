@@ -35,8 +35,7 @@ class Circle(Shape):
         self.r = radius
 
     def __contains__(self, p: Point):  # (x - x0)^2 + (y - y0)^2 <= R^2
-        res = (p.x - self.x) ** 2 + (p.y - self.y) ** 2 <= self.r ** 2
-        return res
+        return (p.x - self.x) ** 2 + (p.y - self.y) ** 2 <= self.r ** 2
 
     def square(self):
         return pi * self.r ** 2
@@ -48,7 +47,7 @@ class Triangle:
         self.B = second_point
         self.C = third_point
 
-    def square(self):
+    def square(self):  # S{ABC} = 1/2*( (x_2-x_1)*(y_3-y_1) - (x_3-x_1)*(y_2-y_1) )
         return abs(((self.B.x - self.A.x) * (self.C.y - self.A.y) - (self.C.x - self.A.x) * (self.B.y - self.A.y)) / 2)
 
 
@@ -59,12 +58,12 @@ class Parallelogram:
         self.C = third_point
         self.D = fourth_point
 
-    def square(self):
-        return (self.D.y - self.A.y) * (self.B.x - self.A.x)
+    def square(self):  # S{ABCD} = (d_2-a_2) * (b_1-a_1)
+        return abs((self.D.y - self.A.y) * (self.B.x - self.A.x))
 
 
 class colorizer:
-    def __init__(self, color):
+    def __init__(self, color='WHITE'):
         self.color = color.upper()
 
     def __enter__(self):
@@ -78,36 +77,37 @@ class colorizer:
                     'WHITE': Fore.WHITE}
         color = __colors.get(self.color)
         if color:
-            print(color)
+            print(color)  # Activate color mode
         else:
             raise Exception('No such color')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(f'{Fore.RESET}')
+        print(Fore.RESET)  # Disactivate CM
 
 
 class frange:
     def __init__(self, stop, start=None, step=1):
-        self.stop = stop
-        if start is not None:
+        self.stop = stop  # 1 arg passed
+        if start is not None:  # 2 args passed
             self.start = stop
             self.stop = start
-        else:
+        else:  # 1 arg passed so default value
             self.start = 0
-        self.step = step
+        self.step = step  # if 3 args passed, else = 1
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.step > 0:
-            if self.start + self.step >= self.stop + self.step:
+        if self.step > 0:  # Step validation
+            if self.start + self.step >= self.stop + self.step:  # Check if limit was exceeded
                 raise StopIteration
         elif self.step < 0:
             if self.start + self.step <= self.stop + self.step:
                 raise StopIteration
         elif self.step == 0:
             raise ValueError('frange() arg 3 must not be zero')
-        res = self.start
-        self.start += self.step
+        
+        res = self.start  # Remember the value before increasing
+        self.start += self.step  # Increasing
         return res
