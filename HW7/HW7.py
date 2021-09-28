@@ -82,18 +82,18 @@ class colorizer:
             raise Exception('No such color')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(Fore.RESET)  # Disactivate CM
+        print(Fore.RESET)  # Deactivate CM
 
 
 class frange:
     def __init__(self, stop, start=None, step=1):
-        self.stop = stop  # 1 arg passed
-        if start is not None:  # 2 args passed
+        self.stop = stop  # 1 arg
+        if start is not None:  # 2 args
             self.start = stop
             self.stop = start
-        else:  # 1 arg passed so default value
+        else:  # 1 arg
             self.start = 0
-        self.step = step  # if 3 args passed, else = 1
+        self.step = step  # 3 args
 
     def __iter__(self):
         return self
