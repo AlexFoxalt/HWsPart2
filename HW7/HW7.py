@@ -93,7 +93,7 @@ class frange:
             self.stop = start
         else:  # 1 arg
             self.start = 0
-        self.step = step  # 3 args
+        self.step = step  # 1/2/3 args
 
     def __iter__(self):
         return self
