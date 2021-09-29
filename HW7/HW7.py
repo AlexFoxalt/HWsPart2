@@ -100,10 +100,10 @@ class frange:
 
     def __next__(self):
         if self.step > 0:  # Step validation
-            if self.start + self.step >= self.stop + self.step:  # Check if limit was exceeded
+            if self.start >= self.stop:  # Check if limit was exceeded
                 raise StopIteration
         elif self.step < 0:
-            if self.start + self.step <= self.stop + self.step:
+            if self.start <= self.stop:
                 raise StopIteration
         elif self.step == 0:
             raise ValueError('frange() arg 3 must not be zero')
