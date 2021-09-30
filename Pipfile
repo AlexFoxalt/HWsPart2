@@ -27,6 +27,8 @@ Jinja2 = "==3.0.1"
 MarkupSafe = "==2.0.1"
 Werkzeug = "==2.0.1"
 WTForms = "==2.3.3"
+django = "==3.2.7"
+ipython = "*"
 
 [dev-packages]
 
