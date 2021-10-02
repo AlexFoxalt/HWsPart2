@@ -1,0 +1,11 @@
+ ✔ 1.Создать приложение groups и модель Group в приложении. Добавить несколько полей (название и тип по желанию).
+
+ ✔ 2. Создать приложение teachers и модель Teacher в приложении. Добавить несколько полей (название и тип по желанию).
+
+ ✔ 3*. Создать view-функции для генерации студентов. Количество студентов задается опциональным параметром count,
+по умолчанию равен 10.
+def generate_students(request) -> /generate_students?count=20
+
+ ✔ 4*. Реализовать cli-команду generate_students: https://docs.djangoproject.com/en/3.2/howto/custom-management-commands/.
+Количество студентов задается опциональным параметром count, по умолчанию равен 10.
+python manage.py generate_students 20
