@@ -29,6 +29,7 @@ Werkzeug = "==2.0.1"
 WTForms = "==2.3.3"
 django = "==3.2.7"
 ipython = "*"
+pillow = "*"
 
 [dev-packages]
 
