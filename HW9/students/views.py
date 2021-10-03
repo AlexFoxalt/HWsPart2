@@ -10,7 +10,7 @@ fake = Faker()
 
 
 def index(request):
-    return HttpResponse(f'Success ')
+    return HttpResponse(f'<h1> Student-app Home Page <h1>')
 
 
 def generate_students(request):
