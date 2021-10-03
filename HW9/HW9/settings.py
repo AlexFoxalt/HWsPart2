@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'teachers.apps.TeachersConfig',
     'groups.apps.GroupsConfig',
     'students.apps.StudentsConfig',
-    'customclicommands.apps.CustomclicommandsConfig'
+    'customclicommands.apps.CustomclicommandsConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
