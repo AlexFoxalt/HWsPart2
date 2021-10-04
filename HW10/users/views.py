@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from .utils import teacher_filter_query, student_filter_query
 from .models import Student, Teacher
 from webargs.djangoparser import use_kwargs
@@ -15,13 +15,19 @@ def index(request):
                         '<li>/gen-teachers/ ===== Generates teachers with opt.param. *count* (def=10)</li>'
                         '<li>/get-all-teachers/ === Returns a list of all teachers from DB</li>'
                         '<li>/get-all-students/ === Returns a list of all students from DB</li>'
-                        '<li>/teachers/ ======== Makes search in Teachers table, '
-                        'possible params: name, city, email, faculty, date_of_employment, experience_in_years</li>'
+                        '<li>/teachers/ ======== Makes search in Teachers table, per each named column'
+                        ' | possible params: name, city, email, faculty, date_of_employment, experience_in_years</li>'
+                        '<li>/students/ ======== Makes search in Student table per all text type columns'
+                        ' | possible param: text</li>'
                         '</ul>')
 
 
 def generate_students(request):
-    count = int(request.GET.get('count', 10))
+    try:
+        count = int(request.GET.get('count', 10))
+    except ValueError as err:
+        return HttpResponseBadRequest(request, err)
+
     Student.generate_entity(count)
 
     last_added = map(str, Student.objects.all().order_by('-id')[:count][::-1])
@@ -31,7 +37,11 @@ def generate_students(request):
 
 
 def generate_teachers(request):
-    count = int(request.GET.get('count', 10))
+    try:
+        count = int(request.GET.get('count', 10))
+    except ValueError as err:
+        return HttpResponseBadRequest(request, err)
+
     Teacher.generate_entity(count)
 
     last_added = map(str, Teacher.objects.all().order_by('-id')[:count][::-1])
@@ -75,7 +85,8 @@ def get_teachers(request, name, city, email, faculty, date_of_employment, experi
 
     return HttpResponse(f'Success! <br>'
                         f'Applied filters: <ul><li>'
-                        f'{"</li><li>".join(applied_filters) if applied_filters else "No filters"}</li></ul><br>'
+                        f'{"</li><li>".join(applied_filters) if applied_filters else "No filters"}'
+                        f'</li></ul><br>'
                         f'Here is result: <br> {"<br>".join(map(str, data))}')
 
 

@@ -1,20 +1,8 @@
 from random import choice
+from faker import Faker
 from marshmallow import fields
 
-teacher_query_fields = ('name', 'city', 'email', 'faculty', 'date_of_employment', 'experience_in_years')
-
-teacher_filter_query = {
-    key: fields.Str(required=False, missing=None) for key in teacher_query_fields
-}
-
-student_filter_query = {
-    'text': fields.Str(required=False, missing=None)
-}
-
-
-def mine_faker_of_faculties():
-    return choice(FACULTIES)
-
+f = Faker('EN')
 
 FACULTIES = [
     'Accounting and Finance',
@@ -113,3 +101,17 @@ FACULTIES = [
     'Youth',
     'Work',
 ]
+
+teacher_query_fields = ('name', 'city', 'email', 'faculty', 'date_of_employment', 'experience_in_years')
+
+teacher_filter_query = {
+    key: fields.Str(required=False, missing=None) for key in teacher_query_fields
+}
+
+student_filter_query = {
+    'text': fields.Str(required=False, missing=None)
+}
+
+
+def mine_faker_of_faculties():
+    return choice(FACULTIES)

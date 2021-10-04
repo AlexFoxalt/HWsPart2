@@ -18,7 +18,7 @@ https://djbook.ru/rel1.6/howto/custom-management-commands.html .
 python manage.py generate_students 20
 
 
-   4*. Разобраться как наложить на QuerySet фильтр с логическим оператором OR.
+ ✔ 4*. Разобраться как наложить на QuerySet фильтр с логическим оператором OR.
 
 Добавить во view-функцию get_students параметр text, в котором задается текст для поиска во всех текстовых полях:
 

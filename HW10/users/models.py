@@ -1,12 +1,13 @@
 from django.db import models
 from datetime import datetime
-from faker import Faker
 from .utils import mine_faker_of_faculties
 from random import randint
+from faker import Faker
+
+f = Faker('EN')
 
 
 # Create your models here.
-
 
 class User(models.Model):
     name = models.CharField(max_length=100, null=False)
@@ -19,7 +20,7 @@ class User(models.Model):
 
     @classmethod
     def generate_entity(cls, count):
-        return 'Unable to create base class entity'
+        raise Exception('Unable to create base class entity')
 
 
 class Teacher(User):
@@ -34,18 +35,17 @@ class Teacher(User):
 
     @classmethod
     def generate_entity(cls, count):
-        f = Faker('EN')
         for iteration in range(count):
             data = {
-                'name': f.name(),
-                'city': f.city(),
-                'birthday': f.date_between(start_date='-50y', end_date='-16y'),
-                'email': f.email(),
-                'faculty': mine_faker_of_faculties(),
-                'position': 'Teacher',
-                'date_of_employment': f.date_between(start_date='-10y', end_date='today'),
-                'experience_in_years': randint(1, 30)
-            }
+                    'name': f.name(),
+                    'city': f.city(),
+                    'email': f.email(),
+                    'faculty': mine_faker_of_faculties(),
+                    'birthday': f.date_between(start_date='-70y', end_date='-25y'),
+                    'position': 'Teacher',
+                    'date_of_employment': f.date_between(start_date='-30y', end_date='today'),
+                    'experience_in_years': randint(1, 30)
+                }
             cls.objects.create(**data)
 
 
@@ -60,15 +60,14 @@ class Student(User):
 
     @classmethod
     def generate_entity(cls, count):
-        f = Faker('EN')
         for iteration in range(count):
             data = {
-                'name': f.name(),
-                'city': f.city(),
-                'birthday': f.date_between(start_date='-50y', end_date='-16y'),
-                'email': f.email(),
-                'faculty': mine_faker_of_faculties(),
-                'position': 'Student',
-                'previous_educational_institution': f'School №{randint(1, 100)}'
-            }
+                    'name': f.name(),
+                    'city': f.city(),
+                    'email': f.email(),
+                    'faculty': mine_faker_of_faculties(),
+                    'birthday': f.date_between(start_date='-50y', end_date='-16y'),
+                    'position': 'Student',
+                    'previous_educational_institution': f'School №{randint(1, 100)}'
+                }
             cls.objects.create(**data)
