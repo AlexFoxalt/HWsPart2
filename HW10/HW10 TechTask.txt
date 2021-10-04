@@ -1,4 +1,4 @@
-1. В модель Group, Teacher добавить методы
+ ✔ 1. В модель Group, Teacher добавить методы
 
 def generate_groups(count)
 def generate_teachers(count)
@@ -6,19 +6,19 @@ def generate_teachers(count)
 
 
 
-2. Добавить view-функцию для отображения учителей c поддержкой фильтрации по всем атрибутам модели:
+ ✔ 2. Добавить view-функцию для отображения учителей c поддержкой фильтрации по всем атрибутам модели:
 
 teachers/ -> def get_teachers()
 
 
-3. [Самостоятельно] Создать пользовательскую команду generate_students:
+ ✔ 3. [Самостоятельно] Создать пользовательскую команду generate_students:
 https://djbook.ru/rel1.6/howto/custom-management-commands.html .
 Кол-во сгенерированных студентов передается как аргумент команды:
 
 python manage.py generate_students 20
 
 
-4*. Разобраться как наложить на QuerySet фильтр с логическим оператором OR.
+   4*. Разобраться как наложить на QuerySet фильтр с логическим оператором OR.
 
 Добавить во view-функцию get_students параметр text, в котором задается текст для поиска во всех текстовых полях:
 
