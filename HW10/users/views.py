@@ -92,13 +92,16 @@ def get_teachers(request, name, city, email, faculty, date_of_employment, experi
 
 @use_kwargs(student_filter_query, location='query')
 def get_students(request, text):
-    res = Student.objects.filter(
-        Q(name__contains=text) |
-        Q(city__contains=text) |
-        Q(email__contains=text) |
-        Q(faculty__contains=text) |
-        Q(previous_educational_institution__contains=text)
-    )
+    if text:
+        res = Student.objects.filter(
+            Q(name__contains=text) |
+            Q(city__contains=text) |
+            Q(email__contains=text) |
+            Q(faculty__contains=text) |
+            Q(previous_educational_institution__contains=text)
+        )
+    else:
+        res = Student.objects.all()
     return HttpResponse(f'Success here\'s result: <br><br>'
                         f'Applied filters: text= {text if text else "No filter"}<br><br>'
                         f'{"<br>".join(map(str, res))}')
