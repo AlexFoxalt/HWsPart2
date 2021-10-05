@@ -108,6 +108,13 @@ teacher_filter_query = {
     key: fields.Str(required=False, missing=None) for key in teacher_query_fields
 }
 
+get_int_count = {
+        "count": fields.Int(
+            required=False,
+            missing=10
+        )
+    }
+
 student_filter_query = {
     'text': fields.Str(required=False, missing=None)
 }

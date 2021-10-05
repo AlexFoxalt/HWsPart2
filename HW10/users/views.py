@@ -1,11 +1,13 @@
-from django.http import HttpResponse, HttpResponseBadRequest
-from .utils import teacher_filter_query, student_filter_query
+from django.http import HttpResponse
+from .utils import teacher_filter_query, student_filter_query, get_int_count
 from .models import Student, Teacher
-from webargs.djangoparser import use_kwargs
+from webargs.djangoparser import use_kwargs, use_args
 from django.db.models import Q
-
+from webargs import djangoparser
+from django.core.exceptions import BadRequest
 
 # Create your views here.
+parser = djangoparser.DjangoParser()
 
 
 def index(request):
@@ -22,12 +24,13 @@ def index(request):
                         '</ul>')
 
 
-def generate_students(request):
-    try:
-        count = int(request.GET.get('count', 10))
-    except ValueError as err:
-        return HttpResponseBadRequest(request, err)
+@parser.error_handler
+def handle_error(error, req, schema, *, error_status_code, error_headers):
+    raise BadRequest(error.messages)
 
+
+@parser.use_kwargs(get_int_count, location="query")
+def generate_students(request, count):
     Student.generate_entity(count)
 
     last_added = map(str, Student.objects.all().order_by('-id')[:count][::-1])
@@ -36,12 +39,8 @@ def generate_students(request):
                         f'{sep.join(str(num) + ". " + value for num, value in enumerate(last_added, 1))}')
 
 
-def generate_teachers(request):
-    try:
-        count = int(request.GET.get('count', 10))
-    except ValueError as err:
-        return HttpResponseBadRequest(request, err)
-
+@parser.use_kwargs(get_int_count, location="query")
+def generate_teachers(request, count):
     Teacher.generate_entity(count)
 
     last_added = map(str, Teacher.objects.all().order_by('-id')[:count][::-1])
@@ -58,30 +57,15 @@ def get_all_students(request):
     return HttpResponse('<br>'.join(map(str, Student.objects.all())))
 
 
-@use_kwargs(teacher_filter_query, location='query')
-def get_teachers(request, name, city, email, faculty, date_of_employment, experience_in_years):
+@use_args(teacher_filter_query, location='query')
+def get_teachers(request, args):
     data = Teacher.objects.all()
-
     applied_filters = []
 
-    if name is not None:
-        data = data.filter(name__contains=name)
-        applied_filters.append(f'name ~ "{name}"')
-    if city is not None:
-        data = data.filter(city__contains=city)
-        applied_filters.append(f'city ~ "{city}"')
-    if email is not None:
-        data = data.filter(email__contains=email)
-        applied_filters.append(f'name ~ "{email}"')
-    if faculty is not None:
-        data = data.filter(faculty__contains=faculty)
-        applied_filters.append(f'faculty ~ "{faculty}"')
-    if date_of_employment is not None:
-        data = data.filter(date_of_employment__contains=date_of_employment)
-        applied_filters.append(f'date_of_employment ~ "{date_of_employment}"')
-    if experience_in_years is not None:
-        data = data.filter(experience_in_years__contains=experience_in_years)
-        applied_filters.append(f'experience_in_years ~ "{experience_in_years}"')
+    for key, value in args.items():
+        if value is not None:
+            data = data.filter(**{f'{key}__contains': value})
+            applied_filters.append(f'{key} ~ "{value}"')
 
     return HttpResponse(f'Success! <br>'
                         f'Applied filters: <ul><li>'
@@ -92,16 +76,18 @@ def get_teachers(request, name, city, email, faculty, date_of_employment, experi
 
 @use_kwargs(student_filter_query, location='query')
 def get_students(request, text):
-    if text:
-        res = Student.objects.filter(
-            Q(name__contains=text) |
-            Q(city__contains=text) |
-            Q(email__contains=text) |
-            Q(faculty__contains=text) |
-            Q(previous_educational_institution__contains=text)
-        )
+    if text is not None:
+        fields = ['name', 'city', 'email', 'faculty', 'previous_educational_institution']
+        students = Student.objects.all()
+        or_cond = Q()
+
+        for field in fields:
+            or_cond |= Q(**{'{}__contains'.format(field): text})
+
+        students = students.filter(or_cond)
     else:
-        res = Student.objects.all()
+        students = students = Student.objects.all()
+
     return HttpResponse(f'Success here\'s result: <br><br>'
                         f'Applied filters: text= {text if text else "No filter"}<br><br>'
-                        f'{"<br>".join(map(str, res))}')
+                        f'{"<br>".join(map(str, students))}')
