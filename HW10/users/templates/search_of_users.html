@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>List of users: {{ user_class }}</h1>
+
+{% if applied_filters %}
+	<h3>Applied filters:</h3>
+	<ul>
+	{% for filter in applied_filters %}
+		<li>{{ filter }}</li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<h3>No filters applied</h3>
+{% endif %}
+
+<ul style="list-style-type: decimal">
+	{% for post in posts %}
+		<li>{{ post }}</li>
+	{% endfor %}
+</ul>
+{% endblock content %}
