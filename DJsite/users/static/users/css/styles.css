@@ -1,0 +1,26 @@
+ul.messages {
+	list-style-type: none;
+}
+ul.errorlist {
+	list-style-type: none;
+	display: table;
+	background: #ff7885;
+	font-size: 15px;
+	padding: 5px;
+	border: 1px solid grey;
+}
+
+li.alert-success {
+	display: table;
+	background: #7aff78;
+	font-size: 30px;
+	padding: 5px;
+	border: 1px solid grey;
+}
+li.alert-danger {
+	display: table;
+	background: #ff7885;
+	font-size: 30px;
+	padding: 5px;
+	border: 1px solid grey;
+}

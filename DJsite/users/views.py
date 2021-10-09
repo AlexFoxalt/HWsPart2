@@ -1,14 +1,14 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from webargs.djangoparser import use_kwargs, use_args
-from django.db.models import Q
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, TemplateView, CreateView, FormView
 
+from .forms import *
 from .utils import teacher_filter_query, student_filter_query, get_int_count, home_page_posts, EntityGeneratorMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
-from .models import Student, Teacher, User
+from .models import Student, Teacher
 
 # Create your views here.
 parser = djangoparser.DjangoParser()
@@ -87,6 +87,52 @@ class GetStudents(EntitySearchPerAllFieldsMixin, ListView):
     def get(self, request, text, *args, **kwargs):
         user_class = 'Students(s)'
         return super().get(request, user_class, text, *args, **kwargs)
+
+
+class CreateUser(CreateView):
+    form_class = CreateUserForm
+    template_name = 'create_user.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create User'
+        return context
+
+    def form_valid(self, form):
+        position = form.cleaned_data['position']
+        if position == 'Student':
+            Student.objects.create(**form.cleaned_data)
+            messages.success(self.request, 'Student added successfully!')
+        elif position == 'Teacher':
+            Teacher.objects.create(**form.cleaned_data)
+            messages.success(self.request, 'Teacher added successfully!')
+        else:
+            messages.error(self.request, 'User was not added. Something went wrong :(')
+        return redirect('create-user')
+
+# Next 2 classes added just for HW11 TechTask ---------------------
+
+
+class CreateTeacher(CreateView):
+    form_class = CreateTeacherForm
+    template_name = 'create_user.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create Teacher'
+        return context
+
+
+class CreateStudent(CreateView):
+    form_class = CreateStudentForm
+    template_name = 'create_user.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create Student'
+        return context
+
+# ------------------------------------------------------------------
 
 
 @parser.error_handler
