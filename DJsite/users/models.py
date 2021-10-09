@@ -3,7 +3,7 @@ from datetime import datetime
 from random import randint
 from faker import Faker
 
-from .utils import mine_faker_of_faculties, faculties_selector, positions_selector
+from .utils import mine_faker_of_faculties
 
 f = Faker('EN')
 

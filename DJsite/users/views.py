@@ -3,9 +3,9 @@ from django.shortcuts import render, redirect
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, FormView
+from django.views.generic import ListView, TemplateView, CreateView
 
-from .forms import *
+from .forms import CreateUserForm, CreateTeacherForm, CreateStudentForm
 from .utils import teacher_filter_query, student_filter_query, get_int_count, home_page_posts, EntityGeneratorMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
 from .models import Student, Teacher

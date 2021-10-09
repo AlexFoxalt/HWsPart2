@@ -24,7 +24,7 @@ class CreateUserForm(ModelForm):
 
         for domain_name in invalid_domain_names:
             if domain_name in email:
-                raise ValidationError(f'Invalid domain name!')
+                raise ValidationError('Invalid domain name!')
         return email
 
     def clean_birthday(self):
@@ -33,7 +33,7 @@ class CreateUserForm(ModelForm):
         age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
 
         if age < 18:
-            raise ValidationError(f'This site is 18+ only')
+            raise ValidationError('This site is 18+ only')
         return birthday
 
     def clean_phone_number(self):
@@ -48,7 +48,7 @@ class CreateUserForm(ModelForm):
         last_name = cleaned_data.get('last_name')
 
         if first_name == last_name:
-            raise ValidationError(f'First and Last name cannot repeat')
+            raise ValidationError('First and Last name cannot repeat')
         return cleaned_data
 
 # Next 2 classes added just for HW11 TechTask
@@ -64,3 +64,6 @@ class CreateStudentForm(ModelForm):
     class Meta:
         model = Student
         fields = '__all__'
+
+
+# -------------------------------------------

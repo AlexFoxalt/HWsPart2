@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import *
+
+from .views import StudentHome, StudentGenerator, TeacherGenerator, GetAllTeachers, GetAllStudents, GetTeachers, \
+    GetStudents, CreateUser, CreateTeacher, CreateStudent
 
 urlpatterns = [
     path('', StudentHome.as_view(), name='users-home'),

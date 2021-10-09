@@ -147,4 +147,5 @@ try:
         messages.ERROR: 'alert-danger',
     }
 except Exception as e:
+    print(e)
     pass
