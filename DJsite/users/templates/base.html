@@ -7,7 +7,12 @@
 	<title>{{ title }}</title>
 </head>
 <body>
-<a href="{% url 'users-home' %}">On main page</a>
+<ul class="menu-bar">
+  <li class="menu-bar"><a class="active" href="{% url 'users-home' %}">Main Page</a></li>
+  <li class="menu-bar"><a href="#news">About</a></li>
+  <li class="menu-bar"><a href="#contact">Links</a></li>
+</ul>
+
 
 {% block messages %}
 {% endblock messages %}
