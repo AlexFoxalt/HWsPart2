@@ -1,8 +1,9 @@
 from django.db import models
 from datetime import datetime
-from .utils import mine_faker_of_faculties
 from random import randint
 from faker import Faker
+
+from .utils import mine_faker_of_faculties
 
 f = Faker('EN')
 
@@ -10,30 +11,34 @@ f = Faker('EN')
 # Create your models here.
 
 class User(models.Model):
-    name = models.CharField(max_length=100, null=False)
+    first_name = models.CharField(max_length=100, null=False)
+    last_name = models.CharField(max_length=100, null=False)
     city = models.CharField(max_length=100, null=False)
     birthday = models.DateField(null=False)
     email = models.EmailField(null=False)
-    faculty = models.CharField(max_length=100, default=' - ')
-    position = models.CharField(max_length=30, null=False)
+    phone_number = models.CharField(max_length=50, null=False)
+    faculty = models.CharField(max_length=255, default='not chosen')
+    position = models.CharField(max_length=255, default='not chosen')
     time_create = models.DateTimeField(auto_now_add=True)
 
     @classmethod
     def generate_entity(cls, count):
-        for iteration in range(count):
+        for repeat in range(count):
             data = {
-                    'name': f.name(),
-                    'city': f.city(),
-                    'email': f.email(),
-                    'faculty': mine_faker_of_faculties()
-                }
-        cls._extend_fields(data)
-        cls.objects.create(**data)
+                'first_name': f.first_name(),
+                'last_name': f.last_name(),
+                'city': f.city(),
+                'email': f.email(),
+                'phone_number': f.phone_number(),
+                'faculty': mine_faker_of_faculties()
+            }
+            cls._extend_fields(data)
+            cls.objects.create(**data)
 
 
 class Teacher(User):
     date_of_employment = models.DateField(null=True, default=datetime.now)
-    experience_in_years = models.IntegerField(null=False, default=0)
+    experience_in_years = models.IntegerField(null=True, default=0)
 
     @classmethod
     def _extend_fields(cls, data):
@@ -52,7 +57,7 @@ class Teacher(User):
 
 
 class Student(User):
-    previous_educational_institution = models.CharField(max_length=100, null=False)
+    previous_educational_institution = models.CharField(max_length=100, null=True, default='-')
 
     @classmethod
     def _extend_fields(cls, data):

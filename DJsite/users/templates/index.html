@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Possible urls on this site:</h1>
+<ul>
+	{% for post in posts %}
+		<li><a href="{% url post.url_name %}">{{ post.name }}</a> === {{ post.description }}</li>
+	{% endfor %}
+</ul>
+{% endblock content %}

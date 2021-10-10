@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>List of {{ user_class }} that were added</h1>
+<ul style="list-style-type: decimal">
+	{% for post in posts %}
+		<li>{{ post }}</li>
+	{% endfor %}
+</ul>
+{% endblock content %}
