@@ -23,7 +23,7 @@ class User(models.Model):
 
     @classmethod
     def generate_entity(cls, count):
-        for repeat in range(count):
+        for _ in range(count):
             data = {
                 'first_name': f.first_name(),
                 'last_name': f.last_name(),

@@ -1,4 +1,6 @@
 from random import choice
+
+import django
 from django.db.models import Q
 from django.shortcuts import render
 from faker import Faker
@@ -246,10 +248,11 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
         search_filter = text['text']
 
         if search_filter is not None:
-            fields_of_search = ['name', 'city', 'email', 'faculty', 'previous_educational_institution']
+            text_fields = [f.name for f in cls.model._meta.get_fields() if
+                           isinstance(f, django.db.models.fields.CharField)]
             or_cond = Q()
 
-            for field in fields_of_search:
+            for field in text_fields:
                 or_cond |= Q(**{'{}__contains'.format(field): search_filter})
 
             posts = posts.filter(or_cond)

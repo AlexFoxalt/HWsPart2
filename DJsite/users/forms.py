@@ -19,10 +19,10 @@ class CreateUserForm(ModelForm):
         }
 
     def clean_email(self):
-        invalid_domain_names = ('@abc.com', '@123.com', '@xyz.com')
+        INVALID_DOMAIN_NAMES = ('@abc.com', '@123.com', '@xyz.com')
         email = self.cleaned_data['email']
 
-        for domain_name in invalid_domain_names:
+        for domain_name in INVALID_DOMAIN_NAMES:
             if domain_name in email:
                 raise ValidationError('Invalid domain name!')
         return email
