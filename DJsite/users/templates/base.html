@@ -9,16 +9,19 @@
 <body>
 <ul class="menu-bar">
   <li class="menu-bar"><a class="active" href="{% url 'users-home' %}">Main Page</a></li>
-  <li class="menu-bar"><a href="#news">About</a></li>
-  <li class="menu-bar"><a href="#contact">Links</a></li>
+  <li class="menu-bar"><a href="#about">About</a></li>
+  <li class="menu-bar"><a href="#links">Links</a></li>
+  <li class="menu-bar last-menu-button"><a target="_blank" href="https://lms.ithillel.ua/">Hillel LMS</a></li>
 </ul>
 
 
 {% block messages %}
 {% endblock messages %}
 
+<div class="content">
 {% block content %}
 {% endblock content %}
+</div>
 
 </body>
 </html>

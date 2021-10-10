@@ -33,15 +33,12 @@ home_page_posts = [
     },
     {
         'name': '/teachers/',
-        'description': 'Makes search in Teachers table, per each named column '
-                       '| possible params: ?name=, ?city=, ?email=, ?faculty=, ?date_of_employment=,'
-                       ' ?experience_in_years=',
+        'description': 'Makes search in Teachers table, per each named column ',
         'url_name': 'teachers'
     },
     {
         'name': '/students/',
-        'description': 'Makes search in Student table per all text type columns '
-                       '| possible param: ?text=',
+        'description': 'Makes search in Student table per all text type columns ',
         'url_name': 'students'
     },
     {
