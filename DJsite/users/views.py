@@ -10,6 +10,7 @@ from .utils import teacher_filter_query, student_filter_query, get_int_count, ho
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
 from .models import Student, Teacher
 
+# Create your views here.
 parser = djangoparser.DjangoParser()
 
 
