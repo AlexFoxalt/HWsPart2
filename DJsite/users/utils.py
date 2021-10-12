@@ -234,29 +234,35 @@ class EntitySearchMixinBase:
     template_name = 'search_of_users.html'
     context_object_name = 'content'
 
+    @classmethod
+    def get_context_data(cls):
+        posts = cls.model.objects.all()
+        class_name = cls.model.__name__
+
+        context = {
+            'title': f'{class_name}s searching',
+            'user_class': f'{class_name}(s)',
+            'posts': posts,
+            'menu': MENU,
+        }
+        return context
+
 
 class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 
     @classmethod
     def get(cls, request, *args, **kwargs):
-        posts = cls.model.objects.all()
+        context = super().get_context_data()
         applied_filters = []
         searching_keys = args[0]
-        class_name = cls.model.__name__
 
         for key, value in searching_keys.items():
             if value is not None and value:
-                posts = posts.filter(**{f'{key}__contains': value})
-                applied_filters.append(f'{key} ~ "{value}"')
+                context['posts'] = context['posts'].filter(**{f'{key}__contains': value})
+                applied_filters.append(f'{key} --- {value}')
 
-        context = {
-            'title': f'{class_name}s searching',
-            'user_class': f'{class_name}(s)',
-            'applied_filters': applied_filters,
-            'posts': posts,
-            'menu': MENU,
-            'searching_fields': from_dict_to_list_of_dicts_format(searching_keys)
-        }
+        context['applied_filters'] = applied_filters
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(searching_keys)
         return render(request, 'search_of_users.html', context=context)
 
 
@@ -264,29 +270,22 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
     @classmethod
     def get(cls, request, text, *args, **kwargs):
-        posts = cls.model.objects.all()
-        search_filter = text['text']
-        class_name = cls.model.__name__
+        context = super().get_context_data()
+        applied_filters = text.values()
+        searching_keys = text['text']
 
-        if search_filter is not None:
+        if searching_keys is not None:
             text_fields = [f.name for f in cls.model._meta.get_fields() if
                            isinstance(f, django.db.models.fields.CharField)]
             or_cond = Q()
 
             for field in text_fields:
-                or_cond |= Q(**{'{}__contains'.format(field): search_filter})
+                or_cond |= Q(**{'{}__contains'.format(field): searching_keys})
 
-            posts = posts.filter(or_cond)
+            context['posts'] = context['posts'].filter(or_cond)
 
-        context = {
-            'title': f'{class_name}s searching',
-            'applied_filters': text.values(),
-            'posts': posts,
-            'user_class': f'{class_name}(s)',
-            'menu': MENU,
-            'searching_fields': from_dict_to_list_of_dicts_format(text)
-        }
-        print('TEXT>>>>>>>', context['searching_fields'])
+        context['applied_filters'] = applied_filters
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(text)
         return render(request, 'search_of_users.html', context=context)
 
 
@@ -315,3 +314,62 @@ def combine_context(cont1, cont2):
 
 def from_dict_to_list_of_dicts_format(arg: dict):
     return list({'field': field, 'value': value} for field, value in arg.items())
+
+
+class EntitySearchMixinBase:
+    model = None
+    template_name = 'search_of_users.html'
+    context_object_name = 'content'
+
+    @classmethod
+    def get_context_data(cls):
+        posts = cls.model.objects.all()
+        class_name = cls.model.__name__
+
+        context = {
+            'title': f'{class_name}s searching',
+            'user_class': f'{class_name}(s)',
+            'posts': posts,
+            'menu': MENU,
+        }
+        return context
+
+
+class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
+
+    @classmethod
+    def get(cls, request, *args, **kwargs):
+        context = super().get_context_data()
+        applied_filters = []
+        searching_keys = args[0]
+
+        for key, value in searching_keys.items():
+            if value is not None and value:
+                context['posts'] = context['posts'].filter(**{f'{key}__contains': value})
+                applied_filters.append(f'{key} --- {value}')
+
+        context['applied_filters'] = applied_filters
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(searching_keys)
+        return render(request, 'search_of_users.html', context=context)
+
+
+class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
+
+    @classmethod
+    def get(cls, request, text, *args, **kwargs):
+        context = super().get_context_data()
+        search_filter = text['text']
+
+        if search_filter is not None:
+            text_fields = [f.name for f in cls.model._meta.get_fields() if
+                           isinstance(f, django.db.models.fields.CharField)]
+            or_cond = Q()
+
+            for field in text_fields:
+                or_cond |= Q(**{'{}__contains'.format(field): search_filter})
+
+            context['posts'] = context['posts'].filter(or_cond)
+
+        context['applied_filters'] = text.values()
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(text)
+        return render(request, 'search_of_users.html', context=context)
