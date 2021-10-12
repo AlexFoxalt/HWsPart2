@@ -1,11 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <h1>List of users: {{ user_class }}</h1>
 
+{% if title == 'Students searching' %}
+	<form class="search-form">
+	  <input type="text" placeholder="Search.." name="text">
+	  <button type="submit"><i class="fa fa-search"></i></button>
+	</form>
+{% elif title == 'Teachers searching' %}
+	<form class="search-form-multiple">
+	{% for field in search_fields %}
+		<input class="search-form-multiple" type="text" placeholder="{{ field }}" name="{{ field }}">
+	{% endfor %}
+	<button class="search-form-multiple" type="submit"><i class="fa fa-search"></i></button>
+	</form>
+{% endif %}
+
+
 {% if applied_filters %}
-	<h3>Applied filters:</h3>
-	<ul>
+	<h3 style="font-size: 25px">Applied filters:</h3>
+	<ul style="font-size: 20px;">
 	{% for filter in applied_filters %}
 		<li>{{ filter }}</li>
 	{% endfor %}

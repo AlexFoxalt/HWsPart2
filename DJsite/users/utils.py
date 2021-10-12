@@ -243,8 +243,9 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
         applied_filters = []
         searching_keys = args[0]
 
+        print(searching_keys)
         for key, value in searching_keys.items():
-            if value is not None:
+            if value is not None and value:
                 posts = posts.filter(**{f'{key}__contains': value})
                 applied_filters.append(f'{key} ~ "{value}"')
 
@@ -253,7 +254,8 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
             'user_class': 'Teacher(s)',
             'applied_filters': applied_filters,
             'posts': posts,
-            'menu': MENU
+            'menu': MENU,
+            'search_fields': teacher_query_fields
         }
         return render(request, 'search_of_users.html', context=context)
 
