@@ -10,6 +10,13 @@ from webargs import djangoparser
 parser = djangoparser.DjangoParser()
 f = Faker('EN')
 
+MENU = [
+    {'name': 'Main Page', 'url': 'users-home', 'id': 1},
+    {'name': 'About', 'url': 'users-home', 'id': 2},
+    {'name': 'Links', 'url': 'users-home', 'id': 3},
+    {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 4}
+]
+
 home_page_posts = [
     {
         'name': '/gen-students/',
@@ -23,12 +30,12 @@ home_page_posts = [
     },
     {
         'name': '/get-all-teachers/',
-        'description': 'Returns a list of all teachers from DB',
+        'description': 'Returns a list of all teachers from DB. You can edit or delete any of them!',
         'url_name': 'get-all-teachers'
     },
     {
         'name': '/get-all-students/',
-        'description': 'Returns a list of all students from DB',
+        'description': 'Returns a list of all students from DB. You can edit or delete any of them!',
         'url_name': 'get-all-students'
     },
     {
@@ -48,12 +55,12 @@ home_page_posts = [
     },
     {
         'name': '/create-teacher/',
-        'description': 'Creating a new teacher using Django Forms',
+        'description': 'Creating a new teacher using Django Forms [beta]',
         'url_name': 'create-teacher'
     },
     {
         'name': '/create-student/',
-        'description': 'Creating a new student using Django Forms',
+        'description': 'Creating a new student using Django Forms [beta]',
         'url_name': 'create-student'
     },
 ]
@@ -189,6 +196,18 @@ student_filter_query = {
     'text': fields.Str(required=False, missing=None)
 }
 
+CONTEXT_CONTAINER = {
+    1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts},
+    2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
+    3: {'title': 'All students', 'user_class': 'Student(s)'},
+    4: {'title': 'Create User', 'url': 'create-user'},
+    5: {'title': 'Edit Student', 'position': 'Student', 'url': 'delete-student'},
+    6: {'title': 'Edit Teacher', 'position': 'Teacher', 'url': 'delete-teacher'},
+    7: {'title': 'Delete Student', 'position': 'Student'},
+    8: {'title': 'Delete Teacher', 'position': 'Teacher'},
+    9: {'title': 'Create Teacher', 'url': 'create-teacher'}
+}
+
 
 class EntityGeneratorMixin:
     model = None
@@ -204,7 +223,8 @@ class EntityGeneratorMixin:
         context = {
             'title': f'{user_class} generator',
             'user_class': user_class,
-            'posts': posts
+            'posts': posts,
+            'menu': MENU
         }
         return render(request, cls.template_name, context=context)
 
@@ -218,7 +238,7 @@ class EntitySearchMixinBase:
 class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 
     @classmethod
-    def get(cls, request, user_class, *args, **kwargs):
+    def get(cls, request, *args, **kwargs):
         posts = cls.model.objects.all()
         applied_filters = []
         searching_keys = args[0]
@@ -229,10 +249,11 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
                 applied_filters.append(f'{key} ~ "{value}"')
 
         context = {
-            'title': f'{user_class} searching',
-            'user_class': user_class,
+            'title': 'Teachers searching',
+            'user_class': 'Teacher(s)',
             'applied_filters': applied_filters,
-            'posts': posts
+            'posts': posts,
+            'menu': MENU
         }
         return render(request, 'search_of_users.html', context=context)
 
@@ -240,7 +261,7 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
     @classmethod
-    def get(cls, request, user_class, text, *args, **kwargs):
+    def get(cls, request, text, *args, **kwargs):
         posts = cls.model.objects.all()
         search_filter = text['text']
 
@@ -255,13 +276,33 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
             posts = posts.filter(or_cond)
 
         context = {
-            'title': f'{user_class} searching',
-            'user_class': user_class,
+            'title': f'Students searching',
             'applied_filters': text.values(),
-            'posts': posts
+            'posts': posts,
+            'user_class': 'Students(s)',
+            'menu': MENU
         }
         return render(request, 'search_of_users.html', context=context)
 
 
+class ContextMixin:
+    def get_user_context(self, **kwargs):
+        context = kwargs
+        context['menu'] = MENU
+        context['selected'] = 0
+        page_id = kwargs['page_id']
+
+        container = CONTEXT_CONTAINER.get(page_id, None)
+
+        if container is not None:
+            for key, value in container.items():
+                context[key] = value
+        return context
+
+
 def mine_faker_of_faculties():
     return choice(FACULTIES)
+
+
+def combine_context(cont1, cont2):
+    return dict(list(cont1.items()) + list(cont2.items()))
