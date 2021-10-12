@@ -23,8 +23,7 @@ class StudentHome(ContextMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id)
-        context = dict(list(context.items()) + list(extra_context.items()))
-        return render(request, self.template_name, context=context)
+        return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
 class StudentGenerator(EntityGeneratorMixin, ListView):
