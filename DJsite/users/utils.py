@@ -39,14 +39,14 @@ home_page_posts = [
         'url_name': 'get-all-students'
     },
     {
-        'name': '/teachers/',
+        'name': '/search-teachers/',
         'description': 'Makes search in Teachers table, per each named column ',
-        'url_name': 'teachers'
+        'url_name': 'search-teachers'
     },
     {
-        'name': '/students/',
+        'name': '/search-students/',
         'description': 'Makes search in Student table per all text type columns ',
-        'url_name': 'students'
+        'url_name': 'search-students'
     },
     {
         'name': '/create-user/',
@@ -242,20 +242,20 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
         posts = cls.model.objects.all()
         applied_filters = []
         searching_keys = args[0]
+        class_name = cls.model.__name__
 
-        print(searching_keys)
         for key, value in searching_keys.items():
             if value is not None and value:
                 posts = posts.filter(**{f'{key}__contains': value})
                 applied_filters.append(f'{key} ~ "{value}"')
 
         context = {
-            'title': 'Teachers searching',
-            'user_class': 'Teacher(s)',
+            'title': f'{class_name}s searching',
+            'user_class': f'{class_name}(s)',
             'applied_filters': applied_filters,
             'posts': posts,
             'menu': MENU,
-            'search_fields': teacher_query_fields
+            'searching_fields': from_dict_to_list_of_dicts_format(searching_keys)
         }
         return render(request, 'search_of_users.html', context=context)
 
@@ -266,6 +266,7 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
     def get(cls, request, text, *args, **kwargs):
         posts = cls.model.objects.all()
         search_filter = text['text']
+        class_name = cls.model.__name__
 
         if search_filter is not None:
             text_fields = [f.name for f in cls.model._meta.get_fields() if
@@ -278,12 +279,14 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
             posts = posts.filter(or_cond)
 
         context = {
-            'title': 'Students searching',
+            'title': f'{class_name}s searching',
             'applied_filters': text.values(),
             'posts': posts,
-            'user_class': 'Students(s)',
-            'menu': MENU
+            'user_class': f'{class_name}(s)',
+            'menu': MENU,
+            'searching_fields': from_dict_to_list_of_dicts_format(text)
         }
+        print('TEXT>>>>>>>', context['searching_fields'])
         return render(request, 'search_of_users.html', context=context)
 
 
@@ -308,3 +311,7 @@ def mine_faker_of_faculties():
 
 def combine_context(cont1, cont2):
     return dict(list(cont1.items()) + list(cont2.items()))
+
+
+def from_dict_to_list_of_dicts_format(arg: dict):
+    return list({'field': field, 'value': value} for field, value in arg.items())

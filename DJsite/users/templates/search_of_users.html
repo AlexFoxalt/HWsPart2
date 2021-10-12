@@ -2,17 +2,37 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+{% block messages %}
+	{% if messages %}
+		<ul class="messages">
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
 <h1>List of users: {{ user_class }}</h1>
 
 {% if title == 'Students searching' %}
 	<form class="search-form">
-	  <input type="text" placeholder="Search.." name="text">
+	  {% for dict in searching_fields %}
+		  {% if not dict.value %}
+		  	<input type="text" placeholder="Search.." name="{{ dict.field }}">
+		  {% else %}
+		  	<input type="text" value="{{ dict.value }}" placeholder="Search.." name="{{ dict.field }}">
+		  {% endif %}
+	  {% endfor %}
 	  <button type="submit"><i class="fa fa-search"></i></button>
 	</form>
 {% elif title == 'Teachers searching' %}
 	<form class="search-form-multiple">
-	{% for field in search_fields %}
-		<input class="search-form-multiple" type="text" placeholder="{{ field }}" name="{{ field }}">
+	{% for dict in searching_fields %}
+		{% if not dict.value %}
+			<input class="search-form-multiple" type="text" placeholder="{{ dict.field }}" name="{{ dict.field }}">
+		{% else %}
+			<input class="search-form-multiple" type="text" value="{{ dict.value }}" placeholder="{{ dict.field }}" name="{{ dict.field }}">
+		{% endif %}
 	{% endfor %}
 	<button class="search-form-multiple" type="submit"><i class="fa fa-search"></i></button>
 	</form>
@@ -30,7 +50,7 @@
 	<h3>No filters applied</h3>
 {% endif %}
 
-<ul style="list-style-type: decimal">
+<ul style="list-style-type: decimal; padding-bottom: 10px;">
 	{% for post in posts %}
 		<li>{{ post }}</li>
 	{% endfor %}
