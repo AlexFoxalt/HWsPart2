@@ -237,9 +237,9 @@ def handle_error(error, req, schema, *, error_status_code, error_headers):
     raise BadRequest(error.messages)
 
 
-def PageNotFound(request, exception):
+def page_not_found(request, exception):
     return render(request, '404.html')
 
 
-def ServerError(request):
+def server_error(request):
     return HttpResponseServerError('<h1> 500 Server Error :( </h1>')

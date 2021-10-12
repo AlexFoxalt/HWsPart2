@@ -19,10 +19,10 @@ class CreateUserForm(ModelForm):
         }
 
     def clean_email(self):
-        INVALID_DOMAIN_NAMES = ('@abc.com', '@123.com', '@xyz.com')
+        invalid_domain_names = ('@abc.com', '@123.com', '@xyz.com')
         email = self.cleaned_data['email']
 
-        for domain_name in INVALID_DOMAIN_NAMES:
+        for domain_name in invalid_domain_names:
             if domain_name in email:
                 raise ValidationError('Invalid domain name!', code='invalid')
         return email
@@ -76,8 +76,6 @@ class CreateTeacherForm(ModelForm):
 class CreateStudentForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print('ARGS', args)
-        print('KWARGS', kwargs)
 
     class Meta:
         model = Student

@@ -2,7 +2,6 @@ from django.db import models
 from datetime import datetime
 from random import randint
 
-from django.urls import reverse
 from faker import Faker
 
 from .utils import mine_faker_of_faculties

@@ -276,7 +276,7 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
             posts = posts.filter(or_cond)
 
         context = {
-            'title': f'Students searching',
+            'title': 'Students searching',
             'applied_filters': text.values(),
             'posts': posts,
             'user_class': 'Students(s)',
