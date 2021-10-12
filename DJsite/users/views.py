@@ -126,7 +126,7 @@ class CreateTeacher(ContextMixin, CreateView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, 'Test added successfully!')
+        messages.success(self.request, 'Teacher added successfully!')
         return redirect('create-teacher')
 
 
@@ -136,7 +136,6 @@ class CreateStudent(CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context['title'] = 'Create Student'
         context['url'] = 'create-student'
         return context
@@ -151,11 +150,7 @@ class EditUser(View):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         model_name = User.objects.get(pk=pk).position
-
-        if model_name == 'Student':
-            return redirect('edit-student', pk=pk)
-        elif model_name == 'Teacher':
-            return redirect('edit-teacher', pk=pk)
+        return redirect(f'edit-{model_name.lower()}', pk=pk)
 
 
 class EditStudent(ContextMixin, UpdateView):
