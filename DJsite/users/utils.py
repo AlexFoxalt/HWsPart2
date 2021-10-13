@@ -3,12 +3,20 @@ from random import choice
 import django
 from django.db.models import Q
 from django.shortcuts import render
+from django.views.generic import ListView
 from faker import Faker
 from marshmallow import fields
 from webargs import djangoparser
 
 parser = djangoparser.DjangoParser()
 f = Faker('EN')
+
+MENU = [
+    {'name': 'Main Page', 'url': 'users-home', 'id': 1},
+    {'name': 'About', 'url': 'users-home', 'id': 2},
+    {'name': 'Links', 'url': 'users-home', 'id': 3},
+    {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 4}
+]
 
 home_page_posts = [
     {
@@ -23,38 +31,28 @@ home_page_posts = [
     },
     {
         'name': '/get-all-teachers/',
-        'description': 'Returns a list of all teachers from DB',
+        'description': 'Returns a list of all teachers from DB. You can edit or delete any of them!',
         'url_name': 'get-all-teachers'
     },
     {
         'name': '/get-all-students/',
-        'description': 'Returns a list of all students from DB',
+        'description': 'Returns a list of all students from DB. You can edit or delete any of them!',
         'url_name': 'get-all-students'
     },
     {
-        'name': '/teachers/',
+        'name': '/search-teachers/',
         'description': 'Makes search in Teachers table, per each named column ',
-        'url_name': 'teachers'
+        'url_name': 'search-teachers'
     },
     {
-        'name': '/students/',
+        'name': '/search-students/',
         'description': 'Makes search in Student table per all text type columns ',
-        'url_name': 'students'
+        'url_name': 'search-students'
     },
     {
         'name': '/create-user/',
         'description': 'Creating a new user using Django Forms',
         'url_name': 'create-user'
-    },
-    {
-        'name': '/create-teacher/',
-        'description': 'Creating a new teacher using Django Forms',
-        'url_name': 'create-teacher'
-    },
-    {
-        'name': '/create-student/',
-        'description': 'Creating a new student using Django Forms',
-        'url_name': 'create-student'
     },
 ]
 
@@ -159,8 +157,8 @@ FACULTIES = [
 faculties_selector = [(fac, fac) for fac in FACULTIES]
 
 positions_selector = [
-    ('Student', 'Student'),
-    ('Teacher', 'Teacher'),
+    (0, 'Student'),
+    (1, 'Teacher')
 ]
 
 teacher_query_fields = ('first_name',
@@ -188,6 +186,20 @@ get_int_count = {
 student_filter_query = {
     'text': fields.Str(required=False, missing=None)
 }
+options = ['Date of employment',
+           'Previous educational institution',
+           'Experience in years']
+CONTEXT_CONTAINER = {
+    1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts},
+    2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
+    3: {'title': 'All students', 'user_class': 'Student(s)'},
+    4: {'title': 'Create User', 'url': 'create-user', 'options': options},
+    5: {'title': 'Edit Student', 'position': 'Student', 'url': 'delete-student'},
+    6: {'title': 'Edit Teacher', 'position': 'Teacher', 'url': 'delete-teacher'},
+    7: {'title': 'Delete Student', 'position': 'Student'},
+    8: {'title': 'Delete Teacher', 'position': 'Teacher'},
+    9: {'title': 'Create Teacher', 'url': 'create-teacher'}
+}
 
 
 class EntityGeneratorMixin:
@@ -204,7 +216,8 @@ class EntityGeneratorMixin:
         context = {
             'title': f'{user_class} generator',
             'user_class': user_class,
-            'posts': posts
+            'posts': posts,
+            'menu': MENU
         }
         return render(request, cls.template_name, context=context)
 
@@ -214,54 +227,90 @@ class EntitySearchMixinBase:
     template_name = 'search_of_users.html'
     context_object_name = 'content'
 
+    @classmethod
+    def get_context_data(cls):
+        posts = cls.model.objects.all()
+        class_name = cls.model.__name__
+
+        context = {
+            'title': f'{class_name}s searching',
+            'user_class': f'{class_name}(s)',
+            'posts': posts,
+            'menu': MENU,
+        }
+        return context
+
 
 class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 
     @classmethod
-    def get(cls, request, user_class, *args, **kwargs):
-        posts = cls.model.objects.all()
+    def get(cls, request, *args, **kwargs):
+        context = super().get_context_data()
         applied_filters = []
         searching_keys = args[0]
 
         for key, value in searching_keys.items():
-            if value is not None:
-                posts = posts.filter(**{f'{key}__contains': value})
-                applied_filters.append(f'{key} ~ "{value}"')
+            if value is not None and value:
+                context['posts'] = context['posts'].filter(**{f'{key}__contains': value})
+                applied_filters.append(f'{key} --- {value}')
 
-        context = {
-            'title': f'{user_class} searching',
-            'user_class': user_class,
-            'applied_filters': applied_filters,
-            'posts': posts
-        }
+        context['applied_filters'] = applied_filters
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(searching_keys)
         return render(request, 'search_of_users.html', context=context)
 
 
 class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
     @classmethod
-    def get(cls, request, user_class, text, *args, **kwargs):
-        posts = cls.model.objects.all()
-        search_filter = text['text']
+    def get(cls, request, text, *args, **kwargs):
+        context = super().get_context_data()
+        applied_filters = text.values()
+        searching_keys = text['text']
 
-        if search_filter is not None:
+        if searching_keys is not None:
             text_fields = [f.name for f in cls.model._meta.get_fields() if
                            isinstance(f, django.db.models.fields.CharField)]
             or_cond = Q()
 
             for field in text_fields:
-                or_cond |= Q(**{'{}__contains'.format(field): search_filter})
+                or_cond |= Q(**{'{}__contains'.format(field): searching_keys})
 
-            posts = posts.filter(or_cond)
+            context['posts'] = context['posts'].filter(or_cond)
 
-        context = {
-            'title': f'{user_class} searching',
-            'user_class': user_class,
-            'applied_filters': text.values(),
-            'posts': posts
-        }
+        context['applied_filters'] = applied_filters
+        context['searching_fields'] = from_dict_to_list_of_dicts_format(text)
         return render(request, 'search_of_users.html', context=context)
+
+
+class ContextMixin:
+    def get_user_context(self, **kwargs):
+        context = kwargs
+        context['menu'] = MENU
+        context['selected'] = 0
+        page_id = kwargs['page_id']
+
+        container = CONTEXT_CONTAINER.get(page_id, None)
+        context.update(container)
+        return context
 
 
 def mine_faker_of_faculties():
     return choice(FACULTIES)
+
+
+def combine_context(cont1, cont2):
+    return dict(**cont1, **cont2)
+
+
+def from_dict_to_list_of_dicts_format(arg: dict):
+    return list({'field': field, 'value': value} for field, value in arg.items())
+
+
+class GetAllUsersMixin(ContextMixin, ListView):
+    def get(self, request, *args, **kwargs):
+        posts = self.model.objects.all()
+        columns = [f.get_attname() for f in self.model._meta.fields]
+        context = self.get_user_context(page_id=self.page_id,
+                                        posts=posts,
+                                        columns=columns)
+        return render(request, self.template_name, context=context)

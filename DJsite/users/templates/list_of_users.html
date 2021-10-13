@@ -1,10 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>List of users ( {{ user_class }} )</h1>
-<ul style="list-style-type: decimal">
+<h1>List of {{ user_class }}</h1>
+
+<table class="userlist-table">
+	
+	<tr>
+    <th>Edit</th>
+    {% for column in columns %}
+    	<th>{{ column }}</th>
+    {% endfor %}
+    </tr>
+	
 	{% for post in posts %}
-		<li>{{ post }}</li>
+		<tr>
+			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% for value in post %}
+				<td>{{ value }}</td>
+			{% endfor %}
+		</tr>
 	{% endfor %}
-</ul>
+
+</table>
+
 {% endblock content %}

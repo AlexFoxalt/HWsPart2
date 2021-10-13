@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block messages %}
+	{% if messages %}
+		<ul class="messages">
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
+{% block content %}
+
+<h1>Edit {{ position }}</h1>
+
+<form class="edit-user-form" action="" method="post">
+    {% csrf_token %}
+    {% for f in form %}
+		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
+		{{ f }}
+		<div class="form-error">{{ f.errors }}</div>
+	{% endfor %}
+    <input class="submit-button" type="submit" value="Submit">
+    <a href="{% url url pk=pk %}"><input class="delete-confirm-button" type="button" value="Delete {{ position }}"></a>
+</form>
+{% endblock content %}

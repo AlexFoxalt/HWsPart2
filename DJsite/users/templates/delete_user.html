@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+    <h1>Delete {{ position }}</h1>
+    <form action="" method="post">
+      {% csrf_token %}
+      <p>Are you sure you want to delete?
+        <table class="userlist-table">
+          <tr>
+            <td><input class="delete-confirm-button" type="submit" value="Confirm"></td>
+            {% for value in user %}
+              <td>{{ value }}</td>
+            {% endfor %}
+          </tr>
+    </form>
+{% endblock content %}

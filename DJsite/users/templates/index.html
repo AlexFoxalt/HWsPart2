@@ -6,7 +6,7 @@
     <h2>Possible urls on this site</h2>
     <ul class="check-list">
 		{% for post in posts %}
-			<li><a class="myButton" href="{% url post.url_name %}">{{ post.name }}</a> ---> {{ post.description }}</li>
+			<li><a class="main-menu-url-button" href="{% url post.url_name %}">{{ post.name }}</a> ---> {{ post.description }}</li>
 		{% endfor %}
     </ul>
   </div>
