@@ -18,15 +18,31 @@
 	<div class="form-error"> {{ form.non_field_errors }} </div>
 	
 	{% for f in form %}
-		<div class="fields-names">
-		<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
-		</div>
-		{{ f }}
-		<div class="form-error"> {{ f.errors }} </div>
-	{% endfor %}
-
+		{% if f.label not in options %}
+			<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
+				{{ f }}
+			<div class="form-error"> {{ f.errors }} </div>
+		{% else %}
+			{% if f.label|first in 'P' %}
+				<div class="hidden_label_student">
+				<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
+					{{ f }}
+				<div class="form-error"> {{ f.errors }} </div>
+				</div>
+			{% else %}
+				<div class="hidden_label_teacher">
+				<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
+					{{ f }}
+				<div class="form-error"> {{ f.errors }} </div>
+				</div>
+			{% endif %}
+		{% endif %}
+	{% endfor %}	
+	
 	<button class="submit-button" type="submit">Submit</button>
 	<button class="reset-button" type="reset">Reset</button>
+
 </form>
 
+<script type="text/javascript" src="../static/users/js/scripts.js"></script>
 {% endblock content %}

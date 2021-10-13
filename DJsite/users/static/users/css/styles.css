@@ -184,6 +184,11 @@ table.userlist-table tr:hover {
 table.userlist-table {}
 
 /*~~~~~~~~~~~~~~~~~~~ Edit/Delete users form ~~~~~~~~~~~~~~~~~~~~~*/
+.fields-names {
+	display: inline-block;
+	width: 135px;
+}
+
 .edit-user-button {
 	box-shadow:inset 0px -3px 7px 0px #29bbff;
 	background:linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
@@ -249,6 +254,7 @@ table.userlist-table {}
 	text-shadow:0px 1px 0px #528009;
 	width: 150px;
 	margin-right: 105px;
+	margin-top: 10px;
 }
 .reset-button {
 	box-shadow:inset 0px 1px 0px 0px #fce2c1;
@@ -270,7 +276,6 @@ table.userlist-table {}
 .edit-user-form input[type=text], input[type=email], input[type=number] {
 	background-color: lightgray;
 	height: 25px;
-	transition: width 0.4s ease-in-out;
 	width: 260px;
 	margin-left: 10px;
 	font-size: 20px;
@@ -291,7 +296,7 @@ select {
   background-color: #a1ffc0;
   outline: none;
 }
-.fields-names {
+label.form-label {
 	display: inline-block;
 	width: 7%;
 	margin-bottom: 20px;
@@ -361,3 +366,9 @@ input.search-form-multiple {
 	background-size: 30%;
 }
 
+.hidden_label_teacher {
+	display: none;
+}
+.hidden_label_student {
+	display: block;
+}

@@ -3,6 +3,7 @@ from random import choice
 import django
 from django.db.models import Q
 from django.shortcuts import render
+from django.views.generic import ListView
 from faker import Faker
 from marshmallow import fields
 from webargs import djangoparser
@@ -52,16 +53,6 @@ home_page_posts = [
         'name': '/create-user/',
         'description': 'Creating a new user using Django Forms',
         'url_name': 'create-user'
-    },
-    {
-        'name': '/create-teacher/',
-        'description': 'Creating a new teacher using Django Forms [beta]',
-        'url_name': 'create-teacher'
-    },
-    {
-        'name': '/create-student/',
-        'description': 'Creating a new student using Django Forms [beta]',
-        'url_name': 'create-student'
     },
 ]
 
@@ -166,8 +157,8 @@ FACULTIES = [
 faculties_selector = [(fac, fac) for fac in FACULTIES]
 
 positions_selector = [
-    ('Student', 'Student'),
-    ('Teacher', 'Teacher'),
+    (0, 'Student'),
+    (1, 'Teacher')
 ]
 
 teacher_query_fields = ('first_name',
@@ -195,12 +186,14 @@ get_int_count = {
 student_filter_query = {
     'text': fields.Str(required=False, missing=None)
 }
-
+options = ['Date of employment',
+           'Previous educational institution',
+           'Experience in years']
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts},
     2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
     3: {'title': 'All students', 'user_class': 'Student(s)'},
-    4: {'title': 'Create User', 'url': 'create-user'},
+    4: {'title': 'Create User', 'url': 'create-user', 'options': options},
     5: {'title': 'Edit Student', 'position': 'Student', 'url': 'delete-student'},
     6: {'title': 'Edit Teacher', 'position': 'Teacher', 'url': 'delete-teacher'},
     7: {'title': 'Delete Student', 'position': 'Student'},
@@ -297,10 +290,7 @@ class ContextMixin:
         page_id = kwargs['page_id']
 
         container = CONTEXT_CONTAINER.get(page_id, None)
-
-        if container is not None:
-            for key, value in container.items():
-                context[key] = value
+        context.update(container)
         return context
 
 
@@ -309,8 +299,18 @@ def mine_faker_of_faculties():
 
 
 def combine_context(cont1, cont2):
-    return dict(list(cont1.items()) + list(cont2.items()))
+    return dict(**cont1, **cont2)
 
 
 def from_dict_to_list_of_dicts_format(arg: dict):
     return list({'field': field, 'value': value} for field, value in arg.items())
+
+
+class GetAllUsersMixin(ContextMixin, ListView):
+    def get(self, request, *args, **kwargs):
+        posts = self.model.objects.all()
+        columns = [f.get_attname() for f in self.model._meta.fields]
+        context = self.get_user_context(page_id=self.page_id,
+                                        posts=posts,
+                                        columns=columns)
+        return render(request, self.template_name, context=context)

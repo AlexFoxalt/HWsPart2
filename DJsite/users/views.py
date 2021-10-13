@@ -7,9 +7,9 @@ from webargs import djangoparser
 from django.core.exceptions import BadRequest
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
 
-from .forms import CreateUserForm, CreateTeacherForm, CreateStudentForm, EditStudentForm, EditTeacherForm
+from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin
 from .models import Student, Teacher, User
 
 # Create your views here.
@@ -44,32 +44,16 @@ class TeacherGenerator(EntityGeneratorMixin, ListView):
         return super().get(request, count, user_class, *args, **kwargs)
 
 
-class GetAllTeachers(ContextMixin, ListView):
+class GetAllTeachers(GetAllUsersMixin):
     model = Teacher
     template_name = 'list_of_users.html'
     page_id = 2
 
-    def get(self, request, *args, **kwargs):
-        posts = self.model.objects.all()
-        columns = [f.get_attname() for f in self.model._meta.fields]
-        context = self.get_user_context(page_id=self.page_id,
-                                        posts=posts,
-                                        columns=columns)
-        return render(request, self.template_name, context=context)
 
-
-class GetAllStudents(ContextMixin, ListView):
+class GetAllStudents(GetAllUsersMixin):
     model = Student
     template_name = 'list_of_users.html'
     page_id = 3
-
-    def get(self, request, *args, **kwargs):
-        posts = self.model.objects.all()
-        columns = [f.get_attname() for f in self.model._meta.fields]
-        context = self.get_user_context(page_id=self.page_id,
-                                        posts=posts,
-                                        columns=columns)
-        return render(request, self.template_name, context=context)
 
 
 class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
@@ -100,48 +84,25 @@ class CreateUser(ContextMixin, CreateView):
 
     def form_valid(self, form):
         position = form.cleaned_data['position']
-        if position == 'Student':
+        if position == '0':
+            form.cleaned_data['position'] = 'Student'
+
+            form.cleaned_data.pop('date_of_employment')
+            form.cleaned_data.pop('experience_in_years')
+
             Student.objects.create(**form.cleaned_data)
             messages.success(self.request, 'Student added successfully!')
-        elif position == 'Teacher':
+        elif position == '1':
+            form.cleaned_data['position'] = 'Teacher'
+
+            form.cleaned_data.pop('previous_educational_institution')
+
             Teacher.objects.create(**form.cleaned_data)
             messages.success(self.request, 'Teacher added successfully!')
         else:
             messages.error(self.request, 'User was not added. Something went wrong :(')
+
         return redirect('create-user')
-
-
-# Next 2 classes added just for HW11 TechTask ---------------------
-
-
-class CreateTeacher(ContextMixin, CreateView):
-    form_class = CreateTeacherForm
-    template_name = 'create_user.html'
-    page_id = 9
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id)
-        return combine_context(context, extra_context)
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Teacher added successfully!')
-        return redirect('create-teacher')
-
-
-class CreateStudent(CreateView):
-    form_class = CreateStudentForm
-    template_name = 'create_user.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Create Student'
-        context['url'] = 'create-student'
-        return context
-
-
-# ------------------------------------------------------------------
 
 
 class EditUser(View):
@@ -165,8 +126,12 @@ class EditStudent(ContextMixin, UpdateView):
                                               pk=self.kwargs['pk'])
         return combine_context(context, extra_context)
 
-    def get_success_url(self, *args, **kwargs):
+    def form_valid(self, form):
+        result = super().form_valid(form)
         messages.success(self.request, 'Student edited successfully')
+        return result
+
+    def get_success_url(self, *args, **kwargs):
         return reverse_lazy('edit-student', args=[str(self.kwargs['pk'])])
 
 
@@ -182,8 +147,12 @@ class EditTeacher(ContextMixin, UpdateView):
                                               pk=self.kwargs['pk'])
         return combine_context(context, extra_context)
 
-    def get_success_url(self, *args, **kwargs):
+    def form_valid(self, form):
+        result = super().form_valid(form)
         messages.success(self.request, 'Teacher edited successfully')
+        return result
+
+    def get_success_url(self, *args, **kwargs):
         return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'])])
 
 

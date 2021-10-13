@@ -17,9 +17,7 @@
 <form class="edit-user-form" action="" method="post">
     {% csrf_token %}
     {% for f in form %}
-		<div class="fields-names">
 		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
-		</div>
 		{{ f }}
 		<div class="form-error">{{ f.errors }}</div>
 	{% endfor %}

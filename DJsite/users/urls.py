@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import StudentHome, StudentGenerator, TeacherGenerator, GetAllTeachers, GetAllStudents, GetTeachers, \
-    GetStudents, CreateUser, CreateTeacher, CreateStudent, EditStudent, DeleteStudent, EditUser, EditTeacher, \
+    GetStudents, CreateUser, EditStudent, DeleteStudent, EditUser, EditTeacher, \
     DeleteTeacher
 
 urlpatterns = [
@@ -13,8 +13,6 @@ urlpatterns = [
     path('search-teachers/', GetTeachers.as_view(), name='search-teachers'),
     path('search-students/', GetStudents.as_view(), name='search-students'),
     path('create-user/', CreateUser.as_view(), name='create-user'),
-    path('create-teacher/', CreateTeacher.as_view(), name='create-teacher'),
-    path('create-student/', CreateStudent.as_view(), name='create-student'),
     path('edit-user/<int:pk>', EditUser.as_view(), name='edit-user'),
     path('edit-student/<int:pk>', EditStudent.as_view(), name='edit-student'),
     path('edit-teacher/<int:pk>', EditTeacher.as_view(), name='edit-teacher'),

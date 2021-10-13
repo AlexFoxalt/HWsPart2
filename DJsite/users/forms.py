@@ -8,6 +8,10 @@ from .utils import faculties_selector, positions_selector
 
 
 class CreateUserForm(ModelForm):
+    date_of_employment = forms.DateField(required=False, widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
+    experience_in_years = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 0}))
+    previous_educational_institution = forms.CharField(required=False)
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'city', 'birthday', 'email', 'phone_number', 'faculty', 'position']
@@ -15,7 +19,7 @@ class CreateUserForm(ModelForm):
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
             'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector),
+            'position': forms.Select(choices=positions_selector, attrs={'onchange': "showDiv(this)"}),
         }
 
     def clean_email(self):
@@ -44,45 +48,6 @@ class CreateUserForm(ModelForm):
         if first_name == last_name:
             raise ValidationError('First and Last name cannot repeat', code='invalid')
         return cleaned_data
-
-
-# Next 2 classes added just for HW11/HW12 TechTask
-
-
-class CreateTeacherForm(ModelForm):
-    class Meta:
-        model = Teacher
-        fields = '__all__'
-        widgets = {
-            'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1))
-        }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        experience_in_years = cleaned_data.get('experience_in_years')
-        birthday = cleaned_data.get('birthday')
-
-        today = datetime.today()
-        age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
-
-        if age <= experience_in_years:
-            self.add_error('experience_in_years', 'Can not be greater then Age!')
-            self.add_error('birthday', 'Can not be less then Exp!')
-            raise ValidationError('How can it be???', code='invalid')
-
-        return cleaned_data
-
-
-class CreateStudentForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    class Meta:
-        model = Student
-        fields = '__all__'
-
-
-# -------------------------------------------
 
 
 class EditStudentForm(ModelForm):
