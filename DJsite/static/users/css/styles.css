@@ -74,7 +74,7 @@ ul.menu-bar {
 
 li.menu-bar {
   float: left;
-  font-size: 20px;
+  font-size: 22px;
   font-family: Bookman;
 }
 li.last-menu-button {
@@ -94,6 +94,10 @@ li.menu-bar a {
 
 li.menu-bar a:hover:not(.active) {
   background-color: #111;
+}
+a.disabled {
+	pointer-events: none;
+	background-color: #04AA6D;
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -127,10 +131,6 @@ li.menu-bar a:hover:not(.active) {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Menu List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-.active {
-  background-color: #04AA6D;
-}
 .check-list {
   margin-left: -40px;
   padding-left: 1.2rem;
@@ -167,7 +167,6 @@ li.menu-bar a:hover:not(.active) {
 	margin-right: 10px;
 	font-family: Candara;
 	color: #2e2e2e;
-;
 }
 table.userlist-table, th, td {
 	text-align: center;
@@ -185,6 +184,11 @@ table.userlist-table tr:hover {
 table.userlist-table {}
 
 /*~~~~~~~~~~~~~~~~~~~ Edit/Delete users form ~~~~~~~~~~~~~~~~~~~~~*/
+.fields-names {
+	display: inline-block;
+	width: 135px;
+}
+
 .edit-user-button {
 	box-shadow:inset 0px -3px 7px 0px #29bbff;
 	background:linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
@@ -250,6 +254,7 @@ table.userlist-table {}
 	text-shadow:0px 1px 0px #528009;
 	width: 150px;
 	margin-right: 105px;
+	margin-top: 10px;
 }
 .reset-button {
 	box-shadow:inset 0px 1px 0px 0px #fce2c1;
@@ -271,7 +276,6 @@ table.userlist-table {}
 .edit-user-form input[type=text], input[type=email], input[type=number] {
 	background-color: lightgray;
 	height: 25px;
-	transition: width 0.4s ease-in-out;
 	width: 260px;
 	margin-left: 10px;
 	font-size: 20px;
@@ -292,9 +296,79 @@ select {
   background-color: #a1ffc0;
   outline: none;
 }
-.fields-names {
+label.form-label {
 	display: inline-block;
 	width: 7%;
 	margin-bottom: 20px;
 }
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~Search users~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+form.search-form input[type=text] {
+  display: inline;
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 200px;
+  background: #f1f1f1;
+}
+
+/* Style the submit button */
+form.search-form button {
+  float: left;
+  width: 40px;
+  height: 42px;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+}
+
+form.search-form button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+form.search-form::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.search-form-multiple {
+	width: 25%;
+}
+button.search-form-multiple {
+	margin: 5px;
+	width: 93%;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  cursor: pointer;
+
+}
+input.search-form-multiple {
+	margin: 5px;
+	width: 45%;
+	padding: 5px;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~Errors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.NotFound-error-img {
+	background-image: url('../images/404v2.png');
+	min-height: 100vh;
+	background-repeat: no-repeat;
+	background-position: center -10px;
+	background-size: 30%;
+}
+
+.hidden_label_teacher {
+	display: none;
+}
+.hidden_label_student {
+	display: block;
+}
