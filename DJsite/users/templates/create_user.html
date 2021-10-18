@@ -17,23 +17,23 @@
 	{% csrf_token %}	
 	<div class="form-error"> {{ form.non_field_errors }} </div>
 	
-	{% for f in form %}
-		{% if f.label not in options %}
-			<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
-				{{ f }}
-			<div class="form-error"> {{ f.errors }} </div>
+	{% for pole in form %}
+		{% if pole.label not in options %}
+			<label class="form-label" for="{{ pole.id_for_label }}"> {{ pole.label }}: </label>
+				{{ pole }}
+			<div class="form-error"> {{ pole.errors }} </div>
 		{% else %}
-			{% if f.label|first in 'P' %}
+			{% if pole.label|first in 'P' %}
 				<div class="hidden_label_student">
-				<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
-					{{ f }}
-				<div class="form-error"> {{ f.errors }} </div>
+				<label class="form-label" for="{{ pole.id_for_label }}"> {{ pole.label }}: </label>
+					{{ pole }}
+				<div class="form-error"> {{ pole.errors }} </div>
 				</div>
 			{% else %}
 				<div class="hidden_label_teacher">
-				<label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label>
-					{{ f }}
-				<div class="form-error"> {{ f.errors }} </div>
+				<label class="form-label" for="{{ pole.id_for_label }}"> {{ pole.label }}: </label>
+					{{ pole }}
+				<div class="form-error"> {{ pole.errors }} </div>
 				</div>
 			{% endif %}
 		{% endif %}
