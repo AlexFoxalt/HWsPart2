@@ -48,7 +48,7 @@ home_page_posts = [
     },
     {
         'name': '/search-students/',
-        'description': 'Makes search in Student table per all text type columns ',
+        'description': 'Makes search in Student table per all text type columns via Ajax technology',
         'url_name': 'search-students'
     },
     {
@@ -267,11 +267,9 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
     @classmethod
     def get(cls, request, text, *args, **kwargs):
         context = super().get_context_data()
-        searching_keys = text['text']
         ajax_filter = request.GET.get('text', None)
 
-        if ajax_filter is not None:
-            searching_keys = ajax_filter
+        searching_keys = ajax_filter if ajax_filter is not None else text['text']
 
         if searching_keys is not None:
             text_fields = [f.name for f in cls.model._meta.get_fields() if

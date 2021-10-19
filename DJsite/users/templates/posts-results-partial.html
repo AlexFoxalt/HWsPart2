@@ -1,9 +1,24 @@
-{% if posts %}
+<!-- {% if posts %}
 	<ul style="list-style-type: decimal; padding-bottom: 10px; font-size: 20px;">
 	{% for post in posts %}
 		<li>{{ post }}</li>
 	{% endfor %}
 	</ul>
+{% else %}
+  	<h2>Sorry...no users found :(</h2>
+{% endif %} -->
+
+{% if posts %}
+	<table class="userlist-table" style="margin-top: 5px;">
+	{% for post in posts %}
+		<tr>
+			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% for value in post %}
+				<td>{{ value }}</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</table>
 {% else %}
   	<h2>Sorry...no users found :(</h2>
 {% endif %}

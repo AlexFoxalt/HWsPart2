@@ -207,7 +207,13 @@ table.userlist-table {}
 	border-style: inset;
 	border-color: rgba(4,170,109,0.75);
 	border-radius: 40px 0px 40px 0px;
+
+	opacity: 0.6;
 }
+.fast-search:hover {
+	opacity: 1;
+}
+
 .fast-search h2 {
 	font-family: 'Helvetica Neue', sans-serif;
 	margin-left: 10px;
