@@ -2,10 +2,11 @@ from django.urls import path
 
 from .views import StudentHome, StudentGenerator, TeacherGenerator, GetAllTeachers, GetAllStudents, GetTeachers, \
     GetStudents, CreateUser, EditStudent, DeleteStudent, EditUser, EditTeacher, \
-    DeleteTeacher
+    DeleteTeacher, FastSearch
 
 urlpatterns = [
     path('', StudentHome.as_view(), name='users-home'),
+    path('fast-search/', FastSearch.as_view(), name='fast-search'),
     path('gen-students/', StudentGenerator.as_view(), name='gen-students'),
     path('gen-teachers/', TeacherGenerator.as_view(), name='gen-teachers'),
     path('get-all-teachers/', GetAllTeachers.as_view(), name='get-all-teachers'),

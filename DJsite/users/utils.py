@@ -2,7 +2,9 @@ from random import choice
 
 import django
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.views.generic import ListView
 from faker import Faker
 from marshmallow import fields
@@ -190,7 +192,8 @@ options = ['Date of employment',
            'Previous educational institution',
            'Experience in years']
 CONTEXT_CONTAINER = {
-    1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts},
+    1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts,
+        'possible_positions': positions_selector, 'faculties': FACULTIES},
     2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
     3: {'title': 'All students', 'user_class': 'Student(s)'},
     4: {'title': 'Create User', 'url': 'create-user', 'options': options},
@@ -264,8 +267,11 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
     @classmethod
     def get(cls, request, text, *args, **kwargs):
         context = super().get_context_data()
-        applied_filters = text.values()
         searching_keys = text['text']
+        ajax_filter = request.GET.get('text', None)
+
+        if ajax_filter is not None:
+            searching_keys = ajax_filter
 
         if searching_keys is not None:
             text_fields = [f.name for f in cls.model._meta.get_fields() if
@@ -277,8 +283,16 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
             context['posts'] = context['posts'].filter(or_cond)
 
-        context['applied_filters'] = applied_filters
         context['searching_fields'] = from_dict_to_list_of_dicts_format(text)
+
+        if request.is_ajax():
+            html = render_to_string(
+                template_name="posts-results-partial.html",
+                context=context
+            )
+            data_dict = {"html_from_view": html}
+            return JsonResponse(data=data_dict, safe=False)
+
         return render(request, 'search_of_users.html', context=context)
 
 

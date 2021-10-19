@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View, RedirectView
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
@@ -24,6 +24,21 @@ class StudentHome(ContextMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id)
         return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class FastSearch(View):
+    def get(self, request, *args, **kwargs):
+        position = request.GET.get('position', None)
+        faculty = request.GET.get('faculty', None)
+
+        if position is None or faculty is None:
+            return page_not_found(request, 'Not Found')
+
+        if position == 'Teacher':
+            return redirect(f'/search-teachers/?faculty={faculty}')
+        elif position == 'Student':
+            return redirect(f'/search-students/?text={faculty}')
+        return redirect('users-home')
 
 
 class StudentGenerator(EntityGeneratorMixin, ListView):

@@ -11,4 +11,30 @@
     </ul>
   </div>
 </section>
+
+<div class="fast-search">
+  <form action="{% url 'fast-search' %}" method="get" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Fast Search</h2>
+    <p>Position:
+    <label for="position">
+      <select name="position">
+        {% for position in possible_positions %}
+          <option value="{{ position.1 }}">{{ position.1 }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <p>Faculty:
+    <label for="faculty">
+      <select name="faculty">
+        {% for faculty in faculties %}
+          <option value="{{ faculty }}">{{ faculty }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <button type="submit"><i class="fa fa-search"></i></button>
+  </form>
+</div>
 {% endblock content %}

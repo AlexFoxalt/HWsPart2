@@ -8,7 +8,8 @@ from .utils import faculties_selector, positions_selector
 
 
 class CreateUserForm(ModelForm):
-    date_of_employment = forms.DateField(required=False, widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
+    date_of_employment = forms.DateField(required=False,
+                                         widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
     experience_in_years = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 0}))
     previous_educational_institution = forms.CharField(required=False)
 

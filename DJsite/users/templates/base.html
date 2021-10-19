@@ -7,7 +7,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="shortcut icon" href="{% static 'users/images/FoxNoBorder.ico' %}" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   
+  <!-- JQuery CDN -->
+  <script src="{% static 'users/js/jquery-3.4.1.min.js' %}"></script>
+
+
   <title>{{ title }}</title>
 
 </head>
@@ -32,8 +37,13 @@
 
 <div class="content">
 {% block content %}
+<!-- Content -->
 {% endblock content %}
 </div>
+
+{% block footer %}
+  <script type="text/javascript" src="{% static 'users/js/main.js' %}"></script>
+{% endblock %}
 
 </body>
 </html>
