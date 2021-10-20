@@ -4,4 +4,6 @@
         * Реализован поиск по факультетам
  ✔ 3. Знайти помилку в поточному коді. Помилка в функціоналі.
         * Решение выкладываю в файлик, который будет находиться в текущем каталоге.
-   4. Розв'язати декілька задач з https://leetcode.com/ або https://www.codeabbey.com/
+ ✔ 4. Розв'язати декілька задач з https://leetcode.com/ або https://www.codeabbey.com/
+        * Кидаю ссылку на файлик в котором решаю подобные задачи на сайте py.checkio.org
+        https://github.com/AlexFoxalt/Alex.Main/blob/main/Exercises/PyChekioExercises.py
