@@ -9,13 +9,18 @@ from django.views.generic import ListView, TemplateView, CreateView, UpdateView,
 import ast
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
-from .services import format_raw_cleaned_form_for_student, format_raw_cleaned_form_for_teacher
-from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin, \
-    position_and_course_filter_query, get_users_by_pos_and_course
+from users.services.services_functions import format_raw_cleaned_form_for_student, format_raw_cleaned_form_for_teacher, \
+    combine_context
+
 from .models import Student, Teacher, User, Course
 
 # Create your views here.
+from .services.services_constants import get_int_count, teacher_filter_query, student_filter_query, \
+    position_and_course_filter_query
+from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
+from .services.services_models import get_users_by_pos_and_course
+
 parser = djangoparser.DjangoParser()
 
 

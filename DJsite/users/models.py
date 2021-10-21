@@ -4,7 +4,7 @@ from datetime import datetime
 from random import randint, choice, sample
 from faker import Faker
 
-from .services import mine_faker_of_faculties
+from users.services.services_functions import mine_faker_of_faculties
 
 f = Faker('EN')
 

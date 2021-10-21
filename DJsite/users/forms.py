@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from .models import User, Student, Teacher, Course
-from .services import faculties_selector, positions_selector
+from .services.services_constants import faculties_selector, positions_selector
 
 
 class CreateUserForm(ModelForm):
