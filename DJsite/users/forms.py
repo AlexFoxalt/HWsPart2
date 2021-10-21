@@ -3,15 +3,27 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import User, Student, Teacher
+from .models import User, Student, Teacher, Course
 from .services import faculties_selector, positions_selector
 
 
 class CreateUserForm(ModelForm):
-    date_of_employment = forms.DateField(required=False,
+    date_of_employment = forms.DateField(label='Teacher\'s date of employment',
+                                         required=False,
                                          widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
-    experience_in_years = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 0}))
-    previous_educational_institution = forms.CharField(required=False)
+    experience_in_years = forms.IntegerField(label='Teacher\'s experience in years',
+                                             required=False,
+                                             widget=forms.NumberInput(attrs={'value': 0}))
+    previous_educational_institution = forms.CharField(label='Student\'s previous educational institution',
+                                                       required=False)
+    course = forms.CharField(label='Student\'s course',
+                             required=False,
+                             widget=forms.Select(
+                                 choices=Course._get_all_objects_of_class_in_selector_format()))
+    teacher_courses = forms.CharField(label='Teacher\'s courses',
+                                      required=False,
+                                      widget=forms.SelectMultiple(
+                                          choices=Course._get_all_objects_of_class_in_selector_format()))
 
     class Meta:
         model = User

@@ -106,6 +106,18 @@ def mine_faker_of_faculties():
 faculties_selector = [(fac, fac) for fac in FACULTIES]
 
 
+def format_raw_cleaned_form_for_student(form):
+    form.cleaned_data.pop('date_of_employment')
+    form.cleaned_data.pop('experience_in_years')
+    form.cleaned_data.pop('teacher_courses')
+
+
+def format_raw_cleaned_form_for_teacher(form):
+    form.cleaned_data.pop('teacher_courses')
+    form.cleaned_data.pop('previous_educational_institution')
+    form.cleaned_data.pop('student_course')
+
+
 positions_selector = [
     (0, 'Student'),
     (1, 'Teacher')

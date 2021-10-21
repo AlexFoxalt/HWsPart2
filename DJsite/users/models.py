@@ -12,15 +12,15 @@ f = Faker('EN')
 # Create your models here.
 
 class User(models.Model):
-    first_name = models.CharField(max_length=100, null=False)
-    last_name = models.CharField(max_length=100, null=False)
-    city = models.CharField(max_length=100, null=False)
-    birthday = models.DateField(null=False)
-    email = models.EmailField(null=False, unique=True)
-    phone_number = models.CharField(max_length=50, null=False, unique=True)
-    faculty = models.CharField(max_length=255, default='not chosen')
-    position = models.CharField(max_length=255, default='not chosen')
-    time_create = models.DateTimeField(auto_now_add=True)
+    first_name = models.CharField(max_length=100, null=False, verbose_name='First Name')
+    last_name = models.CharField(max_length=100, null=False, verbose_name='Last Name')
+    city = models.CharField(max_length=100, null=False, verbose_name='City')
+    birthday = models.DateField(null=False, verbose_name='Birthday')
+    email = models.EmailField(null=False, unique=True, verbose_name='Email')
+    phone_number = models.CharField(max_length=50, null=False, unique=True, verbose_name='Phone number')
+    faculty = models.CharField(max_length=255, default='not chosen', verbose_name='Faculty')
+    position = models.CharField(max_length=255, default='not chosen', verbose_name='Position')
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Time of creation')
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -68,7 +68,7 @@ class User(models.Model):
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name='Name')
 
     class Meta:
         verbose_name = 'Курс'
@@ -83,9 +83,9 @@ class Course(models.Model):
 
 
 class Teacher(User):
-    date_of_employment = models.DateField(null=True, default=datetime.now)
-    experience_in_years = models.IntegerField(null=True, default=0)
-    courses = models.ManyToManyField(Course)
+    date_of_employment = models.DateField(null=True, default=datetime.now, verbose_name='Date of employment')
+    experience_in_years = models.IntegerField(null=True, default=0, verbose_name='Experience in years')
+    courses = models.ManyToManyField(Course, verbose_name='Course')
 
     class Meta:
         verbose_name = 'Преподаватель'
@@ -108,8 +108,10 @@ class Teacher(User):
 
 
 class Student(User):
-    previous_educational_institution = models.CharField(max_length=100, null=True, default='-')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    previous_educational_institution = models.CharField(max_length=100, null=True, default='-',
+                                                        verbose_name='Previous educational institution')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,
+                               verbose_name='Course')
 
     class Meta:
         verbose_name = 'Студент'

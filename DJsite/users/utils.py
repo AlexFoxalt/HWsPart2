@@ -91,9 +91,11 @@ position_and_course_filter_query = {
     'course': fields.Str(required=False, missing=None)
 }
 
-options = ['Date of employment',
-           'Previous educational institution',
-           'Experience in years']
+options = ['Teacher\'s date of employment',
+           'Student\'s previous educational institution',
+           'Teacher\'s experience in years',
+           'Student\'s course',
+           'Teacher\'s courses']
 
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts,
@@ -139,12 +141,14 @@ class EntitySearchMixinBase:
     def get_context_data(cls):
         posts = cls.model.objects.all()
         class_name = cls.model.__name__
+        columns = [f.get_attname() for f in cls.model._meta.fields]
 
         context = {
             'title': f'{class_name}s searching',
             'user_class': f'{class_name}(s)',
             'posts': posts,
             'menu': MENU,
+            'columns': columns
         }
         return context
 
@@ -233,7 +237,7 @@ def get_users_by_pos_and_course(pos: str, course: str):
 class GetAllUsersMixin(ContextMixin, ListView):
     def get(self, request, *args, **kwargs):
         posts = self.model.objects.all()
-        columns = [f.get_attname() for f in self.model._meta.fields]
+        columns = [f.verbose_name for f in self.model._meta.fields]
         context = self.get_user_context(page_id=self.page_id,
                                         posts=posts,
                                         columns=columns)

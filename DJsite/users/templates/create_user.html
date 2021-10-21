@@ -23,13 +23,13 @@
 				{{ pole }}
 			<div class="form-error"> {{ pole.errors }} </div>
 		{% else %}
-			{% if pole.label|first in 'P' %}
+			{% if pole.label|first in 'S' %}
 				<div class="hidden_label_student">
 				<label class="form-label" for="{{ pole.id_for_label }}"> {{ pole.label }}: </label>
 					{{ pole }}
 				<div class="form-error"> {{ pole.errors }} </div>
 				</div>
-			{% else %}
+			{% elif pole.label|first in 'T' %}
 				<div class="hidden_label_teacher">
 				<label class="form-label" for="{{ pole.id_for_label }}"> {{ pole.label }}: </label>
 					{{ pole }}

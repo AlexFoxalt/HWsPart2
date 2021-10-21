@@ -1,17 +1,19 @@
 from django.contrib import messages
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, NoReverseMatch
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View, RedirectView
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
+import ast
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
+from .services import format_raw_cleaned_form_for_student, format_raw_cleaned_form_for_teacher
 from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin, \
     position_and_course_filter_query, get_users_by_pos_and_course
-from .models import Student, Teacher, User
+from .models import Student, Teacher, User, Course
 
 # Create your views here.
 parser = djangoparser.DjangoParser()
@@ -87,18 +89,22 @@ class CreateUser(ContextMixin, CreateView):
         position = form.cleaned_data['position']
         if position == '0':
             form.cleaned_data['position'] = 'Student'
-
-            form.cleaned_data.pop('date_of_employment')
-            form.cleaned_data.pop('experience_in_years')
-
+            format_raw_cleaned_form_for_student(form)
+            form.cleaned_data['course'] = Course.objects.get(pk=form.cleaned_data['course'])
             Student.objects.create(**form.cleaned_data)
             messages.success(self.request, 'Student added successfully!')
         elif position == '1':
             form.cleaned_data['position'] = 'Teacher'
+            courses = form.cleaned_data.get('teacher_courses')
+            courses = ast.literal_eval(courses)
 
-            form.cleaned_data.pop('previous_educational_institution')
+            format_raw_cleaned_form_for_teacher(form)
 
-            Teacher.objects.create(**form.cleaned_data)
+            obj = Teacher.objects.create(**form.cleaned_data)
+
+            courses = Course.objects.filter(pk__in=courses)
+            obj.courses.set(courses)
+
             messages.success(self.request, 'Teacher added successfully!')
         else:
             messages.error(self.request, 'User was not added. Something went wrong :(')
@@ -112,7 +118,10 @@ class EditUser(View):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         model_name = User.objects.get(pk=pk).position
-        return redirect(f'edit-{model_name.lower()}', pk=pk)
+        try:
+            return redirect(f'edit-{model_name.lower()}', pk=pk)
+        except NoReverseMatch:
+            return page_not_found(request, 'Position of user error, no such users!')
 
 
 class EditStudent(ContextMixin, UpdateView):
@@ -203,7 +212,7 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         course = args[0].get('course', None)
 
         if pos is None or course is None:
-            return page_not_found(request, 'Not Found')
+            return page_not_found(request, 'Position or Course can not be NoneType')
 
         user_list, pos, course, columns = get_users_by_pos_and_course(pos, course)
 
@@ -225,7 +234,10 @@ def handle_error(error, req, schema, *, error_status_code, error_headers):
 
 
 def page_not_found(request, exception):
-    return render(request, '404.html')
+    context = {
+        'msg': str(exception)
+    }
+    return render(request, '404.html', context=context)
 
 
 def server_error(request):
