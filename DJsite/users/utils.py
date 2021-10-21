@@ -1,5 +1,3 @@
-from random import choice
-
 import django
 from django.db.models import Q
 from django.http import JsonResponse
@@ -9,6 +7,9 @@ from django.views.generic import ListView
 from faker import Faker
 from marshmallow import fields
 from webargs import djangoparser
+
+from .models import Course, Teacher, Student
+from .services import positions_selector
 
 parser = djangoparser.DjangoParser()
 f = Faker('EN')
@@ -43,12 +44,13 @@ home_page_posts = [
     },
     {
         'name': '/search-teachers/',
-        'description': 'Makes search in Teachers table, per each named column ',
+        'description': 'Makes search in Teachers table, per each named column. You can edit every of these.',
         'url_name': 'search-teachers'
     },
     {
         'name': '/search-students/',
-        'description': 'Makes search in Student table per all text type columns via Ajax technology',
+        'description': 'Makes search in Student table per all text type columns via Ajax technology. '
+                       'You can edit every of these.',
         'url_name': 'search-students'
     },
     {
@@ -56,111 +58,6 @@ home_page_posts = [
         'description': 'Creating a new user using Django Forms',
         'url_name': 'create-user'
     },
-]
-
-FACULTIES = [
-    'Accounting and Finance',
-    'Aeronautical and Manufacturing',
-    'Engineering',
-    'Agriculture and Forestry',
-    'Anatomy and Physiology',
-    'Anthropology',
-    'Archaeology',
-    'Architecture',
-    'Art and Design',
-    'Biological',
-    'Sciences',
-    'Building',
-    'Business and Management',
-    'Studies',
-    'Chemical',
-    'Engineering',
-    'Chemistry',
-    'Civil',
-    'Engineering',
-    'Classics and Ancient',
-    'History',
-    'Communication and Media',
-    'Studies',
-    'Complementary',
-    'Medicine',
-    'Computer',
-    'Science',
-    'Counselling',
-    'Creative',
-    'Writing',
-    'Criminology',
-    'Dentistry',
-    'Drama',
-    'Dance and Cinematics',
-    'Economics',
-    'Education',
-    'Electrical and Electronic',
-    'Engineering',
-    'English',
-    'Fashion',
-    'Film Making',
-    'Food',
-    'Science',
-    'Forensic',
-    'Science',
-    'General',
-    'Engineering',
-    'Geography and Environmental',
-    'Sciences',
-    'Geology',
-    'Health And Social',
-    'Care',
-    'History',
-    'History of Art',
-    'Architecture and Design',
-    'Hospitality',
-    'Leisure',
-    'Recreation and Tourism',
-    'Information',
-    'Technology',
-    'Land and Property',
-    'Management',
-    'Law',
-    'Linguistics',
-    'Marketing',
-    'Materials',
-    'Technology',
-    'Mathematics',
-    'Mechanical',
-    'Engineering',
-    'Medical',
-    'Technology',
-    'Medicine',
-    'Music',
-    'Nursing',
-    'Occupational',
-    'Therapy',
-    'Pharmacology and Pharmacy',
-    'Philosophy',
-    'Physics and Astronomy',
-    'Physiotherapy',
-    'Politics',
-    'Psychology',
-    'Robotics',
-    'Social',
-    'Policy',
-    'Social',
-    'Work',
-    'Sociology',
-    'Sports',
-    'Science',
-    'Veterinary',
-    'Medicine',
-    'Youth',
-    'Work',
-]
-
-faculties_selector = [(fac, fac) for fac in FACULTIES]
-
-positions_selector = [
-    (0, 'Student'),
-    (1, 'Teacher')
 ]
 
 teacher_query_fields = ('first_name',
@@ -188,12 +85,19 @@ get_int_count = {
 student_filter_query = {
     'text': fields.Str(required=False, missing=None)
 }
+
+position_and_course_filter_query = {
+    'pos': fields.Str(required=False, missing=None),
+    'course': fields.Str(required=False, missing=None)
+}
+
 options = ['Date of employment',
            'Previous educational institution',
            'Experience in years']
+
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1, 'posts': home_page_posts,
-        'possible_positions': positions_selector, 'faculties': FACULTIES},
+        'fs_positions': positions_selector, 'fs_courses': Course._get_all_objects_of_class_in_selector_format()},
     2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
     3: {'title': 'All students', 'user_class': 'Student(s)'},
     4: {'title': 'Create User', 'url': 'create-user', 'options': options},
@@ -201,7 +105,8 @@ CONTEXT_CONTAINER = {
     6: {'title': 'Edit Teacher', 'position': 'Teacher', 'url': 'delete-teacher'},
     7: {'title': 'Delete Student', 'position': 'Student'},
     8: {'title': 'Delete Teacher', 'position': 'Teacher'},
-    9: {'title': 'Create Teacher', 'url': 'create-teacher'}
+    9: {'title': 'Create Teacher', 'url': 'create-teacher'},
+    10: {'title': 'Users by course'}
 }
 
 
@@ -306,16 +211,23 @@ class ContextMixin:
         return context
 
 
-def mine_faker_of_faculties():
-    return choice(FACULTIES)
-
-
 def combine_context(cont1, cont2):
     return dict(**cont1, **cont2)
 
 
 def from_dict_to_list_of_dicts_format(arg: dict):
     return list({'field': field, 'value': value} for field, value in arg.items())
+
+
+def get_users_by_pos_and_course(pos: str, course: str):
+    if pos == 'Student':
+        course = Course.objects.get(pk=course)
+        columns = [f.get_attname() for f in Student._meta.fields]
+        return Student.objects.filter(course_id=course.pk), pos, course, columns
+    elif pos == 'Teacher':
+        course = Course.objects.get(pk=course)
+        columns = [f.get_attname() for f in Teacher._meta.fields]
+        return Teacher.objects.filter(courses=course.pk), pos, course, columns
 
 
 class GetAllUsersMixin(ContextMixin, ListView):

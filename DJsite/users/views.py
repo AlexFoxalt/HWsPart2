@@ -9,7 +9,8 @@ from django.views.generic import ListView, TemplateView, CreateView, UpdateView,
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin, \
+    position_and_course_filter_query, get_users_by_pos_and_course
 from .models import Student, Teacher, User
 
 # Create your views here.
@@ -24,21 +25,6 @@ class StudentHome(ContextMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id)
         return render(request, self.template_name, context=combine_context(context, extra_context))
-
-
-class FastSearch(View):
-    def get(self, request, *args, **kwargs):
-        position = request.GET.get('position', None)
-        faculty = request.GET.get('faculty', None)
-
-        if position is None or faculty is None:
-            return page_not_found(request, 'Not Found')
-
-        if position == 'Teacher':
-            return redirect(f'/search-teachers/?faculty={faculty}')
-        elif position == 'Student':
-            return redirect(f'/search-students/?text={faculty}')
-        return redirect('users-home')
 
 
 class StudentGenerator(EntityGeneratorMixin, ListView):
@@ -205,6 +191,29 @@ class DeleteTeacher(ContextMixin, DeleteView):
     def get_success_url(self, *args, **kwargs):
         messages.success(self.request, 'Teacher deleted successfully')
         return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'] + 1)])
+
+
+class GetUsersByCourse(ContextMixin, TemplateView):
+    template_name = "get-users-by-course.html"
+    page_id = 10
+
+    @use_args(position_and_course_filter_query, location='query')
+    def get(self, request, *args, **kwargs):
+        pos = args[0].get('pos', None)
+        course = args[0].get('course', None)
+
+        if pos is None or course is None:
+            return page_not_found(request, 'Not Found')
+
+        user_list, pos, course, columns = get_users_by_pos_and_course(pos, course)
+
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              user_list=user_list,
+                                              position=pos,
+                                              course=course,
+                                              columns=columns)
+        return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parsers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

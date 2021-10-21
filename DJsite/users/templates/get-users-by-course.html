@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Position: {{position}} <br> Course: {{course.name}}</h1>
+
+{% if user_list %}
+	<table class="userlist-table">	
+		
+		<tr>
+	    <th>Edit</th>
+	    {% for column in columns %}
+	    	<th>{{ column }}</th>
+	    {% endfor %}
+	    <th>Course</th>
+	    </tr>
+
+		{% for user in user_list %}
+			<tr>
+				<td><a href="{% url 'edit-user' pk=user.pk %}"><button class="edit-user-button">E</button></a></td>
+				{% for value in user %}
+					<td>{{ value }}</td>
+				{% endfor %}
+				<td>{{course.name}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% else %}
+	<h2>No users found :(</h2>
+{% endif %}
+{% endblock content %}

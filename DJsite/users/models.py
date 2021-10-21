@@ -1,10 +1,10 @@
 from django.db import models
-from datetime import datetime
-from random import randint
 
+from datetime import datetime
+from random import randint, choice, sample
 from faker import Faker
 
-from .utils import mine_faker_of_faculties
+from .services import mine_faker_of_faculties
 
 f = Faker('EN')
 
@@ -22,6 +22,10 @@ class User(models.Model):
     position = models.CharField(max_length=255, default='not chosen')
     time_create = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.counter = 0
@@ -38,6 +42,13 @@ class User(models.Model):
                 'faculty': mine_faker_of_faculties()
             }
             cls._extend_fields(data)
+
+            if cls == Teacher:
+                random_courses = sample(list(Course.objects.all()), randint(1, 5))
+                obj = Teacher.objects.create(**data)
+                obj.courses.set(random_courses)
+                continue
+
             cls.objects.create(**data)
 
     def __iter__(self):
@@ -56,9 +67,29 @@ class User(models.Model):
         return field_value
 
 
+class Course(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def _get_all_objects_of_class_in_selector_format(cls):
+        return [(obj.pk, obj.name) for obj in cls.objects.all()]
+
+
 class Teacher(User):
     date_of_employment = models.DateField(null=True, default=datetime.now)
     experience_in_years = models.IntegerField(null=True, default=0)
+    courses = models.ManyToManyField(Course)
+
+    class Meta:
+        verbose_name = 'Преподаватель'
+        verbose_name_plural = 'Преподаватели'
 
     @classmethod
     def _extend_fields(cls, data):
@@ -66,7 +97,7 @@ class Teacher(User):
             'birthday': f.date_between(start_date='-70y', end_date='-25y'),
             'position': 'Teacher',
             'date_of_employment': f.date_between(start_date='-30y', end_date='today'),
-            'experience_in_years': randint(1, 30)
+            'experience_in_years': randint(1, 30),
         })
 
     def __str__(self):
@@ -78,13 +109,19 @@ class Teacher(User):
 
 class Student(User):
     previous_educational_institution = models.CharField(max_length=100, null=True, default='-')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Студент'
+        verbose_name_plural = 'Студенты'
 
     @classmethod
     def _extend_fields(cls, data):
         data.update({
             'birthday': f.date_between(start_date='-50y', end_date='-16y'),
             'position': 'Student',
-            'previous_educational_institution': f'School №{randint(1, 100)}'
+            'previous_educational_institution': f'School №{randint(1, 100)}',
+            'course': choice(Course.objects.all())
         })
 
     def __str__(self):

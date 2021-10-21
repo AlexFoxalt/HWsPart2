@@ -13,23 +13,23 @@
 </section>
 
 <div class="fast-search">
-  <form action="{% url 'fast-search' %}" method="get" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h2>Fast Search</h2>
+  {% csrf_token %}
+  <form action="{% url 'get-users-by-course' %}" method="get" enctype="multipart/form-data">
+    <h2>Fast Search by course</h2>
     <p>Position:
     <label for="position">
-      <select name="position">
-        {% for position in possible_positions %}
+      <select name="pos">
+        {% for position in fs_positions %}
           <option value="{{ position.1 }}">{{ position.1 }}</option>
         {% endfor %}
       </select>
     </label>
 
-    <p>Faculty:
-    <label for="faculty">
-      <select name="faculty">
-        {% for faculty in faculties %}
-          <option value="{{ faculty }}">{{ faculty }}</option>
+    <p>Course:
+    <label for="course">
+      <select name="course">
+        {% for course in fs_courses %}
+          <option value="{{ course.0 }}">{{ course.1 }}</option>
         {% endfor %}
       </select>
     </label>
