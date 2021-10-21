@@ -1,3 +1,5 @@
+"""Here we are working with all types on Mixins that shall be imported to views.py"""
+
 import django
 from django.db.models import Q
 from django.http import JsonResponse

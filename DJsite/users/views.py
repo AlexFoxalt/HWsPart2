@@ -6,11 +6,9 @@ from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
-import ast
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
-from users.services.services_functions import format_raw_cleaned_form_for_student, format_raw_cleaned_form_for_teacher, \
-    combine_context
+from users.services.services_functions import combine_context, get_position_from_cleaned_data
 
 from .models import Student, Teacher, User, Course
 
@@ -19,7 +17,7 @@ from .services.services_constants import get_int_count, teacher_filter_query, st
     position_and_course_filter_query
 from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
-from .services.services_models import get_users_by_pos_and_course
+from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
 
 parser = djangoparser.DjangoParser()
 
@@ -36,20 +34,20 @@ class StudentHome(ContextMixin, TemplateView):
 
 class StudentGenerator(EntityGeneratorMixin, ListView):
     model = Student
+    user_class = 'Student(s)'
 
     @parser.use_kwargs(get_int_count, location="query")
     def get(self, request, count, *args, **kwargs):
-        user_class = 'Student(s)'
-        return super().get(request, count, user_class, *args, **kwargs)  # cls,request,count,args,kwargs
+        return super().get(request, count, self.user_class, *args, **kwargs)  # cls,request,count,args,kwargs
 
 
 class TeacherGenerator(EntityGeneratorMixin, ListView):
     model = Teacher
+    user_class = 'Teacher(s)'
 
     @parser.use_kwargs(get_int_count, location="query")
     def get(self, request, count, *args, **kwargs):
-        user_class = 'Teacher(s)'
-        return super().get(request, count, user_class, *args, **kwargs)
+        return super().get(request, count, self.user_class, *args, **kwargs)
 
 
 class GetAllTeachers(GetAllUsersMixin):
@@ -91,26 +89,13 @@ class CreateUser(ContextMixin, CreateView):
         return combine_context(context, extra_context)
 
     def form_valid(self, form):
-        position = form.cleaned_data['position']
-        if position == '0':
-            form.cleaned_data['position'] = 'Student'
-            format_raw_cleaned_form_for_student(form)
-            form.cleaned_data['course'] = Course.objects.get(pk=form.cleaned_data['course'])
-            Student.objects.create(**form.cleaned_data)
-            messages.success(self.request, 'Student added successfully!')
-        elif position == '1':
-            form.cleaned_data['position'] = 'Teacher'
-            courses = form.cleaned_data.get('teacher_courses')
-            courses = ast.literal_eval(courses)
+        position = get_position_from_cleaned_data(form)
+        if not position:
+            return page_not_found(self.request, 'Position can not be NoneType!')
 
-            format_raw_cleaned_form_for_teacher(form)
-
-            obj = Teacher.objects.create(**form.cleaned_data)
-
-            courses = Course.objects.filter(pk__in=courses)
-            obj.courses.set(courses)
-
-            messages.success(self.request, 'Teacher added successfully!')
+        status, user_position = get_and_save_object_by_its_position(position, form)
+        if status:
+            messages.success(self.request, f'{user_position} added successfully!')
         else:
             messages.error(self.request, 'User was not added. Something went wrong :(')
 

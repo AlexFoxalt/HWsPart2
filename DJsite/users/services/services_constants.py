@@ -1,3 +1,5 @@
+"""Here we collect all of constants that we used in project"""
+
 from marshmallow import fields
 
 student_filter_query = {
