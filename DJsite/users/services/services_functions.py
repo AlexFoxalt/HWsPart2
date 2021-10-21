@@ -9,16 +9,9 @@ def mine_faker_of_faculties() -> str:
     return choice(FACULTIES)
 
 
-def format_raw_cleaned_data_for_student(form) -> None:
-    form.cleaned_data.pop('date_of_employment')
-    form.cleaned_data.pop('experience_in_years')
-    form.cleaned_data.pop('teacher_courses')
-
-
-def format_raw_cleaned_data_for_teacher(form) -> None:
-    form.cleaned_data.pop('teacher_courses')
-    form.cleaned_data.pop('previous_educational_institution')
-    form.cleaned_data.pop('course')
+def format_raw_cleaned_data_for_user(form, keys_to_pop) -> None:
+    for key in keys_to_pop:
+        form.cleaned_data.pop(key)
 
 
 def combine_context(cont1, cont2):
@@ -46,5 +39,5 @@ def get_list_of_objects_from_cleaned_data(form, key) -> list:
     return ast.literal_eval(value_as_str)
 
 
-def get_courses_by_class(cls, courses):
+def get_objects_by_list(cls, courses: list):
     return cls.objects.filter(pk__in=courses)

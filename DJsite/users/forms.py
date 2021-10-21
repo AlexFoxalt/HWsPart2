@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from .models import User, Student, Teacher, Course
-from .services.services_constants import faculties_selector, positions_selector
+from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR
 
 
 class CreateUserForm(ModelForm):
@@ -31,8 +31,8 @@ class CreateUserForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector, attrs={'onchange': "showDiv(this)"}),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR, attrs={'onchange': "showDiv(this)"}),
         }
 
     def clean_email(self):
@@ -70,8 +70,8 @@ class EditStudentForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR),
         }
 
 
@@ -82,7 +82,7 @@ class EditTeacherForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR),
             'date_of_employment': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1))
         }

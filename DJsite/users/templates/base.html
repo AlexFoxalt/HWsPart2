@@ -32,11 +32,13 @@
   {% endfor %}
 </ul>
 
-{% block messages %}
-{% endblock messages %}
-
 <div class="content">
 {% block content %}
+
+{% block messages %}
+<!-- Flash messages -->
+{% endblock messages %}
+
 <!-- Content -->
 {% endblock content %}
 </div>

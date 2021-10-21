@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block content %}
+
 {% block messages %}
 	{% if messages %}
 		<ul class="messages">
@@ -10,7 +12,6 @@
 	{% endif %}
 {% endblock messages %}
 
-{% block content %}
 <h1>{{title}}</h1>
 
 <form class="edit-user-form" action="{% url url %}" method="post" enctype="multipart/form-data">

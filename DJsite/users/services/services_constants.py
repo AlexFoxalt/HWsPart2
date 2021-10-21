@@ -2,16 +2,20 @@
 
 from marshmallow import fields
 
-student_filter_query = {
+KEYS_TO_POP_FOR_TEACHER = ['teacher_courses', 'previous_educational_institution', 'course']
+
+KEYS_TO_POP_FOR_STUDENT = ['date_of_employment', 'experience_in_years', 'teacher_courses']
+
+STUDENT_FILTER_QUERY = {
     'text': fields.Str(required=False, missing=None)
 }
 
-position_and_course_filter_query = {
+POSITION_AND_COURSE_FILTER_QUERY = {
     'pos': fields.Str(required=False, missing=None),
     'course': fields.Str(required=False, missing=None)
 }
 
-options = ['Teacher\'s date of employment',
+OPTIONS = ['Teacher\'s date of employment',
            'Student\'s previous educational institution',
            'Teacher\'s experience in years',
            'Student\'s course',
@@ -24,7 +28,7 @@ MENU = [
     {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 4}
 ]
 
-home_page_posts = [
+HOME_PAGE_POSTS = [
     {
         'name': '/gen-students/',
         'description': 'Generates students with opt.param. ?count= (def=10)',
@@ -63,7 +67,7 @@ home_page_posts = [
     },
 ]
 
-teacher_query_fields = ('first_name',
+TEACHER_QUERY_FIELDS = ('first_name',
                         'last_name',
                         'city',
                         'email',
@@ -74,11 +78,11 @@ teacher_query_fields = ('first_name',
                         'date_of_employment',
                         'experience_in_years')
 
-teacher_filter_query = {
-    key: fields.Str(required=False, missing=None) for key in teacher_query_fields
+TEACHER_FILTER_QUERY = {
+    key: fields.Str(required=False, missing=None) for key in TEACHER_QUERY_FIELDS
 }
 
-get_int_count = {
+GET_INT_COUNT = {
     "count": fields.Int(
         required=False,
         missing=10
@@ -183,9 +187,9 @@ FACULTIES = [
     'Work',
 ]
 
-positions_selector = [
+POSITIONS_SELECTOR = [
     (0, 'Student'),
     (1, 'Teacher')
 ]
 
-faculties_selector = [(fac, fac) for fac in FACULTIES]
+FACULTIES_SELECTOR = [(fac, fac) for fac in FACULTIES]

@@ -9,12 +9,9 @@ from django.views.generic import ListView, TemplateView, CreateView, UpdateView,
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from users.services.services_functions import combine_context, get_position_from_cleaned_data
-
-from .models import Student, Teacher, User, Course
-
-# Create your views here.
-from .services.services_constants import get_int_count, teacher_filter_query, student_filter_query, \
-    position_and_course_filter_query
+from .models import Student, Teacher, User
+from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
+    POSITION_AND_COURSE_FILTER_QUERY
 from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
 from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
@@ -36,7 +33,7 @@ class StudentGenerator(EntityGeneratorMixin, ListView):
     model = Student
     user_class = 'Student(s)'
 
-    @parser.use_kwargs(get_int_count, location="query")
+    @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
         return super().get(request, count, self.user_class, *args, **kwargs)  # cls,request,count,args,kwargs
 
@@ -45,7 +42,7 @@ class TeacherGenerator(EntityGeneratorMixin, ListView):
     model = Teacher
     user_class = 'Teacher(s)'
 
-    @parser.use_kwargs(get_int_count, location="query")
+    @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
         return super().get(request, count, self.user_class, *args, **kwargs)
 
@@ -65,7 +62,7 @@ class GetAllStudents(GetAllUsersMixin):
 class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
     model = Teacher
 
-    @use_args(teacher_filter_query, location='query')
+    @use_args(TEACHER_FILTER_QUERY, location='query')
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -73,7 +70,7 @@ class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
 class GetStudents(EntitySearchPerAllFieldsMixin, ListView):
     model = Student
 
-    @use_args(student_filter_query, location='query')
+    @use_args(STUDENT_FILTER_QUERY, location='query')
     def get(self, request, text, *args, **kwargs):
         return super().get(request, text, *args, **kwargs)
 
@@ -94,10 +91,11 @@ class CreateUser(ContextMixin, CreateView):
             return page_not_found(self.request, 'Position can not be NoneType!')
 
         status, user_position = get_and_save_object_by_its_position(position, form)
+
         if status:
             messages.success(self.request, f'{user_position} added successfully!')
         else:
-            messages.error(self.request, 'User was not added. Something went wrong :(')
+            messages.error(self.request, f'{user_position} was not added. Something went wrong :(')
 
         return redirect('create-user')
 
@@ -196,7 +194,7 @@ class GetUsersByCourse(ContextMixin, TemplateView):
     template_name = "get-users-by-course.html"
     page_id = 10
 
-    @use_args(position_and_course_filter_query, location='query')
+    @use_args(POSITION_AND_COURSE_FILTER_QUERY, location='query')
     def get(self, request, *args, **kwargs):
         pos = args[0].get('pos', None)
         course = args[0].get('course', None)

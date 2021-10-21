@@ -38,32 +38,49 @@ div {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Header-Menu-Bar~~~~~~~~~~~~~~~~*/
 
+
+/* Flash messages */
+
 ul.messages {
 	list-style-type: none;
 }
 ul.errorlist {
 	list-style-type: none;
-	display: table;
+	display:inline-block;
 	background: #ff7885;
 	font-size: 15px;
 	padding: 5px;
 	border: 1px solid grey;
 }
-
 li.alert-success {
-	display: table;
-	background: #7aff78;
-	font-size: 30px;
-	padding: 5px;
-	border: 1px solid grey;
+	background-color:#44c767;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
 }
 li.alert-danger {
-	display: table;
-	background: #ff7885;
-	font-size: 30px;
-	padding: 5px;
-	border: 1px solid grey;
+	box-shadow:inset 0px 1px 0px 0px #cf866c;
+	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+	background-color:#d0451b;
+	border-radius:3px;
+	border:1px solid #942911;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #854629;
 }
+
+/* --------------------- */
+
 ul.menu-bar {
   list-style-type: none;
   margin: 0;
