@@ -10,13 +10,11 @@ html {
   font-family: "Helvetica Neue", sans-serif;
   font-size: 62.5%;
   background: #d1d1d1;
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
   font-size: 1.6rem; /* 18px */
-  background-image: url('../images/bg1.jpg');
-  background-size: cover;
   min-height: 100%;
 }
 
@@ -30,6 +28,8 @@ section {
   margin-left: 15px;
   margin-right: 15px;
   align-items: center;
+  display: inline-block;
+  width: 70%;
 }
 
 div {
@@ -38,32 +38,49 @@ div {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Header-Menu-Bar~~~~~~~~~~~~~~~~*/
 
+
+/* Flash messages */
+
 ul.messages {
 	list-style-type: none;
 }
 ul.errorlist {
 	list-style-type: none;
-	display: table;
+	display:inline-block;
 	background: #ff7885;
 	font-size: 15px;
 	padding: 5px;
 	border: 1px solid grey;
 }
-
 li.alert-success {
-	display: table;
-	background: #7aff78;
-	font-size: 30px;
-	padding: 5px;
-	border: 1px solid grey;
+	background-color:#44c767;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
 }
 li.alert-danger {
-	display: table;
-	background: #ff7885;
-	font-size: 30px;
-	padding: 5px;
-	border: 1px solid grey;
+	box-shadow:inset 0px 1px 0px 0px #cf866c;
+	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
+	background-color:#d0451b;
+	border-radius:3px;
+	border:1px solid #942911;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #854629;
 }
+
+/* --------------------- */
+
 ul.menu-bar {
   list-style-type: none;
   margin: 0;
@@ -91,9 +108,12 @@ li.menu-bar a {
   padding: 14px 16px;
   text-decoration: none;
 }
+li.menu-bar:hover {
+	background-color: gray;
+}
 
 li.menu-bar a:hover:not(.active) {
-  background-color: #111;
+  background-color: skyblue;
 }
 a.disabled {
 	pointer-events: none;
@@ -163,10 +183,16 @@ a.disabled {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 .content {
-	margin-left: 10px;
-	margin-right: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 	font-family: Candara;
 	color: #2e2e2e;
+	display: inline-block;
+	width: 100%;
+	min-height: 93vh;
+	float: left;
+	background-image: url('../images/bg1.jpg');
+  background-size: cover;
 }
 table.userlist-table, th, td {
 	text-align: center;
@@ -182,6 +208,72 @@ table.userlist-table tr:hover {
 	background: #a1ffc0;
 }
 table.userlist-table {}
+
+.fast-search {
+	display: inline;
+	float: right;
+	margin-top: 35px;
+	margin-right: 25px;
+	background-color: lightgray;
+	padding: 10px;
+	height: 200px;
+	font-size: 20px;
+	width: 20%;
+
+	border-width: 3px;
+	border-style: inset;
+	border-color: rgba(4,170,109,0.75);
+	border-radius: 40px 0px 40px 0px;
+
+	opacity: 0.6;
+}
+.fast-search:hover {
+	opacity: 1;
+}
+
+.fast-search h2 {
+	font-family: 'Helvetica Neue', sans-serif;
+	margin-left: 10px;
+	font-size: 25px;
+	margin-bottom: 30px;
+}
+.fast-search button {
+	position: absolute;
+	top: 112px;
+	right: 60px;
+
+	height: 50px;
+	width: 50px;
+	
+	box-shadow: -20px -50px 21px -50px #7bf785;
+	background-color:#04aa6d;
+	border-radius:27px;
+	border:1px solid #45742e;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:25px;
+	font-weight:bold;
+	padding:2px 7px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #013824;
+}
+.fast-search button:hover {
+	background-color:#04aa6d;
+}
+.fast-search select {
+	margin-left: 10px;
+	margin-top: 0;
+	margin-right: 10px;
+	float: right;
+	width: 220px;
+	text-align: center;
+}
+.fast-search p {
+	margin-left: 10px;
+	font-family: Georgia, serif;
+}
 
 /*~~~~~~~~~~~~~~~~~~~ Edit/Delete users form ~~~~~~~~~~~~~~~~~~~~~*/
 .fields-names {
@@ -311,6 +403,7 @@ form.search-form input[type=text] {
   float: left;
   width: 200px;
   background: #f1f1f1;
+  outline: none;
 }
 
 /* Style the submit button */
@@ -325,6 +418,7 @@ form.search-form button {
   border: 1px solid grey;
   border-left: none; /* Prevent double borders */
   cursor: pointer;
+  display: inline;
 }
 
 form.search-form button:hover {
@@ -348,12 +442,21 @@ button.search-form-multiple {
   font-size: 17px;
   border: 1px solid grey;
   cursor: pointer;
-
 }
 input.search-form-multiple {
 	margin: 5px;
 	width: 45%;
 	padding: 5px;
+}
+form.search-form-selector select {
+	display: inline;
+	margin-top: 10px;
+	margin-left: 0px;
+	height: 42px;
+	font-size: 15px;
+}
+form.search-form-selector button {
+
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~Errors~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -372,3 +475,19 @@ input.search-form-multiple {
 .hidden_label_student {
 	display: block;
 }
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~Ajax Stuff~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+@keyframes blinker {
+    from {opacity: 1.0;}
+    to {opacity: 0.0;}
+  }
+  
+.blink {
+    text-decoration: blink;
+    animation-name: blinker;
+    animation-duration: 0.6s;
+    animation-iteration-count:infinite;
+    animation-timing-function:ease-in-out;
+    animation-direction: alternate;
+  }

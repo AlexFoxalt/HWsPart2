@@ -16,15 +16,16 @@
 
 {% if title == 'Students searching' %}
 	<form class="search-form">
-	  {% for dict in searching_fields %}
-		  {% if not dict.value %}
-		  	<input type="text" placeholder="Search.." name="{{ dict.field }}">
-		  {% else %}
-		  	<input type="text" value="{{ dict.value }}" placeholder="Search.." name="{{ dict.field }}">
-		  {% endif %}
-	  {% endfor %}
-	  <button type="submit"><i class="fa fa-search"></i></button>
+	    {% for dict in searching_fields %}
+		    {% if not dict.value %}
+		  		<input id="user-input" type="text" placeholder="Search.." name="{{ dict.field }}">
+		    {% else %}
+		  		<input id="user-input" type="text" value="{{ dict.value }}" placeholder="Search.." name="{{ dict.field }}">
+		    {% endif %}
+	    {% endfor %}
+	    <button type="submit"><i id="search-icon" class="fa fa-search"></i></button>
 	</form>
+
 {% elif title == 'Teachers searching' %}
 	<form class="search-form-multiple">
 	{% for dict in searching_fields %}
@@ -36,23 +37,21 @@
 	{% endfor %}
 	<button class="search-form-multiple" type="submit"><i class="fa fa-search"></i></button>
 	</form>
+
+	{% if applied_filters %}
+		<h3 style="font-size: 25px">Applied filters:</h3>
+		<ul style="font-size: 20px;">
+		{% for filter in applied_filters %}
+			<li>{{ filter }}</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<h3>No filters applied</h3>
+	{% endif %}
+
 {% endif %}
 
-
-{% if applied_filters %}
-	<h3 style="font-size: 25px">Applied filters:</h3>
-	<ul style="font-size: 20px;">
-	{% for filter in applied_filters %}
-		<li>{{ filter }}</li>
-	{% endfor %}
-	</ul>
-{% else %}
-	<h3>No filters applied</h3>
-{% endif %}
-
-<ul style="list-style-type: decimal; padding-bottom: 10px;">
-	{% for post in posts %}
-		<li>{{ post }}</li>
-	{% endfor %}
-</ul>
+<div id="replaceable-content" class="col-6">
+	{% include 'posts-results-partial.html' %}
+</div>
 {% endblock content %}

@@ -1,18 +1,21 @@
 from django.contrib import messages
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, NoReverseMatch
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
-from .utils import teacher_filter_query, student_filter_query, get_int_count, EntityGeneratorMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ContextMixin, combine_context, GetAllUsersMixin
+from users.services.services_functions import combine_context, get_position_from_cleaned_data
 from .models import Student, Teacher, User
+from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
+    POSITION_AND_COURSE_FILTER_QUERY
+from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
+from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
 
-# Create your views here.
 parser = djangoparser.DjangoParser()
 
 
@@ -28,20 +31,20 @@ class StudentHome(ContextMixin, TemplateView):
 
 class StudentGenerator(EntityGeneratorMixin, ListView):
     model = Student
+    user_class = 'Student(s)'
 
-    @parser.use_kwargs(get_int_count, location="query")
+    @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
-        user_class = 'Student(s)'
-        return super().get(request, count, user_class, *args, **kwargs)  # cls,request,count,args,kwargs
+        return super().get(request, count, self.user_class, *args, **kwargs)  # cls,request,count,args,kwargs
 
 
 class TeacherGenerator(EntityGeneratorMixin, ListView):
     model = Teacher
+    user_class = 'Teacher(s)'
 
-    @parser.use_kwargs(get_int_count, location="query")
+    @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
-        user_class = 'Teacher(s)'
-        return super().get(request, count, user_class, *args, **kwargs)
+        return super().get(request, count, self.user_class, *args, **kwargs)
 
 
 class GetAllTeachers(GetAllUsersMixin):
@@ -59,7 +62,7 @@ class GetAllStudents(GetAllUsersMixin):
 class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
     model = Teacher
 
-    @use_args(teacher_filter_query, location='query')
+    @use_args(TEACHER_FILTER_QUERY, location='query')
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -67,7 +70,7 @@ class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
 class GetStudents(EntitySearchPerAllFieldsMixin, ListView):
     model = Student
 
-    @use_args(student_filter_query, location='query')
+    @use_args(STUDENT_FILTER_QUERY, location='query')
     def get(self, request, text, *args, **kwargs):
         return super().get(request, text, *args, **kwargs)
 
@@ -83,24 +86,16 @@ class CreateUser(ContextMixin, CreateView):
         return combine_context(context, extra_context)
 
     def form_valid(self, form):
-        position = form.cleaned_data['position']
-        if position == '0':
-            form.cleaned_data['position'] = 'Student'
+        position = get_position_from_cleaned_data(form)
+        if not position:
+            return page_not_found(self.request, 'Position can not be NoneType!')
 
-            form.cleaned_data.pop('date_of_employment')
-            form.cleaned_data.pop('experience_in_years')
+        status, user_position = get_and_save_object_by_its_position(position, form)
 
-            Student.objects.create(**form.cleaned_data)
-            messages.success(self.request, 'Student added successfully!')
-        elif position == '1':
-            form.cleaned_data['position'] = 'Teacher'
-
-            form.cleaned_data.pop('previous_educational_institution')
-
-            Teacher.objects.create(**form.cleaned_data)
-            messages.success(self.request, 'Teacher added successfully!')
+        if status:
+            messages.success(self.request, f'{user_position} added successfully!')
         else:
-            messages.error(self.request, 'User was not added. Something went wrong :(')
+            messages.error(self.request, f'{user_position} was not added. Something went wrong :(')
 
         return redirect('create-user')
 
@@ -111,7 +106,10 @@ class EditUser(View):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         model_name = User.objects.get(pk=pk).position
-        return redirect(f'edit-{model_name.lower()}', pk=pk)
+        try:
+            return redirect(f'edit-{model_name.lower()}', pk=pk)
+        except NoReverseMatch:
+            return page_not_found(request, 'Position of user error, no such users!')
 
 
 class EditStudent(ContextMixin, UpdateView):
@@ -192,6 +190,29 @@ class DeleteTeacher(ContextMixin, DeleteView):
         return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'] + 1)])
 
 
+class GetUsersByCourse(ContextMixin, TemplateView):
+    template_name = "get-users-by-course.html"
+    page_id = 10
+
+    @use_args(POSITION_AND_COURSE_FILTER_QUERY, location='query')
+    def get(self, request, *args, **kwargs):
+        pos = args[0].get('pos', None)
+        course = args[0].get('course', None)
+
+        if pos is None or course is None:
+            return page_not_found(request, 'Position or Course can not be NoneType')
+
+        user_list, pos, course, columns = get_users_by_pos_and_course(pos, course)
+
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              user_list=user_list,
+                                              position=pos,
+                                              course=course,
+                                              columns=columns)
+        return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parsers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -201,7 +222,10 @@ def handle_error(error, req, schema, *, error_status_code, error_headers):
 
 
 def page_not_found(request, exception):
-    return render(request, '404.html')
+    context = {
+        'msg': str(exception)
+    }
+    return render(request, '404.html', context=context)
 
 
 def server_error(request):

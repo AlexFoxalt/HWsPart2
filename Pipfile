@@ -36,6 +36,7 @@ flake8-builtins = "*"
 flake8-import-order = "*"
 pep8-naming = "*"
 django-debug-toolbar = "*"
+django-grappelli = "*"
 
 [dev-packages]
 

@@ -3,14 +3,27 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import User, Student, Teacher
-from .utils import faculties_selector, positions_selector
+from .models import User, Student, Teacher, Course
+from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR
 
 
 class CreateUserForm(ModelForm):
-    date_of_employment = forms.DateField(required=False, widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
-    experience_in_years = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'value': 0}))
-    previous_educational_institution = forms.CharField(required=False)
+    date_of_employment = forms.DateField(label='Teacher\'s date of employment',
+                                         required=False,
+                                         widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
+    experience_in_years = forms.IntegerField(label='Teacher\'s experience in years',
+                                             required=False,
+                                             widget=forms.NumberInput(attrs={'value': 0}))
+    previous_educational_institution = forms.CharField(label='Student\'s previous educational institution',
+                                                       required=False)
+    course = forms.CharField(label='Student\'s course',
+                             required=False,
+                             widget=forms.Select(
+                                 choices=Course._get_all_objects_of_class_in_selector_format()))
+    teacher_courses = forms.CharField(label='Teacher\'s courses',
+                                      required=False,
+                                      widget=forms.SelectMultiple(
+                                          choices=Course._get_all_objects_of_class_in_selector_format()))
 
     class Meta:
         model = User
@@ -18,8 +31,8 @@ class CreateUserForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector, attrs={'onchange': "showDiv(this)"}),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR, attrs={'onchange': "showDiv(this)"}),
         }
 
     def clean_email(self):
@@ -57,8 +70,8 @@ class EditStudentForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR),
         }
 
 
@@ -69,7 +82,7 @@ class EditTeacherForm(ModelForm):
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=faculties_selector),
-            'position': forms.Select(choices=positions_selector),
+            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
+            'position': forms.Select(choices=POSITIONS_SELECTOR),
             'date_of_employment': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1))
         }
