@@ -8,6 +8,7 @@ from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR
 
 
 class CreateUserForm(ModelForm):
+    photo = forms.ImageField(label='Photo')
     date_of_employment = forms.DateField(label='Teacher\'s date of employment',
                                          required=False,
                                          widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))

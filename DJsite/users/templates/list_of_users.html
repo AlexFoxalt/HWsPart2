@@ -16,7 +16,11 @@
 		<tr>
 			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
 			{% for value in post %}
-				<td>{{ value }}</td>
+				{% if value.url %}
+					<td><img src="{{value.url}}" class="user-list-photo"></td>
+				{% else %}
+					<td>{{ value }}</td>
+				{% endif %}
 			{% endfor %}
 		</tr>
 	{% endfor %}

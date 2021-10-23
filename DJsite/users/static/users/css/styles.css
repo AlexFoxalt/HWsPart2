@@ -207,7 +207,11 @@ table.userlist-table {
 table.userlist-table tr:hover {
 	background: #a1ffc0;
 }
-table.userlist-table {}
+.user-list-photo {
+	border-radius: 50%;
+	width: 40px;
+	height: 4	0px;
+}
 
 .fast-search {
 	display: inline;
@@ -371,6 +375,13 @@ table.userlist-table {}
 	width: 260px;
 	margin-left: 10px;
 	font-size: 20px;
+	font-family: 'Times New Roman', serif;
+}
+.edit-user-form input[type=file] {
+	height: 30px;
+	width: 260px;
+	margin-left: 10px;
+	font-size: 16px;
 	font-family: 'Times New Roman', serif;
 }
 select {

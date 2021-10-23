@@ -1,6 +1,6 @@
 """All possible util functions that DON'T need any project imports"""
 import ast
-from random import choice
+from random import choice, randint
 
 from users.services.services_constants import FACULTIES
 
@@ -41,3 +41,8 @@ def get_list_of_objects_from_cleaned_data(form, key) -> list:
 
 def get_objects_by_list(cls, courses: list):
     return cls.objects.filter(pk__in=courses)
+
+
+def generate_random_student_avatar():
+    num = randint(1, 15)
+    return f'default_avatar/student_avatar{num}.png'

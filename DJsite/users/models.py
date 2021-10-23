@@ -3,11 +3,9 @@ from django.db import models
 
 from datetime import datetime
 from random import randint, choice, sample
-
-from django.http import HttpResponseNotFound
 from faker import Faker
 
-from users.services.services_functions import mine_faker_of_faculties
+from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar
 
 f = Faker('EN')
 
@@ -52,6 +50,7 @@ class User(models.Model):
                 obj.courses.set(random_courses)
                 continue
 
+            print("!!!!!!!!!!!!", data)
             cls.objects.create(**data)
 
 
@@ -90,6 +89,9 @@ class Course(models.Model):
 
 
 class Teacher(User):
+    photo = models.ImageField(upload_to='user_photo/teacher/',
+                              verbose_name='Photo',
+                              default='default_avatar/teacher_avatar.png')
     date_of_employment = models.DateField(null=True, default=datetime.now, verbose_name='Date of employment')
     experience_in_years = models.IntegerField(null=True, default=0, verbose_name='Experience in years')
     courses = models.ManyToManyField(Course, verbose_name='Course')
@@ -115,6 +117,9 @@ class Teacher(User):
 
 
 class Student(User):
+    photo = models.ImageField(upload_to='user_photo/student/',
+                              verbose_name='Photo',
+                              default=generate_random_student_avatar())
     previous_educational_institution = models.CharField(max_length=100, null=True, default='-',
                                                         verbose_name='Previous educational institution')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
@@ -130,7 +135,8 @@ class Student(User):
             'birthday': f.date_between(start_date='-50y', end_date='-16y'),
             'position': 'Student',
             'previous_educational_institution': f'School №{randint(1, 100)}',
-            'course': choice(Course.objects.all())
+            'course': choice(Course.objects.all()),
+            'photo': generate_random_student_avatar()
         })
 
     def __str__(self):
