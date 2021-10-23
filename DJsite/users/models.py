@@ -3,6 +3,8 @@ from django.db import models
 
 from datetime import datetime
 from random import randint, choice, sample
+
+from django.http import HttpResponseNotFound
 from faker import Faker
 
 from users.services.services_functions import mine_faker_of_faculties
@@ -51,6 +53,7 @@ class User(models.Model):
                 continue
 
             cls.objects.create(**data)
+
 
     def __iter__(self):
         return self

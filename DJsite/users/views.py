@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, NoReverseMatch
 from webargs.djangoparser import use_args
@@ -12,6 +11,7 @@ from users.services.services_functions import combine_context, get_position_from
 from .models import Student, Teacher, User
 from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
     POSITION_AND_COURSE_FILTER_QUERY
+from .services.services_error_handlers import page_not_found
 from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
 from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
@@ -218,20 +218,9 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parsers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 @parser.error_handler
 def handle_error(error, req, schema, *, error_status_code, error_headers):
     raise BadRequest(error.messages)
-
-
-def page_not_found(request, exception):
-    context = {
-        'msg': str(exception)
-    }
-    return render(request, '404.html', context=context)
-
-
-def server_error(request):
-    return HttpResponseServerError('<h1> 500 Server Error :( </h1>')
