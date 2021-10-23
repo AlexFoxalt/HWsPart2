@@ -1,20 +1,15 @@
 """Here we are working with stuff that need import Models from models.py"""
 
-from faker import Faker
-from webargs import djangoparser
-
 from users.models import Course, Teacher, Student
 from users.services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER
 from users.services.services_functions import format_raw_cleaned_data_for_user, set_cleaned_data_position_to, \
     set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list
 
-parser = djangoparser.DjangoParser()
-f = Faker('EN')
 
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1, 'posts': HOME_PAGE_POSTS,
-        'fs_positions': POSITIONS_SELECTOR, 'fs_courses': Course._get_all_objects_of_class_in_selector_format()},
+        'fs_positions': POSITIONS_SELECTOR, 'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
     2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
     3: {'title': 'All students', 'user_class': 'Student(s)'},
     4: {'title': 'Create User', 'url': 'create-user', 'options': OPTIONS},

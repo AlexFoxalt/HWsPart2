@@ -19,11 +19,11 @@ class CreateUserForm(ModelForm):
     course = forms.CharField(label='Student\'s course',
                              required=False,
                              widget=forms.Select(
-                                 choices=Course._get_all_objects_of_class_in_selector_format()))
+                                 choices=Course.get_all_objects_of_class_in_selector_format()))
     teacher_courses = forms.CharField(label='Teacher\'s courses',
                                       required=False,
                                       widget=forms.SelectMultiple(
-                                          choices=Course._get_all_objects_of_class_in_selector_format()))
+                                          choices=Course.get_all_objects_of_class_in_selector_format()))
 
     class Meta:
         model = User
