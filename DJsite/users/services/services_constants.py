@@ -2,7 +2,11 @@
 
 from marshmallow import fields
 
-KEYS_TO_POP_FOR_TEACHER = ['teacher_courses', 'previous_educational_institution', 'course']
+INVALID_DOMAIN_NAMES = ('@abc.com', '@123.com', '@xyz.com')
+
+POSSIBLE_EXTENSIONS_FOR_PROFILE = ('txt', 'pdf', 'dotx')
+
+KEYS_TO_POP_FOR_TEACHER = ['teacher_courses', 'previous_educational_institution', 'course', 'resume']
 
 KEYS_TO_POP_FOR_STUDENT = ['date_of_employment', 'experience_in_years', 'teacher_courses']
 
@@ -19,7 +23,8 @@ OPTIONS = ['Teacher\'s date of employment',
            'Student\'s previous educational institution',
            'Teacher\'s experience in years',
            'Student\'s course',
-           'Teacher\'s courses']
+           'Teacher\'s courses',
+           'Student\'s resume']
 
 MENU = [
     {'name': 'Main Page', 'url': 'users-home', 'id': 1},

@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from .models import User, Student, Teacher, Course
-from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR
+from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, \
+    INVALID_DOMAIN_NAMES
 
 
 class CreateUserForm(ModelForm):
@@ -25,6 +26,9 @@ class CreateUserForm(ModelForm):
                                       required=False,
                                       widget=forms.SelectMultiple(
                                           choices=Course.get_all_objects_of_class_in_selector_format()))
+    resume = forms.FileField(label='Student\'s resume',
+                             required=False,
+                             widget=forms.ClearableFileInput())
 
     class Meta:
         model = User
@@ -36,11 +40,16 @@ class CreateUserForm(ModelForm):
             'position': forms.Select(choices=POSITIONS_SELECTOR, attrs={'onchange': "showDiv(this)"}),
         }
 
-    def clean_email(self):
-        invalid_domain_names = ('@abc.com', '@123.com', '@xyz.com')
-        email = self.cleaned_data['email']
+    def clean_resume(self):
+        resume = self.cleaned_data['resume']
+        if resume is not None:
+            ext = resume.name.rsplit('.')[1]
+            if ext not in POSSIBLE_EXTENSIONS_FOR_PROFILE:
+                raise ValidationError('Invalid extension!', code='invalid')
 
-        for domain_name in invalid_domain_names:
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        for domain_name in INVALID_DOMAIN_NAMES:
             if domain_name in email:
                 raise ValidationError('Invalid domain name!', code='invalid')
         return email

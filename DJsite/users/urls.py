@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import StudentHome, StudentGenerator, TeacherGenerator, GetAllTeachers, GetAllStudents, GetTeachers, \
     GetStudents, CreateUser, EditStudent, DeleteStudent, EditUser, EditTeacher, \
-    DeleteTeacher, GetUsersByCourse
+    DeleteTeacher, GetUsersByCourse, StudentProfile, TeacherProfile
 
 urlpatterns = [
     path('', StudentHome.as_view(), name='users-home'),
@@ -19,4 +19,6 @@ urlpatterns = [
     path('delete-student/<int:pk>', DeleteStudent.as_view(), name='delete-student'),
     path('delete-teacher/<int:pk>', DeleteTeacher.as_view(), name='delete-teacher'),
     path('get-users-by-course/', GetUsersByCourse.as_view(), name='get-users-by-course'),
+    path('student-profile/<int:pk>/', StudentProfile.as_view(), name='student-profile'),
+    path('teacher-profile/<int:pk>/', TeacherProfile.as_view(), name='teacher-profile'),
 ]

@@ -4,7 +4,7 @@ from django.urls import reverse_lazy, NoReverseMatch
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View, DetailView
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from users.services.services_functions import combine_context, get_position_from_cleaned_data
@@ -216,6 +216,30 @@ class GetUsersByCourse(ContextMixin, TemplateView):
                                               course=course,
                                               columns=columns)
         return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class TeacherProfile(ContextMixin, DetailView):
+    model = Teacher
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+    page_id = 11
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
+
+
+class StudentProfile(ContextMixin, DetailView):
+    model = Student
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+    page_id = 12
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

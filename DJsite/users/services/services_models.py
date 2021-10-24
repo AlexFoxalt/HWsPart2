@@ -18,7 +18,9 @@ CONTEXT_CONTAINER = {
     7: {'title': 'Delete Student', 'position': 'Student'},
     8: {'title': 'Delete Teacher', 'position': 'Teacher'},
     9: {'title': 'Create Teacher', 'url': 'create-teacher'},
-    10: {'title': 'Users by course'}
+    10: {'title': 'Users by course'},
+    11: {'title': 'Student Profile'},
+    12: {'title': 'Teacher Profile'},
 }
 
 

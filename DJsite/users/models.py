@@ -3,6 +3,8 @@ from django.db import models
 
 from datetime import datetime
 from random import randint, choice, sample
+
+from django.urls import reverse
 from faker import Faker
 
 from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar
@@ -100,6 +102,16 @@ class Teacher(User):
         verbose_name = 'Преподаватель'
         verbose_name_plural = 'Преподаватели'
 
+    def get_absolute_url(self):
+        return reverse('teacher-profile', kwargs={'pk': self.pk})
+
+    def get_teacher_courses(self):
+        ret = []
+        # models.ManyToMany field's all() return all the Course     objects that this user belongs to
+        for course in self.courses.all():
+            ret.append(course.name)
+        return ret  # return list ob courses names
+
     @classmethod
     def _extend_fields(cls, data):
         data.update({
@@ -120,6 +132,9 @@ class Student(User):
     photo = models.ImageField(upload_to='user_photo/student/',
                               verbose_name='Photo',
                               default=generate_random_student_avatar())
+    resume = models.FileField(upload_to='user_resume/student/',
+                              verbose_name='Resume',
+                              default='default_resume/no_resume.png')
     previous_educational_institution = models.CharField(max_length=100, null=True, default='-',
                                                         verbose_name='Previous educational institution')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
@@ -128,6 +143,9 @@ class Student(User):
     class Meta:
         verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
+
+    def get_absolute_url(self):
+        return reverse('student-profile', kwargs={'pk': self.pk})
 
     @classmethod
     def _extend_fields(cls, data):
