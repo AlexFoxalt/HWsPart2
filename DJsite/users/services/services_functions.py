@@ -12,6 +12,8 @@ def mine_faker_of_faculties() -> str:
 def format_raw_cleaned_data_for_user(form, keys_to_pop) -> None:
     for key in keys_to_pop:
         form.cleaned_data.pop(key)
+    form.cleaned_data.pop('photo') if not form.cleaned_data['photo'] else None
+    form.cleaned_data.pop('resume') if not form.cleaned_data['resume'] else None
 
 
 def combine_context(cont1, cont2):
@@ -46,3 +48,10 @@ def get_objects_by_list(cls, courses: list):
 def generate_random_student_avatar():
     num = randint(1, 15)
     return f'default_avatar/student_avatar{num}.png'
+
+
+def release_invitational_system(form, position):
+    inviter = form.cleaned_data.get('invited_by', None)
+    if inviter is not None:
+        user = position.objects.get(email=inviter)
+        user.increase_invitational_number()

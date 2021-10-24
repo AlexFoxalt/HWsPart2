@@ -4,8 +4,8 @@ from users.models import Course, Teacher, Student
 from users.services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER
 from users.services.services_functions import format_raw_cleaned_data_for_user, set_cleaned_data_position_to, \
-    set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list
-
+    set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list, \
+    release_invitational_system
 
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1, 'posts': HOME_PAGE_POSTS,
@@ -39,6 +39,7 @@ def get_and_save_object_by_its_position(position: str, form):
     user_position = 'User'
     if position == '0':
         set_cleaned_data_position_to(form, 'Student')
+        release_invitational_system(form, Student)
         format_raw_cleaned_data_for_user(form, KEYS_TO_POP_FOR_STUDENT)
         set_cleaned_data_value_to_list_of_objects(form, 'course', Course)
 

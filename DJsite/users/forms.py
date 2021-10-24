@@ -9,7 +9,8 @@ from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR,
 
 
 class CreateUserForm(ModelForm):
-    photo = forms.ImageField(label='Photo')
+    photo = forms.ImageField(label='Photo',
+                             required=False)
     date_of_employment = forms.DateField(label='Teacher\'s date of employment',
                                          required=False,
                                          widget=forms.SelectDateWidget(years=range(datetime.today().year, 1960, -1)))
@@ -29,6 +30,9 @@ class CreateUserForm(ModelForm):
     resume = forms.FileField(label='Student\'s resume',
                              required=False,
                              widget=forms.ClearableFileInput())
+    invited_by = forms.CharField(label='Student\'s email invited by',
+                                 required=False,
+                                 widget=forms.EmailInput(attrs={'placeholder': 'user_that@invite.you'}))
 
     class Meta:
         model = User
@@ -40,12 +44,21 @@ class CreateUserForm(ModelForm):
             'position': forms.Select(choices=POSITIONS_SELECTOR, attrs={'onchange': "showDiv(this)"}),
         }
 
+    def clean_invited_by(self):
+        inviter = self.cleaned_data['invited_by']
+        if inviter:
+            status = Student.objects.filter(email=self.cleaned_data['invited_by']).exists()
+            if not status:
+                raise ValidationError('No such user!', code='invalid')
+        return inviter
+
     def clean_resume(self):
         resume = self.cleaned_data['resume']
         if resume is not None:
             ext = resume.name.rsplit('.')[1]
             if ext not in POSSIBLE_EXTENSIONS_FOR_PROFILE:
                 raise ValidationError('Invalid extension!', code='invalid')
+        return resume
 
     def clean_email(self):
         email = self.cleaned_data['email']

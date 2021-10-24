@@ -139,6 +139,7 @@ class Student(User):
                                                         verbose_name='Previous educational institution')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
                                verbose_name='Course')
+    invited = models.IntegerField(default=0, verbose_name='Number of invited students')
 
     class Meta:
         verbose_name = 'Студент'
@@ -146,6 +147,10 @@ class Student(User):
 
     def get_absolute_url(self):
         return reverse('student-profile', kwargs={'pk': self.pk})
+
+    def increase_invitational_number(self):
+        self.invited += 1
+        self.save()
 
     @classmethod
     def _extend_fields(cls, data):

@@ -6,6 +6,7 @@ function showDiv(select){
     document.getElementsByClassName('hidden_label_student')[0].style.display="none";
     document.getElementsByClassName('hidden_label_student')[1].style.display="none";
     document.getElementsByClassName('hidden_label_student')[2].style.display="none";
+    document.getElementsByClassName('hidden_label_student')[3].style.display="none";
    } if(select.value==0){
     document.getElementsByClassName('hidden_label_teacher')[0].style.display="none";
     document.getElementsByClassName('hidden_label_teacher')[1].style.display="none";
@@ -13,5 +14,6 @@ function showDiv(select){
     document.getElementsByClassName('hidden_label_student')[0].style.display="block";
     document.getElementsByClassName('hidden_label_student')[1].style.display="block";
     document.getElementsByClassName('hidden_label_student')[2].style.display="block";
+    document.getElementsByClassName('hidden_label_student')[3].style.display="block";
    }
 }
