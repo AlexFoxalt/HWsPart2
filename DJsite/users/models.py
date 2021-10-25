@@ -6,6 +6,7 @@ from datetime import datetime
 from random import randint, choice, sample
 from faker import Faker
 
+import users
 from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar, \
     get_data_from_file_in_str_format
 
@@ -66,7 +67,13 @@ class User(models.Model):
             raise StopIteration
 
         field_object = self.__class__._meta.get_field(field_names[self.counter])
-        field_value = field_object.value_from_object(self)
+        if str(field_object) == 'users.Student.course':
+            field_value = field_object.value_from_object(self)
+            course = Course.objects.get(pk=field_value)
+            field_value = course.name
+        else:
+            field_value = field_object.value_from_object(self)
+
         self.counter += 1
         return field_value
 

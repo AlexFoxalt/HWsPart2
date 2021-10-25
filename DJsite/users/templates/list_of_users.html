@@ -12,6 +12,9 @@
     {% for column in columns %}
     	<th>{{ column }}</th>
     {% endfor %}
+    {% if posts.0.position == 'Teacher' %}
+    	<th>Courses</th>
+    {% endif %}
     </tr>
 	
 	{% for post in posts %}
@@ -29,6 +32,14 @@
 						<td>{{ value }}</td>
 					{% endif %}
 				{% endfor %}
+				
+				{% if posts.0.position == 'Teacher' %}
+					<td>
+						{% for course in post.get_teacher_courses %}
+							{{ course }} 
+						{% endfor %}
+					</td>
+				{% endif %}
 			</tr>
 	{% endfor %}
 
