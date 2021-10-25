@@ -6,7 +6,6 @@ from datetime import datetime
 from random import randint, choice, sample
 from faker import Faker
 
-import users
 from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar, \
     get_data_from_file_in_str_format
 
@@ -53,7 +52,6 @@ class User(models.Model):
                 obj.courses.set(random_courses)
                 continue
 
-            print("!!!!!!!!!!!!", data)
             cls.objects.create(**data)
 
     def __iter__(self):

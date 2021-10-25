@@ -4,45 +4,6 @@
 
 <h1>List of {{ user_class }}</h1>
 
-<table class="userlist-table">
-	
-	<tr>
-    <th>Edit</th>
-    <th>Show</th>
-    {% for column in columns %}
-    	<th>{{ column }}</th>
-    {% endfor %}
-    {% if posts.0.position == 'Teacher' %}
-    	<th>Courses</th>
-    {% endif %}
-    </tr>
-	
-	{% for post in posts %}
-			<tr>
-				<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
-				<td><a href="{{ post.get_absolute_url }}"><button class="show-user-button">S</button></a></td>
-				{% for value in post %}
-					{% if value.url %}
-						{% if value.url|slice:":19" == '/media/user_resume/' %}
-							<td><img src="{% static 'users/images/resume.png' %}" class="user-list-photo"></td>
-						{% else %}
-							<td><img src="{{value.url}}" class="user-list-photo"></td>
-						{% endif %}
-					{% else %}
-						<td>{{ value }}</td>
-					{% endif %}
-				{% endfor %}
-				
-				{% if posts.0.position == 'Teacher' %}
-					<td>
-						{% for course in post.get_teacher_courses %}
-							{{ course }} 
-						{% endfor %}
-					</td>
-				{% endif %}
-			</tr>
-	{% endfor %}
-
-</table>
+{% include 'posts-results-partial.html' %}
 
 {% endblock content %}

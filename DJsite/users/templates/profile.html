@@ -42,8 +42,8 @@
 	            	<div class="col-md-12"><label style="display: inline;" class="labels">Resume</label>
 	            	
 	            	{% if profile.resume != 'default_resume/no_resume.png' %}
-		            	<a style="float: right;" href="{{ profile.resume.url }}" download><button class="download-resume-button">
-		            		<i class="fa fa-download" aria-hidden="true"></i>
+		            	<a style="float: right;" href="{{ profile.resume.url }}" download title="Download resume"><button class="download-resume-button">
+		            		<i class="fa fa-download" aria-hidden="true"></dfn></i>
 		            	</button></a></div>
 		            {% endif %}
 

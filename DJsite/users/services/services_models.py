@@ -43,7 +43,6 @@ def get_and_save_object_by_its_position(position: str, form):
         format_raw_cleaned_data_for_user(form, KEYS_TO_POP_FOR_STUDENT)
         set_cleaned_data_value_to_list_of_objects(form, 'course', Course)
 
-
         Student.objects.create(**form.cleaned_data)
         user_position = 'Student'
     elif position == '1':
