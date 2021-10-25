@@ -589,5 +589,13 @@ form.search-form-selector button {
 	position: relative;
 	left: 115px;
 }
+.resume-spoiler {
+	display: inline-block;
+	width: 100%;
+	height: 280px;
+	outline: none;
+	border: 1px solid #CCCCCC;
+	resize: none;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

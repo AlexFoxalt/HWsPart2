@@ -37,6 +37,8 @@ flake8-import-order = "*"
 pep8-naming = "*"
 django-debug-toolbar = "*"
 django-grappelli = "*"
+python-docx = "*"
+pypdf2 = "*"
 
 [dev-packages]
 

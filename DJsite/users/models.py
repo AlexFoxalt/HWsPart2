@@ -1,13 +1,13 @@
 import django
+from django.urls import reverse
 from django.db import models
 
 from datetime import datetime
 from random import randint, choice, sample
-
-from django.urls import reverse
 from faker import Faker
 
-from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar
+from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar, \
+    get_data_from_file_in_str_format
 
 f = Faker('EN')
 
@@ -54,7 +54,6 @@ class User(models.Model):
 
             print("!!!!!!!!!!!!", data)
             cls.objects.create(**data)
-
 
     def __iter__(self):
         return self
@@ -151,6 +150,11 @@ class Student(User):
     def increase_invitational_number(self):
         self.invited += 1
         self.save()
+
+    def get_resume_in_template_format(self):
+        ext = self.resume.url.rsplit('.')[1]
+        path = self.resume.url[1:]
+        return get_data_from_file_in_str_format(path, ext)
 
     @classmethod
     def _extend_fields(cls, data):

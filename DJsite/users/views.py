@@ -89,7 +89,6 @@ class CreateUser(ContextMixin, CreateView):
         position = get_position_from_cleaned_data(form)
         if not position:
             return page_not_found(self.request, 'Position can not be NoneType!')
-
         status, user_position = get_and_save_object_by_its_position(position, form)
 
         if status:

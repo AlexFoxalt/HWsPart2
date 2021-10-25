@@ -8,7 +8,7 @@ INVALID_DOMAIN_NAMES = ('@abc.com',
 
 POSSIBLE_EXTENSIONS_FOR_PROFILE = ('txt',
                                    'pdf',
-                                   'dotx')
+                                   'docx')
 
 KEYS_TO_POP_FOR_TEACHER = ['teacher_courses',
                            'previous_educational_institution',

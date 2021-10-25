@@ -2,6 +2,9 @@
 import ast
 from random import choice, randint
 
+import docx
+from PyPDF2 import PdfFileReader
+
 from users.services.services_constants import FACULTIES
 
 
@@ -53,6 +56,39 @@ def generate_random_student_avatar():
 
 def release_invitational_system(form, position):
     inviter = form.cleaned_data.get('invited_by', None)
-    if inviter is not None:
+    if inviter:
         user = position.objects.get(email=inviter)
         user.increase_invitational_number()
+
+
+def read_txt_file(path):
+    with open(path, 'r') as file:
+        res = file.read()
+    return res
+
+
+def read_docx_file(path):
+    doc = docx.Document(path)
+    text = []
+    for para in doc.paragraphs:
+        text.append(para.text)
+    return '\n'.join(text)
+
+
+def read_pdf_file(path):
+    reader = PdfFileReader(path)
+    pageObj = reader.getNumPages()
+    text = []
+    for page_count in range(pageObj):
+        page = reader.getPage(page_count)
+        text.append(page.extractText())
+    return '\n'.join(text)
+
+
+def get_data_from_file_in_str_format(path, extension):
+    if extension == 'txt':
+        return read_txt_file(path)
+    elif extension == 'docx':
+        return read_docx_file(path)
+    elif extension == 'pdf':
+        return read_pdf_file(path)

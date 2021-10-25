@@ -16,7 +16,7 @@
                     {% if profile.position == 'Student' %}
 	                    <span class="users-invited">Users invited:</span>
 	                    <span class="profile-invited">{{profile.invited}}</span>
-	                {% endif %}
+	                   {% endif %}
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6"><label class="labels">First name</label><p><span class="profile-value">{{ profile.first_name }}</span></p></div>
@@ -47,7 +47,8 @@
 		            	</button></a></div>
 		            {% endif %}
 
-	            	<embed src="{{profile.resume.url}}" height="280px" width="100%"></embed>
+	            	<!-- <embed src="{{profile.raw_resume}}" height="280px" width="100%"></embed> -->
+	            	<textarea readonly="true" class="resume-spoiler" placeholder="Can't read this file">{{ profile.get_resume_in_template_format }}</textarea>
 	            </div>
 	        </div>
 	    {% elif profile.position == 'Teacher' %}
