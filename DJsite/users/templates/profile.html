@@ -13,6 +13,10 @@
             <div class="p-3 py-5">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 style="font-size: 25px;" class="text-right">User Profile</h2>
+                    {% if profile.position == 'Student' %}
+	                    <span class="users-invited">Users invited:</span>
+	                    <span class="profile-invited">{{profile.invited}}</span>
+	                {% endif %}
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6"><label class="labels">First name</label><p><span class="profile-value">{{ profile.first_name }}</span></p></div>
@@ -35,8 +39,15 @@
 	            <div class="p-3 py-5">
 	                <div class="col-md-12"><label class="labels">Previous educational institution</label><p><span class="profile-value">{{ profile.previous_educational_institution }}</span></p></div><br>
 	                <div class="col-md-12"><label class="labels">Course</label><p><span class="profile-value">{{ profile.course }}</span></p></div>
-	            	<div class="col-md-12"><a href="{{ profile.resume.url }}" download><label style="cursor: pointer;" class="labels">Resume(download)</label></a></div>
-	            	<object data="{{profile.resume.url}}"></object>
+	            	<div class="col-md-12"><label style="display: inline;" class="labels">Resume</label>
+	            	
+	            	{% if profile.resume != 'default_resume/no_resume.png' %}
+		            	<a style="float: right;" href="{{ profile.resume.url }}" download><button class="download-resume-button">
+		            		<i class="fa fa-download" aria-hidden="true"></i>
+		            	</button></a></div>
+		            {% endif %}
+
+	            	<embed src="{{profile.resume.url}}" height="280px" width="100%"></embed>
 	            </div>
 	        </div>
 	    {% elif profile.position == 'Teacher' %}

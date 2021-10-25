@@ -13,7 +13,6 @@ POSSIBLE_EXTENSIONS_FOR_PROFILE = ('txt',
 KEYS_TO_POP_FOR_TEACHER = ['teacher_courses',
                            'previous_educational_institution',
                            'course',
-                           'resume',
                            'invited_by']
 
 KEYS_TO_POP_FOR_STUDENT = ['date_of_employment',

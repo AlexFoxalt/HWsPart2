@@ -12,6 +12,7 @@ def mine_faker_of_faculties() -> str:
 def format_raw_cleaned_data_for_user(form, keys_to_pop) -> None:
     for key in keys_to_pop:
         form.cleaned_data.pop(key)
+    # If user did not set photo or resume in reg.form just remove them, it'll be set automatically by model
     form.cleaned_data.pop('photo') if not form.cleaned_data['photo'] else None
     form.cleaned_data.pop('resume') if not form.cleaned_data['resume'] else None
 

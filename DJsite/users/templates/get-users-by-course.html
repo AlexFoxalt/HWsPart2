@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
 <h1>Position: {{position}} <br> Course: {{course.name}}</h1>
@@ -18,7 +19,15 @@
 			<tr>
 				<td><a href="{% url 'edit-user' pk=user.pk %}"><button class="edit-user-button">E</button></a></td>
 				{% for value in user %}
-					<td>{{ value }}</td>
+					{% if value.url %}
+						{% if value.url|slice:":19" == '/media/user_resume/' %}
+							<td><img src="{% static 'users/images/resume.png' %}" class="user-list-photo"></td>
+						{% else %}
+							<td><img src="{{value.url}}" class="user-list-photo"></td>
+						{% endif %}
+					{% else %}
+						<td>{{ value }}</td>
+					{% endif %}
 				{% endfor %}
 				<td>{{course.name}}</td>
 			</tr>
