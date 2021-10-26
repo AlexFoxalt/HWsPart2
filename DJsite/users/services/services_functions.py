@@ -61,13 +61,13 @@ def release_invitational_system(form, position):
         user.increase_invitational_number()
 
 
-def read_txt_file(path):
+def read_txt_file(path) -> str:
     with open(path, 'r') as file:
         res = file.read()
     return res
 
 
-def read_docx_file(path):
+def read_docx_file(path) -> str:
     doc = docx.Document(path)
     text = []
     for para in doc.paragraphs:
@@ -75,7 +75,7 @@ def read_docx_file(path):
     return '\n'.join(text)
 
 
-def read_pdf_file(path):
+def read_pdf_file(path) -> str:
     reader = PdfFileReader(path)
     pageObj = reader.getNumPages()
     text = []
@@ -85,7 +85,7 @@ def read_pdf_file(path):
     return '\n'.join(text)
 
 
-def get_data_from_file_in_str_format(path, extension):
+def get_data_from_file_in_str_format(path, extension) -> str:
     if extension == 'txt':
         return read_txt_file(path)
     elif extension == 'docx':
