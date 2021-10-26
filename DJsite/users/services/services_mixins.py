@@ -5,11 +5,11 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from users.services.services_constants import MENU
 from users.services.services_error_handlers import page_not_found
-from users.services.services_functions import from_dict_to_list_of_dicts_format
+from users.services.services_functions import from_dict_to_list_of_dicts_format, combine_context
 from users.services.services_models import CONTEXT_CONTAINER
 
 
@@ -127,3 +127,13 @@ class GetAllUsersMixin(ContextMixin, ListView):
                                         posts=posts,
                                         columns=columns)
         return render(request, self.template_name, context=context)
+
+
+class ProfileMixin(ContextMixin, DetailView):
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)

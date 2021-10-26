@@ -13,7 +13,7 @@ from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, ST
     POSITION_AND_COURSE_FILTER_QUERY
 from .services.services_error_handlers import page_not_found
 from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ProfileMixin
 from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
 
 parser = djangoparser.DjangoParser()
@@ -215,28 +215,14 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-class TeacherProfile(ContextMixin, DetailView):
+class TeacherProfile(ProfileMixin):
     model = Teacher
-    template_name = 'profile.html'
-    context_object_name = 'profile'
     page_id = 11
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id)
-        return combine_context(context, extra_context)
 
-
-class StudentProfile(ContextMixin, DetailView):
+class StudentProfile(ProfileMixin):
     model = Student
-    template_name = 'profile.html'
-    context_object_name = 'profile'
     page_id = 12
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id)
-        return combine_context(context, extra_context)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
