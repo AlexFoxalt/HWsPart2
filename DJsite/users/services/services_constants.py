@@ -2,9 +2,23 @@
 
 from marshmallow import fields
 
-KEYS_TO_POP_FOR_TEACHER = ['teacher_courses', 'previous_educational_institution', 'course']
+INVALID_DOMAIN_NAMES = ('@abc.com',
+                        '@123.com',
+                        '@xyz.com')
 
-KEYS_TO_POP_FOR_STUDENT = ['date_of_employment', 'experience_in_years', 'teacher_courses']
+POSSIBLE_EXTENSIONS_FOR_PROFILE = ('txt',
+                                   'pdf',
+                                   'docx')
+
+KEYS_TO_POP_FOR_TEACHER = ['teacher_courses',
+                           'previous_educational_institution',
+                           'course',
+                           'invited_by']
+
+KEYS_TO_POP_FOR_STUDENT = ['date_of_employment',
+                           'experience_in_years',
+                           'teacher_courses',
+                           'invited_by']
 
 STUDENT_FILTER_QUERY = {
     'text': fields.Str(required=False, missing=None)
@@ -19,7 +33,9 @@ OPTIONS = ['Teacher\'s date of employment',
            'Student\'s previous educational institution',
            'Teacher\'s experience in years',
            'Student\'s course',
-           'Teacher\'s courses']
+           'Teacher\'s courses',
+           'Student\'s resume',
+           'Student\'s email invited by']
 
 MENU = [
     {'name': 'Main Page', 'url': 'users-home', 'id': 1},

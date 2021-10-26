@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+
+<div class="profile">
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right" style="min-height: 540px;">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="{{ profile.photo.url }}"><span class="font-weight-bold">{{ profile.first_name }} {{ profile.last_name }}</span><span class="text-black-50">{{ profile.email }}</span><span> </span></div>
+        </div>
+        <div class="col-md-5 border-right" style="min-height: 540px;">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 style="font-size: 25px;" class="text-right">User Profile</h2>
+                    {% if profile.position == 'Student' %}
+	                    <span class="users-invited">Users invited:</span>
+	                    <span class="profile-invited">{{profile.invited}}</span>
+	                   {% endif %}
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">First name</label><p><span class="profile-value">{{ profile.first_name }}</span></p></div>
+                    <div class="col-md-6"><label class="labels">Last name</label><p><span class="profile-value">{{ profile.last_name }}</span></p></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">City</label><p><span class="profile-value">{{ profile.city }}</span></p></div>
+                    <div class="col-md-12"><label class="labels">Birthday</label><p><span class="profile-value">{{ profile.birthday }}</span></p></div>
+                    <div class="col-md-12"><label class="labels">Email</label><p><span class="profile-value">{{ profile.email }}</span></p></div>
+                    <div class="col-md-12"><label class="labels">Phone number</label><p><span class="profile-value">{{ profile.phone_number }}</span></p></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><label class="labels">Faculty</label><p><span class="profile-value">{{ profile.faculty }}</span></p></div>
+                    <div class="col-md-6"><label class="labels">Position</label><p><span class="profile-value">{{ profile.position }}</span></p></div>
+                </div>
+            </div>
+        </div>
+        {% if profile.position == 'Student' %}
+	        <div class="col-md-4">
+	            <div class="p-3 py-5">
+	                <div class="col-md-12"><label class="labels">Previous educational institution</label><p><span class="profile-value">{{ profile.previous_educational_institution }}</span></p></div><br>
+	                <div class="col-md-12"><label class="labels">Course</label><p><span class="profile-value">{{ profile.course }}</span></p></div>
+	            	<div class="col-md-12"><label style="display: inline;" class="labels">Resume</label>
+	            	
+	            	{% if profile.resume != 'default_resume/no_resume.png' %}
+		            	<a style="float: right;" href="{{ profile.resume.url }}" download title="Download resume"><button class="download-resume-button">
+		            		<i class="fa fa-download" aria-hidden="true"></dfn></i>
+		            	</button></a></div>
+		            {% endif %}
+
+	            	<!-- <embed src="{{profile.raw_resume}}" height="280px" width="100%"></embed> -->
+	            	<textarea readonly="true" class="resume-spoiler" placeholder="Can't read this file">{{ profile.get_resume_in_template_format }}</textarea>
+	            </div>
+	        </div>
+	    {% elif profile.position == 'Teacher' %}
+	    	<div class="col-md-4">
+	            <div class="p-3 py-5">
+	                <div class="col-md-12"><label class="labels">Date of employment</label><p><span class="profile-value">{{ profile.date_of_employment }}</span></p></div><br>
+	                <div class="col-md-12"><label class="labels">Experience in years</label><p><span class="profile-value">{{ profile.experience_in_years }}</span></p></div>
+	                <div class="col-md-12"><label class="labels">Courses</label><p>
+	                <ul class="profile-value">
+	                {%for course in profile.get_teacher_courses %}
+	                	<li style="margin-left: 20px">{{course}}</li>
+	                {% endfor %}
+	            	</ul>
+	            	</p></div>
+	            </div>
+	        </div>
+	    {% endif %}
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

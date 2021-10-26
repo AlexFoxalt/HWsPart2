@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.static import serve
 
-from users.views import page_not_found
+from users.services.services_error_handlers import page_not_found
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS

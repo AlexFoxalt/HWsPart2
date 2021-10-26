@@ -1,17 +1,17 @@
 from django.contrib import messages
-from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, NoReverseMatch
 from webargs.djangoparser import use_args
 from webargs import djangoparser
 from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View, DetailView
 
 from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
 from users.services.services_functions import combine_context, get_position_from_cleaned_data
 from .models import Student, Teacher, User
 from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
     POSITION_AND_COURSE_FILTER_QUERY
+from .services.services_error_handlers import page_not_found
 from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
     EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin
 from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
@@ -89,7 +89,6 @@ class CreateUser(ContextMixin, CreateView):
         position = get_position_from_cleaned_data(form)
         if not position:
             return page_not_found(self.request, 'Position can not be NoneType!')
-
         status, user_position = get_and_save_object_by_its_position(position, form)
 
         if status:
@@ -199,8 +198,13 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         pos = args[0].get('pos', None)
         course = args[0].get('course', None)
 
+        print(pos, course)
+
         if pos is None or course is None:
-            return page_not_found(request, 'Position or Course can not be NoneType')
+            return page_not_found(request, 'Position or Course can not be NoneType. '
+                                           'Maybe be you don\'t create a Course?')
+        elif course == '---':
+            return page_not_found(request, 'We didn\'t find any Course. Yoo can create it in admin panel')
 
         user_list, pos, course, columns = get_users_by_pos_and_course(pos, course)
 
@@ -213,20 +217,33 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parsers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class TeacherProfile(ContextMixin, DetailView):
+    model = Teacher
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+    page_id = 11
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
+
+
+class StudentProfile(ContextMixin, DetailView):
+    model = Student
+    template_name = 'profile.html'
+    context_object_name = 'profile'
+    page_id = 12
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 @parser.error_handler
 def handle_error(error, req, schema, *, error_status_code, error_headers):
     raise BadRequest(error.messages)
-
-
-def page_not_found(request, exception):
-    context = {
-        'msg': str(exception)
-    }
-    return render(request, '404.html', context=context)
-
-
-def server_error(request):
-    return HttpResponseServerError('<h1> 500 Server Error :( </h1>')

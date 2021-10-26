@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.views.generic import ListView
 
 from users.services.services_constants import MENU
+from users.services.services_error_handlers import page_not_found
 from users.services.services_functions import from_dict_to_list_of_dicts_format
 from users.services.services_models import CONTEXT_CONTAINER
 
@@ -19,7 +20,10 @@ class EntityGeneratorMixin:
 
     @classmethod
     def get(cls, request, count, user_class, *args, **kwargs):
-        cls.model.generate_entity(count)
+        try:
+            cls.model.generate_entity(count)
+        except (IndexError, ValueError):
+            return page_not_found(request, 'You should create at least 1 Course, if you want to use generator')
 
         posts = cls.model.objects.all().order_by('-id')[:count][::-1]
 

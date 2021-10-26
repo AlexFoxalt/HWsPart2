@@ -1,10 +1,13 @@
+import django
+from django.urls import reverse
 from django.db import models
 
 from datetime import datetime
 from random import randint, choice, sample
 from faker import Faker
 
-from users.services.services_functions import mine_faker_of_faculties
+from users.services.services_functions import mine_faker_of_faculties, generate_random_student_avatar, \
+    get_data_from_file_in_str_format
 
 f = Faker('EN')
 
@@ -62,7 +65,13 @@ class User(models.Model):
             raise StopIteration
 
         field_object = self.__class__._meta.get_field(field_names[self.counter])
-        field_value = field_object.value_from_object(self)
+        if str(field_object) == 'users.Student.course':
+            field_value = field_object.value_from_object(self)
+            course = Course.objects.get(pk=field_value)
+            field_value = course.name
+        else:
+            field_value = field_object.value_from_object(self)
+
         self.counter += 1
         return field_value
 
@@ -78,11 +87,17 @@ class Course(models.Model):
         return self.name
 
     @classmethod
-    def _get_all_objects_of_class_in_selector_format(cls):
-        return [(obj.pk, obj.name) for obj in cls.objects.all()]
+    def get_all_objects_of_class_in_selector_format(cls):
+        try:
+            return [(obj.pk, obj.name) for obj in cls.objects.all()]
+        except django.db.utils.OperationalError:
+            return [('---', '---')]
 
 
 class Teacher(User):
+    photo = models.ImageField(upload_to='user_photo/teacher/',
+                              verbose_name='Photo',
+                              default='default_avatar/teacher_avatar.png')
     date_of_employment = models.DateField(null=True, default=datetime.now, verbose_name='Date of employment')
     experience_in_years = models.IntegerField(null=True, default=0, verbose_name='Experience in years')
     courses = models.ManyToManyField(Course, verbose_name='Course')
@@ -90,6 +105,16 @@ class Teacher(User):
     class Meta:
         verbose_name = 'Преподаватель'
         verbose_name_plural = 'Преподаватели'
+
+    def get_absolute_url(self):
+        return reverse('teacher-profile', kwargs={'pk': self.pk})
+
+    def get_teacher_courses(self):
+        ret = []
+        # models.ManyToMany field's all() return all the Course     objects that this user belongs to
+        for course in self.courses.all():
+            ret.append(course.name)
+        return ret  # return list ob courses names
 
     @classmethod
     def _extend_fields(cls, data):
@@ -108,14 +133,33 @@ class Teacher(User):
 
 
 class Student(User):
+    photo = models.ImageField(upload_to='user_photo/student/',
+                              verbose_name='Photo',
+                              default=generate_random_student_avatar())
+    resume = models.FileField(upload_to='user_resume/student/',
+                              verbose_name='Resume',
+                              default='default_resume/no_resume.png')
     previous_educational_institution = models.CharField(max_length=100, null=True, default='-',
                                                         verbose_name='Previous educational institution')
     course = models.ForeignKey(Course, on_delete=models.CASCADE,
                                verbose_name='Course')
+    invited = models.IntegerField(default=0, verbose_name='Number of invited students')
 
     class Meta:
         verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
+
+    def get_absolute_url(self):
+        return reverse('student-profile', kwargs={'pk': self.pk})
+
+    def increase_invitational_number(self):
+        self.invited += 1
+        self.save()
+
+    def get_resume_in_template_format(self):
+        ext = self.resume.url.rsplit('.')[1]
+        path = self.resume.url[1:]
+        return get_data_from_file_in_str_format(path, ext)
 
     @classmethod
     def _extend_fields(cls, data):
@@ -123,7 +167,8 @@ class Student(User):
             'birthday': f.date_between(start_date='-50y', end_date='-16y'),
             'position': 'Student',
             'previous_educational_institution': f'School №{randint(1, 100)}',
-            'course': choice(Course.objects.all())
+            'course': choice(Course.objects.all()),
+            'photo': generate_random_student_avatar()
         })
 
     def __str__(self):
