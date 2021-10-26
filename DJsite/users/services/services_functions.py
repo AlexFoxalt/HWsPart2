@@ -32,10 +32,6 @@ def get_position_from_cleaned_data(form) -> str:
     return form.cleaned_data.get('position', None)
 
 
-def set_cleaned_data_position_to(form, arg) -> None:
-    form.cleaned_data['position'] = arg
-
-
 def set_cleaned_data_value_to_list_of_objects(form, value, cls):
     form.cleaned_data[value] = cls.objects.get(pk=form.cleaned_data[value])
 
@@ -92,3 +88,7 @@ def get_data_from_file_in_str_format(path, extension) -> str:
         return read_docx_file(path)
     elif extension == 'pdf':
         return read_pdf_file(path)
+
+
+def get_pos_and_course_from_args(args):
+    return args[0].get('pos', None), args[0].get('course', None)

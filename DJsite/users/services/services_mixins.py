@@ -1,12 +1,15 @@
 """Here we are working with all types on Mixins that shall be imported to views.py"""
 
 import django
+from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
+from users.models import Teacher, Student
 from users.services.services_constants import MENU
 from users.services.services_error_handlers import page_not_found
 from users.services.services_functions import from_dict_to_list_of_dicts_format, combine_context
@@ -137,3 +140,48 @@ class ProfileMixin(ContextMixin, DetailView):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id)
         return combine_context(context, extra_context)
+
+
+class EditUserMixin(ContextMixin, UpdateView):
+    template_name = 'edit_user.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              pk=self.kwargs['pk'])
+        return combine_context(context, extra_context)
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        if self.model is Teacher:
+            messages.success(self.request, 'Teacher edited successfully')
+        elif self.model is Student:
+            messages.success(self.request, 'Student edited successfully')
+        return result
+
+    def get_success_url(self, *args, **kwargs):
+        if self.model is Teacher:
+            return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'])])
+        elif self.model is Student:
+            return reverse_lazy('edit-student', args=[str(self.kwargs['pk'])])
+
+
+class DeleteUserMixin(ContextMixin, DeleteView):
+    template_name = 'delete_user.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs['pk']
+
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              pk=pk,
+                                              user=get_object_or_404(self.model, pk=pk))
+        return combine_context(context, extra_context)
+
+    def get_success_url(self, *args, **kwargs):
+        if self.model is Teacher:
+            messages.success(self.request, 'Teacher deleted successfully')
+            return reverse_lazy('get-all-teachers')
+        elif self.model is Student:
+            messages.success(self.request, 'Student deleted successfully')
+            return reverse_lazy('get-all-students')

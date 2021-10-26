@@ -1,9 +1,9 @@
 """Here we are working with stuff that need import Models from models.py"""
 
-from users.models import Course, Teacher, Student
+from users.models import Course, Teacher, Student, User
 from users.services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER
-from users.services.services_functions import format_raw_cleaned_data_for_user, set_cleaned_data_position_to, \
+from users.services.services_functions import format_raw_cleaned_data_for_user, \
     set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list, \
     release_invitational_system
 
@@ -37,16 +37,14 @@ def get_users_by_pos_and_course(pos: str, course: str):
 
 def get_and_save_object_by_its_position(position: str, form):
     user_position = 'User'
-    if position == '0':
-        set_cleaned_data_position_to(form, 'Student')
+    if position == 'Student':
         release_invitational_system(form, Student)
         format_raw_cleaned_data_for_user(form, KEYS_TO_POP_FOR_STUDENT)
         set_cleaned_data_value_to_list_of_objects(form, 'course', Course)
 
         Student.objects.create(**form.cleaned_data)
         user_position = 'Student'
-    elif position == '1':
-        set_cleaned_data_position_to(form, 'Teacher')
+    elif position == 'Teacher':
         # We want to save this data here
         courses = get_list_of_objects_from_cleaned_data(form, 'teacher_courses')
         # Cus here we need to delete 'teacher_courses' from cleaned data
@@ -60,3 +58,7 @@ def get_and_save_object_by_its_position(position: str, form):
         return False, user_position
 
     return True, user_position
+
+
+def get_model_name_by_pk(pk):
+    return User.objects.get(pk=pk).position.lower()

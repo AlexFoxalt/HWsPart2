@@ -204,8 +204,8 @@ FACULTIES = [
 ]
 
 POSITIONS_SELECTOR = [
-    (0, 'Student'),
-    (1, 'Teacher')
+    ('Student', 'Student'),
+    ('Teacher', 'Teacher')
 ]
 
 FACULTIES_SELECTOR = [(fac, fac) for fac in FACULTIES]

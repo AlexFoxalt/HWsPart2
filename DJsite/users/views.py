@@ -1,20 +1,23 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, NoReverseMatch
+from django.urls import NoReverseMatch
+from django.core.exceptions import BadRequest
+from django.views.generic import ListView, TemplateView, CreateView, View
+
 from webargs.djangoparser import use_args
 from webargs import djangoparser
-from django.core.exceptions import BadRequest
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView, View, DetailView
 
-from .forms import CreateUserForm, EditStudentForm, EditTeacherForm
-from users.services.services_functions import combine_context, get_position_from_cleaned_data
-from .models import Student, Teacher, User
-from .services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
+from users.forms import CreateUserForm, EditStudentForm, EditTeacherForm
+from users.models import Student, Teacher
+from users.services.services_functions import combine_context, get_position_from_cleaned_data, \
+    get_pos_and_course_from_args
+from users.services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY, STUDENT_FILTER_QUERY, \
     POSITION_AND_COURSE_FILTER_QUERY
-from .services.services_error_handlers import page_not_found
-from .services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
-    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ProfileMixin
-from .services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position
+from users.services.services_error_handlers import page_not_found
+from users.services.services_mixins import ContextMixin, EntityGeneratorMixin, GetAllUsersMixin, \
+    EntitySearchPerOneFieldMixin, EntitySearchPerAllFieldsMixin, ProfileMixin, EditUserMixin, DeleteUserMixin
+from users.services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
+    get_model_name_by_pk
 
 parser = djangoparser.DjangoParser()
 
@@ -100,93 +103,37 @@ class CreateUser(ContextMixin, CreateView):
 
 
 class EditUser(View):
-    """Tech view for redirection, depending on chosen object's model"""
-
+    """
+    Tech view for redirection, depending on chosen object's model
+    """
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
-        model_name = User.objects.get(pk=pk).position
         try:
-            return redirect(f'edit-{model_name.lower()}', pk=pk)
+            return redirect(f'edit-{get_model_name_by_pk(pk)}', pk=pk)
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')
 
 
-class EditStudent(ContextMixin, UpdateView):
-    template_name = 'edit_user.html'
+class EditStudent(EditUserMixin):
     form_class = EditStudentForm
     model = Student
     page_id = 5
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=self.kwargs['pk'])
-        return combine_context(context, extra_context)
 
-    def form_valid(self, form):
-        result = super().form_valid(form)
-        messages.success(self.request, 'Student edited successfully')
-        return result
-
-    def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('edit-student', args=[str(self.kwargs['pk'])])
-
-
-class EditTeacher(ContextMixin, UpdateView):
-    template_name = 'edit_user.html'
+class EditTeacher(EditUserMixin):
     form_class = EditTeacherForm
     model = Teacher
     page_id = 6
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=self.kwargs['pk'])
-        return combine_context(context, extra_context)
 
-    def form_valid(self, form):
-        result = super().form_valid(form)
-        messages.success(self.request, 'Teacher edited successfully')
-        return result
-
-    def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'])])
-
-
-class DeleteStudent(ContextMixin, DeleteView):
+class DeleteStudent(DeleteUserMixin):
     model = Student
-    template_name = 'delete_user.html'
     page_id = 7
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs['pk']
-        extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=pk,
-                                              user=Student.objects.get(pk=pk))
-        return combine_context(context, extra_context)
 
-    def get_success_url(self, *args, **kwargs):
-        messages.success(self.request, 'Student deleted successfully')
-        return reverse_lazy('edit-student', args=[str(self.kwargs['pk'] + 1)])
-
-
-class DeleteTeacher(ContextMixin, DeleteView):
+class DeleteTeacher(DeleteUserMixin):
     model = Teacher
-    template_name = 'delete_user.html'
     page_id = 8
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs['pk']
-        extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=pk,
-                                              user=Teacher.objects.get(pk=pk))
-        return combine_context(context, extra_context)
-
-    def get_success_url(self, *args, **kwargs):
-        messages.success(self.request, 'Teacher deleted successfully')
-        return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'] + 1)])
 
 
 class GetUsersByCourse(ContextMixin, TemplateView):
@@ -195,8 +142,7 @@ class GetUsersByCourse(ContextMixin, TemplateView):
 
     @use_args(POSITION_AND_COURSE_FILTER_QUERY, location='query')
     def get(self, request, *args, **kwargs):
-        pos = args[0].get('pos', None)
-        course = args[0].get('course', None)
+        pos, course = get_pos_and_course_from_args(args)
 
         if pos is None or course is None:
             return page_not_found(request, 'Position or Course can not be NoneType. '
@@ -208,7 +154,7 @@ class GetUsersByCourse(ContextMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id,
-                                              user_list=user_list,
+                                              posts=user_list,
                                               position=pos,
                                               course=course,
                                               columns=columns)

@@ -2,6 +2,16 @@
 {% load static %}
 {% block content %}
 
+{% block messages %}
+	{% if messages %}
+		<ul class="messages" id='successMessage'>
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
 <h1>List of {{ user_class }}</h1>
 
 {% include 'posts-results-partial.html' %}
