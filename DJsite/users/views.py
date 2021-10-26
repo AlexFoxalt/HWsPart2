@@ -198,8 +198,6 @@ class GetUsersByCourse(ContextMixin, TemplateView):
         pos = args[0].get('pos', None)
         course = args[0].get('course', None)
 
-        print(pos, course)
-
         if pos is None or course is None:
             return page_not_found(request, 'Position or Course can not be NoneType. '
                                            'Maybe be you don\'t create a Course?')

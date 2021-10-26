@@ -20,7 +20,7 @@ def format_raw_cleaned_data_for_user(form, keys_to_pop) -> None:
     form.cleaned_data.pop('resume') if not form.cleaned_data['resume'] else None
 
 
-def combine_context(cont1, cont2):
+def combine_context(cont1: dict, cont2: dict) -> dict:
     return dict(**cont1, **cont2)
 
 
