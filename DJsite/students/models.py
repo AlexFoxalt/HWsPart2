@@ -33,6 +33,8 @@ class Student(User):
         self.save()
 
     def get_resume_in_template_format(self):
+        if self.resume == 'default_resume/no_resume.png':
+            return None
         ext = self.resume.url.rsplit('.')[1]
         path = self.resume.url[1:]
         return get_data_from_file_in_str_format(path, ext)
