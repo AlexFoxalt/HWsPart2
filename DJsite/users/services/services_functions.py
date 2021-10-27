@@ -1,4 +1,4 @@
-"""All possible util functions that DON'T need any project imports"""
+"""All possible util functions that DON'T need any project imports except CONSTANTS"""
 import ast
 from random import choice, randint
 

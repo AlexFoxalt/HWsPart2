@@ -1,4 +1,4 @@
-"""Here we are working with stuff that need import Models from models.py"""
+"""Here we are working with stuff that need imports from models.py"""
 
 from users.models import Course, Teacher, Student, User
 from users.services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \

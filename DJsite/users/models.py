@@ -75,6 +75,16 @@ class User(models.Model):
         self.counter += 1
         return field_value
 
+    def get_fields_for_displaying_user_in_list(self):
+        return [self.first_name, self.last_name, self.email, self.position]
+
+    @classmethod
+    def get_columns_for_displaying_user_in_list(cls):
+        return [cls.first_name.field.verbose_name,
+              cls.last_name.field.verbose_name,
+              cls.email.field.verbose_name,
+              cls.position.field.verbose_name]
+
 
 class Course(models.Model):
     name = models.CharField(max_length=100, verbose_name='Name')
@@ -131,6 +141,13 @@ class Teacher(User):
             field_values.append(str(getattr(self, field.name, '')))
         return ' --- '.join(field_values)
 
+    def get_fields_for_displaying_user_in_list(self):
+        return super().get_fields_for_displaying_user_in_list() + [self.photo]
+
+    @classmethod
+    def get_columns_for_displaying_user_in_list(cls):
+        return super().get_columns_for_displaying_user_in_list() + [cls.photo.field.verbose_name]
+
 
 class Student(User):
     photo = models.ImageField(upload_to='user_photo/student/',
@@ -176,3 +193,11 @@ class Student(User):
         for field in self._meta.get_fields():
             field_values.append(str(getattr(self, field.name, '')))
         return ' --- '.join(field_values)
+
+    def get_fields_for_displaying_user_in_list(self):
+        return super().get_fields_for_displaying_user_in_list() + [self.photo, self.resume]
+
+    @classmethod
+    def get_columns_for_displaying_user_in_list(cls):
+        return super().get_columns_for_displaying_user_in_list() + [cls.photo.field.verbose_name,
+                                                                    cls.resume.field.verbose_name]

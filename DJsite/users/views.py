@@ -50,18 +50,6 @@ class TeacherGenerator(EntityGeneratorMixin, ListView):
         return super().get(request, count, self.user_class, *args, **kwargs)
 
 
-class GetAllTeachers(GetAllUsersMixin):
-    model = Teacher
-    template_name = 'list_of_users.html'
-    page_id = 2
-
-
-class GetAllStudents(GetAllUsersMixin):
-    model = Student
-    template_name = 'list_of_users.html'
-    page_id = 3
-
-
 class GetTeachers(EntitySearchPerOneFieldMixin, ListView):
     model = Teacher
 
@@ -106,34 +94,13 @@ class EditUser(View):
     """
     Tech view for redirection, depending on chosen object's model
     """
+
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         try:
             return redirect(f'edit-{get_model_name_by_pk(pk)}', pk=pk)
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')
-
-
-class EditStudent(EditUserMixin):
-    form_class = EditStudentForm
-    model = Student
-    page_id = 5
-
-
-class EditTeacher(EditUserMixin):
-    form_class = EditTeacherForm
-    model = Teacher
-    page_id = 6
-
-
-class DeleteStudent(DeleteUserMixin):
-    model = Student
-    page_id = 7
-
-
-class DeleteTeacher(DeleteUserMixin):
-    model = Teacher
-    page_id = 8
 
 
 class GetUsersByCourse(ContextMixin, TemplateView):
@@ -159,6 +126,40 @@ class GetUsersByCourse(ContextMixin, TemplateView):
                                               course=course,
                                               columns=columns)
         return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class GetAllTeachers(GetAllUsersMixin):
+    model = Teacher
+    template_name = 'list_of_users.html'
+    page_id = 2
+
+
+class GetAllStudents(GetAllUsersMixin):
+    model = Student
+    template_name = 'list_of_users.html'
+    page_id = 3
+
+
+class EditStudent(EditUserMixin):
+    form_class = EditStudentForm
+    model = Student
+    page_id = 5
+
+
+class EditTeacher(EditUserMixin):
+    form_class = EditTeacherForm
+    model = Teacher
+    page_id = 6
+
+
+class DeleteStudent(DeleteUserMixin):
+    model = Student
+    page_id = 7
+
+
+class DeleteTeacher(DeleteUserMixin):
+    model = Teacher
+    page_id = 8
 
 
 class TeacherProfile(ProfileMixin):

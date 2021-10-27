@@ -125,7 +125,7 @@ class ContextMixin:
 class GetAllUsersMixin(ContextMixin, ListView):
     def get(self, request, *args, **kwargs):
         posts = self.model.objects.all()
-        columns = [f.verbose_name for f in self.model._meta.fields]
+        columns = [column_name for column_name in self.model.get_columns_for_displaying_user_in_list()]
         context = self.get_user_context(page_id=self.page_id,
                                         posts=posts,
                                         columns=columns)
