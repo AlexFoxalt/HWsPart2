@@ -279,19 +279,35 @@ table.userlist-table tr:hover {
 	font-family: Georgia, serif;
 }
 
-table.userlist-table-all, th, td {
+/*----------Left table -----------------*/
+
+table.userlist-table-all-left, th, td {
 	text-align: center;
 	padding: 4px;
-	border-bottom: 1px solid #ddd;
-}
-table.userlist-table-all {
-	width: 100%;
-	height: 100%;
-	margin-left: auto;
-	margin-right: auto;
 	border-collapse: collapse;
 }
-table.userlist-table-all tr:hover {
+table.userlist-table-all-left {
+	width: 49%;
+	height: 100%;
+	float: left;
+}
+table.userlist-table-all-left tr:hover {
+	background: #a1ffc0;
+}
+
+/*----------Right table -----------------*/
+
+table.userlist-table-all-right, th, td {
+	text-align: center;
+	padding: 4px;
+	border-collapse: collapse;
+}
+table.userlist-table-all-right {
+	width: 49%;
+	height: 100%;
+	float: right;
+}
+table.userlist-table-all-right tr:hover {
 	background: #a1ffc0;
 }
 /*~~~~~~~~~~~~~~~~~~~ Edit/Delete users form ~~~~~~~~~~~~~~~~~~~~~*/

@@ -15,35 +15,10 @@
 <h1>List of {{ user_class }}</h1>
 
 {% load static %}
-{% if posts %}
-	<table class="userlist-table-all" style="margin-top: 5px;">
+{% if left_side_posts %}
 	
-	<tr>
-    	<th style="width:50px">Edit</th>
-    	<th style="width:50px">Show</th>
-    	{% for column in columns %}
-    		<th>{{ column }}</th>
-    	{% endfor %}
-    </tr>
-	
-	{% for post in posts %}
-		<tr>
-			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
-			<td><a href="{{ post.get_absolute_url }}"><button class="show-user-button">S</button></a></td>
-			{% for value in post.get_fields_for_displaying_user_in_list %}
-				{% if value.url %}
-					{% if value.url|slice:":19" == '/media/user_resume/' %}
-						<td><img src="{% static 'users/images/resume.png' %}" class="user-list-photo"></td>
-					{% else %}
-						<td><img src="{{value.url}}" class="user-list-photo"></td>
-					{% endif %}
-				{% else %}
-					<td>{{ value }}</td>
-				{% endif %}
-			{% endfor %}
-		</tr>
-	{% endfor %}
-	</table>
+	{% include 'list_of_users_for_double_table.html' %}
+
 {% else %}
   	<h2>Sorry...no users found :(</h2>
 {% endif %}

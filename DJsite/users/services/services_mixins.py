@@ -125,9 +125,13 @@ class ContextMixin:
 class GetAllUsersMixin(ContextMixin, ListView):
     def get(self, request, *args, **kwargs):
         posts = self.model.objects.all()
+        half_len = len(posts) // 2
+        left_side_posts = posts[:half_len]
+        right_side_posts = posts[half_len:]
         columns = [column_name for column_name in self.model.get_columns_for_displaying_user_in_list()]
         context = self.get_user_context(page_id=self.page_id,
-                                        posts=posts,
+                                        left_side_posts=left_side_posts,
+                                        right_side_posts=right_side_posts,
                                         columns=columns)
         return render(request, self.template_name, context=context)
 
