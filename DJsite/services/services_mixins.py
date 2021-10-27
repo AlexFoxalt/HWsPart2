@@ -9,11 +9,12 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
-from users.models import Teacher, Student
-from users.services.services_constants import MENU
-from users.services.services_error_handlers import page_not_found
-from users.services.services_functions import from_dict_to_list_of_dicts_format, combine_context
-from users.services.services_models import CONTEXT_CONTAINER
+from students.models import Student
+from teachers.models import Teacher
+from services.services_constants import MENU
+from services.services_error_handlers import page_not_found
+from services.services_functions import from_dict_to_list_of_dicts_format, combine_context
+from services.services_models import CONTEXT_CONTAINER
 
 
 class EntityGeneratorMixin:

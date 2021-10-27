@@ -1,9 +1,12 @@
 """Here we are working with stuff that need imports from models.py"""
+from random import sample, randint
 
-from users.models import Course, Teacher, Student, User
-from users.services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
+from students.models import Student
+from teachers.models import Teacher
+from users.models import Course, User
+from services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER
-from users.services.services_functions import format_raw_cleaned_data_for_user, \
+from services.services_functions import format_raw_cleaned_data_for_user, \
     set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list, \
     release_invitational_system
 
