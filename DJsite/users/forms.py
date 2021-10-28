@@ -3,9 +3,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import User, Student, Teacher, Course
-from .services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, \
-    INVALID_DOMAIN_NAMES
+from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
+    POSITIONS_SELECTOR
+from students.models import Student
+from .models import User, Course
 
 
 class CreateUserForm(ModelForm):
@@ -84,28 +85,3 @@ class CreateUserForm(ModelForm):
         if first_name == last_name:
             raise ValidationError('First and Last name cannot repeat', code='invalid')
         return cleaned_data
-
-
-class EditStudentForm(ModelForm):
-    class Meta:
-        model = Student
-        fields = '__all__'
-        widgets = {
-            'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
-            'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
-            'position': forms.Select(choices=POSITIONS_SELECTOR),
-        }
-
-
-class EditTeacherForm(ModelForm):
-    class Meta:
-        model = Teacher
-        fields = '__all__'
-        widgets = {
-            'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
-            'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
-            'faculty': forms.Select(choices=FACULTIES_SELECTOR),
-            'position': forms.Select(choices=POSITIONS_SELECTOR),
-            'date_of_employment': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1))
-        }

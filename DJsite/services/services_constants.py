@@ -1,6 +1,11 @@
 """Here we collect all of constants that we used in project"""
-
+from faker import Faker
 from marshmallow import fields
+from webargs import djangoparser
+
+parser = djangoparser.DjangoParser()
+
+FAKER = Faker('EN')
 
 INVALID_DOMAIN_NAMES = ('@abc.com',
                         '@123.com',

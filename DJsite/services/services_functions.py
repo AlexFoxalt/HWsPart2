@@ -5,7 +5,7 @@ from random import choice, randint
 import docx
 from PyPDF2 import PdfFileReader
 
-from users.services.services_constants import FACULTIES
+from services.services_constants import FACULTIES
 
 
 def mine_faker_of_faculties() -> str:
