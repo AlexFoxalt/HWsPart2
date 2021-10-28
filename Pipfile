@@ -39,7 +39,6 @@ django-debug-toolbar = "*"
 django-grappelli = "*"
 python-docx = "*"
 pypdf2 = "*"
-
 [dev-packages]
 
 [requires]
