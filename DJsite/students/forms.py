@@ -3,11 +3,16 @@ from datetime import datetime
 from django import forms
 from django.forms import ModelForm
 
-from services.services_constants import FACULTIES_SELECTOR, POSITIONS_SELECTOR
+from services.services_constants import FACULTIES_SELECTOR
 from students.models import Student
 
 
 class EditStudentForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['photo'].widget.initial_text = 'currently---'
+        self.fields['photo'].widget.input_text = 'change------'
+
     class Meta:
         model = Student
         fields = '__all__'

@@ -1,4 +1,5 @@
 """Here we collect all of constants that we used in project"""
+from django.forms import ClearableFileInput
 from faker import Faker
 from marshmallow import fields
 from webargs import djangoparser

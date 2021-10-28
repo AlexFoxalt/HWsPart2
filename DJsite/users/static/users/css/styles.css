@@ -427,23 +427,21 @@ table.userlist-table-all-right tr:hover {
 	background-color: lightgray;
 	height: 25px;
 	width: 260px;
-	margin-left: 10px;
 	font-size: 20px;
 	font-family: 'Times New Roman', serif;
 }
 .edit-user-form input[type=file] {
 	height: 30px;
 	width: 260px;
-	margin-left: 10px;
 	font-size: 16px;
 	font-family: 'Times New Roman', serif;
 }
 select {
   padding: 5px 10px;
-  margin-left: 10px;
   border: none;
   border-radius: 4px;
   background-color: #f1f1f1;
+  margin-right: 10px;
 }
 .edit-user-form label {
 	font-size: 20px;
@@ -457,6 +455,10 @@ label.form-label {
 	display: inline-block;
 	width: 7%;
 	margin-bottom: 20px;
+}
+.edit-user-form-fields {
+	display: inline-block;
+	margin-left: 30px;
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~Search users~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 

@@ -19,7 +19,7 @@
     <div class="form-error"> {{ form.non_field_errors }} </div>
     {% for f in form %}
 		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
-		{{ f }}
+		<div class="edit-user-form-fields">{{ f }}</div>
 		<div class="form-error">{{ f.errors }}</div>
 	{% endfor %}
 
