@@ -16,11 +16,13 @@
 
 <form class="edit-user-form" action="" method="post">
     {% csrf_token %}
+    <div class="form-error"> {{ form.non_field_errors }} </div>
     {% for f in form %}
 		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
 		{{ f }}
 		<div class="form-error">{{ f.errors }}</div>
 	{% endfor %}
+
     <input class="submit-button" type="submit" value="Submit">
     <a href="{% url url pk=pk %}"><input class="delete-confirm-button" type="button" value="Delete {{ position }}"></a>
 </form>

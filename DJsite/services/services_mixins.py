@@ -11,7 +11,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from students.models import Student
 from teachers.models import Teacher
-from services.services_constants import MENU
+from services.services_constants import MENU, OPTIONS
 from services.services_error_handlers import page_not_found
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context
 from services.services_models import CONTEXT_CONTAINER
@@ -49,7 +49,7 @@ class EntitySearchMixinBase:
     def get_context_data(cls):
         posts = cls.model.objects.all()
         class_name = cls.model.__name__
-        columns = [f.get_attname() for f in cls.model._meta.fields]
+        columns = [f.verbose_name for f in cls.model._meta.fields]
 
         context = {
             'title': f'{class_name}s searching',
@@ -153,7 +153,8 @@ class EditUserMixin(ContextMixin, UpdateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=self.kwargs['pk'])
+                                              pk=self.kwargs['pk'],
+                                              options=OPTIONS)
         return combine_context(context, extra_context)
 
     def form_valid(self, form):

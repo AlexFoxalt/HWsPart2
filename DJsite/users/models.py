@@ -58,7 +58,7 @@ class User(models.Model):
             raise StopIteration
 
         field_object = self.__class__._meta.get_field(field_names[self.counter])
-        if str(field_object) == 'users.Student.course':
+        if str(field_object) == 'students.Student.course':
             field_value = field_object.value_from_object(self)
             course = Course.objects.get(pk=field_value)
             field_value = course.name

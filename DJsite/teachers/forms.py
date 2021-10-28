@@ -11,10 +11,10 @@ class EditTeacherForm(ModelForm):
     class Meta:
         model = Teacher
         fields = '__all__'
+        exclude = ('position',)
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
             'faculty': forms.Select(choices=FACULTIES_SELECTOR),
-            'position': forms.Select(choices=POSITIONS_SELECTOR),
             'date_of_employment': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1))
         }
