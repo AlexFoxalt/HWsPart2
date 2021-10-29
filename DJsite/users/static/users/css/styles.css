@@ -18,12 +18,6 @@ body {
   min-height: 100%;
 }
 
-html,
-body,
-section {
-  min-height: 100vh;
-}
-
 section {
   margin-left: 15px;
   margin-right: 15px;
