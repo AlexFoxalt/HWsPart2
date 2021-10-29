@@ -1,7 +1,9 @@
 from datetime import datetime
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
+from django.contrib.auth.models import User as Person
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
@@ -85,3 +87,19 @@ class CreateUserForm(ModelForm):
         if first_name == last_name:
             raise ValidationError('First and Last name cannot repeat', code='invalid')
         return cleaned_data
+
+
+class RegisterUserForm(UserCreationForm):
+    username = forms.CharField(label='Login', widget=forms.TextInput())
+    email = forms.CharField(label='Email', widget=forms.EmailInput())
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
+
+    class Meta:
+        model = Person
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'groups']
+
+
+class LoginUserForm(AuthenticationForm):
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'login-form'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'login-form'}))

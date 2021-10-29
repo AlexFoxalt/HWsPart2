@@ -19,16 +19,30 @@
 <body>
 
 <ul class="menu-bar">
+  {% if request.user.is_authenticated %}
+    <li class="username">{{ user.username }}</li>
+  {% endif %}
+  
   {% for m in menu %}
-    {% if forloop.last %}
-      <li class="menu-bar last-menu-button"><a target="_blank" href="{{ m.url }}">{{ m.name }}</a></li>
+    
+    {% if m.id in auth_buttons_ids %}
+      
+      {% if selected == m.id %}
+        <li class="menu-bar-last"><a class="active disabled" href="{% url m.url %}">{{ m.name }}</a></li>
+      {% else %}
+        <li class="menu-bar-last"><a class="active" href="{% url m.url %}">{{ m.name }}</a></li>
+      {% endif %}
+    
     {% else %}
+
       {% if selected == m.id %}
         <li class="menu-bar"><a class="active disabled" href="{% url m.url %}">{{ m.name }}</a></li>
       {% else %}
         <li class="menu-bar"><a class="active" href="{% url m.url %}">{{ m.name }}</a></li>
       {% endif %}
+
     {% endif %}
+
   {% endfor %}
 </ul>
 

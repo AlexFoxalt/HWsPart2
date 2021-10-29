@@ -11,8 +11,7 @@ from services.services_functions import format_raw_cleaned_data_for_user, \
     release_invitational_system
 
 CONTEXT_CONTAINER = {
-    1: {'title': 'Main Page', 'selected': 1, 'posts': HOME_PAGE_POSTS,
-        'fs_positions': POSITIONS_SELECTOR, 'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
+    1: {'title': 'Main Page', 'selected': 1},
     2: {'title': 'All teachers', 'user_class': 'Teacher(s)'},
     3: {'title': 'All students', 'user_class': 'Student(s)'},
     4: {'title': 'Create User', 'url': 'create-user', 'options': OPTIONS},
@@ -24,6 +23,14 @@ CONTEXT_CONTAINER = {
     10: {'title': 'Users by course'},
     11: {'title': 'Student Profile'},
     12: {'title': 'Teacher Profile'},
+    13: {'title': 'Register', 'selected': 5},
+    14: {'title': 'Sign in', 'selected': 4},
+    15: {'title': 'About', 'selected': 2},
+    16: {'title': 'Links',
+         'selected': 3,
+         'posts': HOME_PAGE_POSTS,
+         'fs_positions': POSITIONS_SELECTOR,
+         'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
 }
 
 

@@ -1,7 +1,9 @@
 from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import BadRequest
 from django.shortcuts import render, redirect
-from django.urls import NoReverseMatch
+from django.urls import NoReverseMatch, reverse_lazy
 from django.views.generic import TemplateView, CreateView, View
 from webargs.djangoparser import use_args
 
@@ -12,12 +14,32 @@ from services.services_functions import combine_context, get_position_from_clean
 from services.services_mixins import ContextMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
     get_model_name_by_pk
-from users.forms import CreateUserForm
+from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
 
 
 class Home(ContextMixin, TemplateView):
     template_name = 'index.html'
     page_id = 1
+
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class About(ContextMixin, TemplateView):
+    template_name = 'about.html'
+    page_id = 15
+
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class Links(ContextMixin, TemplateView):
+    template_name = 'links.html'
+    page_id = 16
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,6 +107,42 @@ class GetUsersByCourse(ContextMixin, TemplateView):
                                               course=course,
                                               columns=columns)
         return render(request, self.template_name, context=combine_context(context, extra_context))
+
+
+class RegisterUser(ContextMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('login')
+    page_id = 13
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('users-home')
+
+
+class LoginUser(ContextMixin, LoginView):
+    form_class = LoginUserForm
+    template_name = 'login.html'
+    page_id = 14
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id)
+        return combine_context(context, extra_context)
+
+    def get_success_url(self):
+        return reverse_lazy('users-home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('users-home')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

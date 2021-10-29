@@ -1,5 +1,4 @@
 """Here we collect all of constants that we used in project"""
-from django.forms import ClearableFileInput
 from faker import Faker
 from marshmallow import fields
 from webargs import djangoparser
@@ -43,11 +42,19 @@ OPTIONS = ['Teacher\'s date of employment',
            'Student\'s resume',
            'Student\'s email invited by']
 
-MENU = [
+MENU_FOR_LOGGED_USER = [
     {'name': 'Main Page', 'url': 'users-home', 'id': 1},
-    {'name': 'About', 'url': 'users-home', 'id': 2},
-    {'name': 'Links', 'url': 'users-home', 'id': 3},
-    {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 4}
+    {'name': 'About', 'url': 'about', 'id': 2},
+    {'name': 'Links', 'url': 'links', 'id': 3},
+    {'name': 'Logout', 'url': 'logout', 'id': 7},
+    # {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 6}
+]
+MENU_FOR_UNLOGGED_USER = [
+    {'name': 'Main Page', 'url': 'users-home', 'id': 1},
+    {'name': 'About', 'url': 'about', 'id': 2},
+    {'name': 'Sign In', 'url': 'login', 'id': 4},
+    {'name': 'Register', 'url': 'register', 'id': 5},
+    # {'name': 'Hillel LMS', 'url': 'https://lms.ithillel.ua/', 'id': 6}
 ]
 
 HOME_PAGE_POSTS = [

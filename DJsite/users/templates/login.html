@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="login-form">
+
+<h1 class="login-form"> {{ title }} </h1>
+
+<form method="post" class="edit-user-form login-form">
+	{% csrf_token %}
+	
+	<div class="form-error">{{ form.non_field_errors }}</div>
+
+	{% for f in form %}
+		<label class="login-form" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}
+		<div class="form-error">{{ f.errors }}</div>
+	{% endfor %}
+
+	<button type="submit" class="submit-button">Login</button>
+</form>
+
+</div>
+
+{% endblock %}

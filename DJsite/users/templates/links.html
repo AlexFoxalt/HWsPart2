@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section>
+  <div>
+    <h2>Possible urls on this site</h2>
+    <ul class="check-list">
+		{% for post in posts %}
+			<li><a class="main-menu-url-button" href="{% url post.url_name %}">{{ post.name }}</a> ---> {{ post.description }}</li>
+		{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<div class="fast-search">
+  {% csrf_token %}
+  <form action="{% url 'get-users-by-course' %}" method="get" enctype="multipart/form-data">
+    <h2>Fast Search by course</h2>
+    <p>Position:
+    <label for="position">
+      <select name="pos">
+        {% for position in fs_positions %}
+          <option value="{{ position.1 }}">{{ position.1 }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <p>Course:
+    <label for="course">
+      <select name="course">
+        {% for course in fs_courses %}
+          <option value="{{ course.0 }}">{{ course.1 }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <button type="submit" title="Search!"><i class="fa fa-search"></i></button>
+  </form>
+</div>
+
+{% endblock %}

@@ -11,7 +11,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from students.models import Student
 from teachers.models import Teacher
-from services.services_constants import MENU, OPTIONS
+from services.services_constants import OPTIONS, MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER
 from services.services_error_handlers import page_not_found
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context
 from services.services_models import CONTEXT_CONTAINER
@@ -35,7 +35,7 @@ class EntityGeneratorMixin:
             'title': f'{user_class} generator',
             'user_class': user_class,
             'posts': posts,
-            'menu': MENU
+            'menu': MENU_FOR_LOGGED_USER
         }
         return render(request, cls.template_name, context=context)
 
@@ -55,7 +55,7 @@ class EntitySearchMixinBase:
             'title': f'{class_name}s searching',
             'user_class': f'{class_name}(s)',
             'posts': posts,
-            'menu': MENU,
+            'menu': MENU_FOR_LOGGED_USER,
             'columns': columns
         }
         return context
@@ -114,9 +114,14 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 class ContextMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
-        context['menu'] = MENU
         context['selected'] = 0
         page_id = kwargs['page_id']
+        context['auth_buttons_ids'] = [4, 5, 7]
+
+        if self.request.user.is_authenticated:
+            context['menu'] = MENU_FOR_LOGGED_USER
+        else:
+            context['menu'] = MENU_FOR_UNLOGGED_USER
 
         container = CONTEXT_CONTAINER.get(page_id, None)
         context.update(container)

@@ -94,11 +94,15 @@ li.menu-bar {
   font-size: 22px;
   font-family: Bookman;
 }
-li.last-menu-button {
+li.username {
 	float: right;
-	margin-right: 40px;
-	background: lightskyblue;
-	padding: 0;
+  font-size: 23px;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  padding: 15px 60px 13px 60px;
+  text-decoration: none;
+  background-color: #04AA6D;
 }
 
 li.menu-bar a {
@@ -109,15 +113,32 @@ li.menu-bar a {
   text-decoration: none;
 }
 li.menu-bar:hover {
-	background-color: gray;
+	background-color: #393939;
 }
-
-li.menu-bar a:hover:not(.active) {
-  background-color: skyblue;
+li.menu-bar a:hover {
+  color: #04AA6D;
 }
 a.disabled {
 	pointer-events: none;
 	background-color: #04AA6D;
+}
+li.menu-bar-last {
+  float: right;
+  font-size: 18px;
+  font-family: 'Courier New', monospace;
+}
+li.menu-bar-last:hover {
+	background-color: #393939;
+}
+li.menu-bar-last a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 18px 16px 16px 17px;
+  text-decoration: none;
+}
+li.menu-bar-last a:hover {
+  color: #04AA6D;
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -423,7 +444,7 @@ table.userlist-table-all-right tr:hover {
 	text-shadow:0px 1px 0px #cc9f52;
 	width: 150px;
 }
-.edit-user-form input[type=text], input[type=email], input[type=number] {
+.edit-user-form input[type=text], input[type=email], input[type=number] , input[type=password]{
 	background-color: lightgray;
 	height: 25px;
 	width: 260px;
@@ -460,6 +481,26 @@ label.form-label {
 	display: inline-block;
 	margin-left: 30px;
 }
+
+div.login-form { 
+  width:400px;
+  height:400px;
+	margin: 70px auto;
+  background-color: gray;
+  padding: 20px;
+  text-align: center;
+}
+div.login-form button { 
+	margin: 20px auto 0 auto;
+}
+input.login-form {
+	
+}
+label.login-form {
+	display: block;
+	margin: 10px 0 5px 0;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~Search users~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 form.search-form input[type=text] {
