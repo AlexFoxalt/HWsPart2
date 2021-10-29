@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import BadRequest
 from django.shortcuts import render, redirect
@@ -37,9 +39,10 @@ class About(ContextMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-class Links(ContextMixin, TemplateView):
+class Links(ContextMixin, LoginRequiredMixin, TemplateView):
     template_name = 'links.html'
     page_id = 16
+    login_url = 'login'
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -47,10 +50,11 @@ class Links(ContextMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-class CreateUser(ContextMixin, CreateView):
+class CreateUser(ContextMixin, LoginRequiredMixin, CreateView):
     form_class = CreateUserForm
     template_name = 'create_user.html'
     page_id = 4
+    login_url = 'login'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -71,10 +75,11 @@ class CreateUser(ContextMixin, CreateView):
         return redirect('create-user')
 
 
-class EditUser(View):
+class EditUser(LoginRequiredMixin, View):
     """
     Tech view for redirection, depending on chosen object's model
     """
+    login_url = 'login'
 
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
@@ -84,9 +89,10 @@ class EditUser(View):
             return page_not_found(request, 'Position of user error, no such users!')
 
 
-class GetUsersByCourse(ContextMixin, TemplateView):
+class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
     template_name = "get-users-by-course.html"
     page_id = 10
+    login_url = 'login'
 
     @use_args(POSITION_AND_COURSE_FILTER_QUERY, location='query')
     def get(self, request, *args, **kwargs):
@@ -140,6 +146,7 @@ class LoginUser(ContextMixin, LoginView):
         return reverse_lazy('users-home')
 
 
+@login_required(login_url='login')
 def logout_user(request):
     logout(request)
     return redirect('users-home')
