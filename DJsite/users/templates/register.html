@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ title }}</h1>
 
-<form method="post" class="edit-user-form">
-{% csrf_token %}
+<div class="register-form">
+
+<h1 class="register-form"> {{ title }} </h1>
+
+<form method="post" class="edit-user-form register-form">
+	{% csrf_token %}
 	
-{% for f in form %}
-	<p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>{{ f }}</p>
-	<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
+	<div class="form-error">{{ form.non_field_errors }}</div>
 
-<button type="submit" class="submit-button">Register</button>
-<button class="reset-button" type="reset">Reset</button>
+	{% for f in form %}
+		<label class="login-form" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}
+		<div class="form-error">{{ f.errors }}</div>
+	{% endfor %}
+
+	<button type="submit" class="submit-button">Register</button>
+	<button type="reset" class="reset-button">Reset</button>
 </form>
+
+</div>
 
 {% endblock %}
