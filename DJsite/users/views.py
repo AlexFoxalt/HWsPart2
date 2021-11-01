@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
 from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch, reverse_lazy
@@ -146,10 +146,8 @@ class LoginUser(ContextMixin, LoginView):
         return reverse_lazy('users-home')
 
 
-@login_required(login_url='login')
-def logout_user(request):
-    logout(request)
-    return redirect('users-home')
+class LogoutUser(LogoutView):
+    next_page = 'users-home'
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
