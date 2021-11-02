@@ -2,5 +2,14 @@
 {% block content %}
 
 <h1>{{ title }}</h1>
+<pre>
+{% if request.user.is_authenticated %}
+Welcome back {{user.username}}!
+Hope you will find all that you need :)	
+{% else %}	
+Hello stranger!
+If you want to use this site, you should register or login, if you already did one.
+{% endif %}
 
+</pre>
 {% endblock content %}

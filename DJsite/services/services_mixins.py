@@ -149,7 +149,7 @@ class GetAllUsersMixin(ContextMixin, ListView):
 
 
 class ProfileMixin(ContextMixin, DetailView):
-    template_name = 'profile.html'
+    template_name = 'main/profile.html'
     context_object_name = 'profile'
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -159,7 +159,7 @@ class ProfileMixin(ContextMixin, DetailView):
 
 
 class EditUserMixin(ContextMixin, UpdateView):
-    template_name = 'edit_user.html'
+    template_name = 'main/edit_user.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

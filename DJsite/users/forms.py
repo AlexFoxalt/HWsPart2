@@ -7,6 +7,7 @@ from django.contrib.auth.models import User as U
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
+from services.services_models import save_raw_object_by_position
 from students.models import Student
 from .models import User, Course
 
@@ -92,12 +93,26 @@ class CreateUserForm(ModelForm):
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput())
     email = forms.CharField(label='Email', widget=forms.EmailInput())
+    position = forms.ChoiceField(label='Position', choices=POSITIONS_SELECTOR)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
 
     class Meta:
         model = U
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.is_active = False
+            user.save()
+
+        position = self.cleaned_data.get('position')
+        save_raw_object_by_position(position, user)
+
+        return user
 
 
 class LoginUserForm(AuthenticationForm):

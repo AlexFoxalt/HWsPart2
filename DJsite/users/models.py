@@ -10,15 +10,14 @@ from services.services_functions import mine_faker_of_faculties
 
 class User(models.Model):
     user = models.OneToOneField(U, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100, null=False, verbose_name='First Name')
-    last_name = models.CharField(max_length=100, null=False, verbose_name='Last Name')
-    city = models.CharField(max_length=100, null=False, verbose_name='City')
-    birthday = models.DateField(null=False, verbose_name='Birthday')
-    email = models.EmailField(null=False, unique=True, verbose_name='Email')
-    phone_number = models.CharField(max_length=50, null=False, unique=True, verbose_name='Phone number')
+    first_name = models.CharField(max_length=100, null=True, verbose_name='First Name')
+    last_name = models.CharField(max_length=100, null=True, verbose_name='Last Name')
+    city = models.CharField(max_length=100, null=True, verbose_name='City')
+    birthday = models.DateField(null=True, verbose_name='Birthday')
+    email = models.EmailField(null=True, unique=True, verbose_name='Email')
+    phone_number = models.CharField(max_length=50, null=True, unique=True, verbose_name='Phone number')
     faculty = models.CharField(max_length=255, default='not chosen', verbose_name='Faculty')
     position = models.CharField(max_length=255, default='not chosen', verbose_name='Position')
-    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Time of creation')
 
     class Meta:
         verbose_name = 'Пользователь'

@@ -72,3 +72,10 @@ def get_and_save_object_by_its_position(position: str, form):
 
 def get_model_name_by_pk(pk):
     return User.objects.get(pk=pk).position.lower()
+
+
+def save_raw_object_by_position(position, user):
+    if position == 'Student':
+        Student.objects.create(user=user)
+    elif position == 'Teacher':
+        Teacher.objects.create(user=user)
