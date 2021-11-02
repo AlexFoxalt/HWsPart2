@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
@@ -20,7 +19,7 @@ from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
 
 
 class Home(ContextMixin, TemplateView):
-    template_name = 'index.html'
+    template_name = 'main/index.html'
     page_id = 1
 
     def get(self, request, *args, **kwargs):
@@ -30,7 +29,7 @@ class Home(ContextMixin, TemplateView):
 
 
 class About(ContextMixin, TemplateView):
-    template_name = 'about.html'
+    template_name = 'main/about.html'
     page_id = 15
 
     def get(self, request, *args, **kwargs):
@@ -40,7 +39,7 @@ class About(ContextMixin, TemplateView):
 
 
 class Links(ContextMixin, LoginRequiredMixin, TemplateView):
-    template_name = 'links.html'
+    template_name = 'main/links.html'
     page_id = 16
     login_url = 'login'
 
@@ -52,7 +51,7 @@ class Links(ContextMixin, LoginRequiredMixin, TemplateView):
 
 class CreateUser(ContextMixin, LoginRequiredMixin, CreateView):
     form_class = CreateUserForm
-    template_name = 'create_user.html'
+    template_name = 'main/create_user.html'
     page_id = 4
     login_url = 'login'
 
@@ -90,7 +89,7 @@ class EditUser(LoginRequiredMixin, View):
 
 
 class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
-    template_name = "get-users-by-course.html"
+    template_name = "main/get-users-by-course.html"
     page_id = 10
     login_url = 'login'
 
@@ -117,7 +116,7 @@ class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
 
 class RegisterUser(ContextMixin, CreateView):
     form_class = RegisterUserForm
-    template_name = 'register.html'
+    template_name = 'authentication/register.html'
     success_url = reverse_lazy('login')
     page_id = 13
 
@@ -134,7 +133,7 @@ class RegisterUser(ContextMixin, CreateView):
 
 class LoginUser(ContextMixin, LoginView):
     form_class = LoginUserForm
-    template_name = 'login.html'
+    template_name = 'authentication/login.html'
     page_id = 14
 
     def get_context_data(self, *, object_list=None, **kwargs):

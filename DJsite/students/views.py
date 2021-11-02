@@ -30,7 +30,7 @@ class GetStudents(EntitySearchPerAllFieldsMixin, LoginRequiredMixin, ListView):
 
 class GetAllStudents(LoginRequiredMixin, GetAllUsersMixin):
     model = Student
-    template_name = 'list_of_users.html'
+    template_name = 'main/list_of_users.html'
     page_id = 3
     login_url = 'login'
 

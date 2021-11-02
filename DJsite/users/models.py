@@ -1,6 +1,7 @@
 from random import sample, randint
 
 import django
+from django.contrib.auth.models import User as U
 from django.db import models
 
 from services.services_constants import FAKER
@@ -8,6 +9,7 @@ from services.services_functions import mine_faker_of_faculties
 
 
 class User(models.Model):
+    user = models.OneToOneField(U, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100, null=False, verbose_name='First Name')
     last_name = models.CharField(max_length=100, null=False, verbose_name='Last Name')
     city = models.CharField(max_length=100, null=False, verbose_name='City')

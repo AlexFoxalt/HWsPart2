@@ -76,7 +76,7 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 
         context['applied_filters'] = applied_filters
         context['searching_fields'] = from_dict_to_list_of_dicts_format(searching_keys)
-        return render(request, 'search_of_users.html', context=context)
+        return render(request, 'main/search_of_users.html', context=context)
 
 
 class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
@@ -102,20 +102,25 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
         if request.is_ajax():
             html = render_to_string(
-                template_name="posts-results-partial.html",
+                template_name="main/posts-results-partial.html",
                 context=context
             )
             data_dict = {"html_from_view": html}
             return JsonResponse(data=data_dict, safe=False)
 
-        return render(request, 'search_of_users.html', context=context)
+        return render(request, 'main/search_of_users.html', context=context)
 
 
 class ContextMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
         context['selected'] = 0
-        page_id = kwargs['page_id']
+
+        try:
+            page_id = kwargs['page_id']
+        except KeyError:
+            page_id = 'default'
+
         context['auth_buttons_ids'] = [4, 5, 7]
 
         if self.request.user.is_authenticated:
@@ -124,7 +129,8 @@ class ContextMixin:
             context['menu'] = MENU_FOR_UNLOGGED_USER
 
         container = CONTEXT_CONTAINER.get(page_id, None)
-        context.update(container)
+        if container:
+            context.update(container)
         return context
 
 
@@ -178,7 +184,7 @@ class EditUserMixin(ContextMixin, UpdateView):
 
 
 class DeleteUserMixin(ContextMixin, DeleteView):
-    template_name = 'delete_user.html'
+    template_name = 'main/delete_user.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -196,3 +202,10 @@ class DeleteUserMixin(ContextMixin, DeleteView):
         elif self.model is Student:
             messages.success(self.request, 'Student deleted successfully')
             return reverse_lazy('get-all-students')
+
+
+class PasswordResetMixin:
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context()
+        return combine_context(context, extra_context)

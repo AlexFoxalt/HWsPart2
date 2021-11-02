@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from django.contrib.auth.models import User as Person
+from django.contrib.auth.models import User as U
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
@@ -96,8 +96,8 @@ class RegisterUserForm(UserCreationForm):
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
 
     class Meta:
-        model = Person
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'groups']
+        model = U
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
 
 class LoginUserForm(AuthenticationForm):

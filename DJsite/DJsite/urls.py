@@ -25,12 +25,13 @@ from services.services_error_handlers import page_not_found
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),
+
     path('', include('users.urls')),
     path('', include('teachers.urls')),
     path('', include('students.urls')),
+
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
-
 ]
 
 if settings.DEBUG:
