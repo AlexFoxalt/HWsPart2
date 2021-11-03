@@ -1,11 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import NoReverseMatch, reverse_lazy
-from django.views.generic import TemplateView, CreateView, View
+from django.urls import NoReverseMatch, reverse_lazy, reverse
+from django.views.generic import TemplateView, CreateView, View, RedirectView
 from webargs.djangoparser import use_args
 
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
@@ -14,7 +15,7 @@ from services.services_functions import combine_context, get_position_from_clean
     get_pos_and_course_from_args
 from services.services_mixins import ContextMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
-    get_model_name_by_pk
+    get_model_name_by_pk, save_raw_object_by_position, get_user_by_username
 from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
 
 
@@ -74,7 +75,7 @@ class CreateUser(ContextMixin, LoginRequiredMixin, CreateView):
         return redirect('create-user')
 
 
-class EditUser(LoginRequiredMixin, View):
+class EditUser(LoginRequiredMixin, RedirectView):
     """
     Tech view for redirection, depending on chosen object's model
     """
@@ -117,8 +118,8 @@ class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
 class RegisterUser(ContextMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'authentication/register.html'
-    success_url = reverse_lazy('login')
     page_id = 13
+    success_url = '/users-home'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -127,8 +128,24 @@ class RegisterUser(ContextMixin, CreateView):
 
     def form_valid(self, form):
         user = form.save()
+        position = form.cleaned_data.get('position')
+        next_step_user = save_raw_object_by_position(position, user)
         login(self.request, user)
-        return redirect('users-home')
+        return redirect(f'next-step/{next_step_user.pk}')
+
+
+class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
+    """
+    Tech view for redirection, depending on chosen object's model
+    """
+    login_url = 'login'
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        try:
+            return redirect(f'{get_model_name_by_pk(pk)}/')
+        except NoReverseMatch:
+            return page_not_found(request, 'Position of user error, no such users!')
 
 
 class LoginUser(ContextMixin, LoginView):
@@ -147,6 +164,20 @@ class LoginUser(ContextMixin, LoginView):
 
 class LogoutUser(LogoutView):
     next_page = 'users-home'
+
+
+class UserProfile(LoginRequiredMixin, RedirectView):
+    """
+    Tech view for redirection, depending on chosen object's model
+    """
+    login_url = 'login'
+
+    def get(self, request, *args, **kwargs):
+        user = get_user_by_username(kwargs.get("username"))
+        try:
+            return redirect(f'{user.position.lower()}-profile', pk=user.pk)
+        except NoReverseMatch:
+            return page_not_found(request, 'Position of user error, no such users!')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,5 +1,5 @@
 """Here we are working with stuff that need imports from models.py"""
-from random import sample, randint
+from django.contrib.auth.models import User as U
 
 from students.models import Student
 from teachers.models import Teacher
@@ -31,6 +31,8 @@ CONTEXT_CONTAINER = {
          'posts': HOME_PAGE_POSTS,
          'fs_positions': POSITIONS_SELECTOR,
          'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
+    17: {'title': 'Register Student', 'position': 'Student'},
+    18: {'title': 'Register Teacher', 'position': 'Teacher'},
 }
 
 
@@ -76,6 +78,12 @@ def get_model_name_by_pk(pk):
 
 def save_raw_object_by_position(position, user):
     if position == 'Student':
-        Student.objects.create(user=user)
+        obj = Student.objects.create(user=user, position=position)
     elif position == 'Teacher':
-        Teacher.objects.create(user=user)
+        obj = Teacher.objects.create(user=user, position=position)
+    return obj
+
+
+def get_user_by_username(username):
+    user = U.objects.get(username=username)
+    return User.objects.get(user=user)

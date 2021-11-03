@@ -40,7 +40,7 @@ class CreateUserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'city', 'birthday', 'email', 'phone_number', 'faculty', 'position']
+        fields = ['city', 'birthday', 'phone_number', 'faculty', 'position']
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
@@ -100,19 +100,6 @@ class RegisterUserForm(UserCreationForm):
     class Meta:
         model = U
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-
-        if commit:
-            user.is_active = False
-            user.save()
-
-        position = self.cleaned_data.get('position')
-        save_raw_object_by_position(position, user)
-
-        return user
 
 
 class LoginUserForm(AuthenticationForm):

@@ -9,15 +9,13 @@ from services.services_functions import mine_faker_of_faculties
 
 
 class User(models.Model):
-    user = models.OneToOneField(U, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100, null=True, verbose_name='First Name')
-    last_name = models.CharField(max_length=100, null=True, verbose_name='Last Name')
+    user = models.OneToOneField(U, on_delete=models.CASCADE, primary_key=True)
     city = models.CharField(max_length=100, null=True, verbose_name='City')
     birthday = models.DateField(null=True, verbose_name='Birthday')
-    email = models.EmailField(null=True, unique=True, verbose_name='Email')
     phone_number = models.CharField(max_length=50, null=True, unique=True, verbose_name='Phone number')
     faculty = models.CharField(max_length=255, default='not chosen', verbose_name='Faculty')
     position = models.CharField(max_length=255, default='not chosen', verbose_name='Position')
+    filled = models.BooleanField(default=False, verbose_name='Filled information status')
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -70,13 +68,13 @@ class User(models.Model):
         return field_value
 
     def get_fields_for_displaying_user_in_list(self):
-        return [self.first_name, self.last_name, self.email, self.position]
+        return [self.user.first_name, self.user.last_name, self.user.email, self.position]
 
     @classmethod
     def get_columns_for_displaying_user_in_list(cls):
-        return [cls.first_name.field.verbose_name,
-                cls.last_name.field.verbose_name,
-                cls.email.field.verbose_name,
+        return [U.first_name.field.verbose_name,
+                U.last_name.field.verbose_name,
+                U.email.field.verbose_name,
                 cls.position.field.verbose_name]
 
 

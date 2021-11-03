@@ -5,8 +5,8 @@ from webargs.djangoparser import use_args
 
 from services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY
 from services.services_mixins import EntitySearchPerOneFieldMixin, EntityGeneratorMixin, GetAllUsersMixin, \
-    EditUserMixin, DeleteUserMixin, ProfileMixin
-from teachers.forms import EditTeacherForm
+    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
+from teachers.forms import EditTeacherForm, RegisterTeacherForm
 from teachers.models import Teacher
 
 parser = djangoparser.DjangoParser()
@@ -54,4 +54,11 @@ class DeleteTeacher(LoginRequiredMixin, DeleteUserMixin):
 class TeacherProfile(LoginRequiredMixin, ProfileMixin):
     model = Teacher
     page_id = 11
+    login_url = 'login'
+
+
+class TeacherContinuedRegistration(LoginRequiredMixin, UserContinuedRegistrationMixin):
+    form_class = RegisterTeacherForm
+    model = Teacher
+    page_id = 18
     login_url = 'login'

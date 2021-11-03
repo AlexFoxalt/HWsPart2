@@ -20,7 +20,11 @@
 
 <ul class="menu-bar">
   {% if request.user.is_authenticated %}
-    <li class="username">{{ user.username }}</li>
+    {% if title in no_profile_anchor %}
+      <li class="username">{{ user.username }}</li>
+    {% else %}
+      <a href="{% url 'user-profile' username=user.username %}"><li class="username">{{ user.username }}</li></a>
+    {% endif %}
   {% endif %}
   
   {% for m in menu %}

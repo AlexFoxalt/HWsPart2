@@ -1,6 +1,16 @@
 {% extends 'main/base.html' %}
 {% block content %}
 
+{% block messages %}
+	{% if messages %}
+		<ul class="messages" id='successMessage'>
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
 <h1>{{ title }}</h1>
 <pre>
 {% if request.user.is_authenticated %}

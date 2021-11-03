@@ -11,7 +11,8 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from students.models import Student
 from teachers.models import Teacher
-from services.services_constants import OPTIONS, MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER
+from services.services_constants import OPTIONS, MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER, \
+    NO_PROFILE_ANCHOR_PAGE_TITLES
 from services.services_error_handlers import page_not_found
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context
 from services.services_models import CONTEXT_CONTAINER
@@ -115,6 +116,7 @@ class ContextMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
         context['selected'] = 0
+        context['no_profile_anchor'] = NO_PROFILE_ANCHOR_PAGE_TITLES
 
         try:
             page_id = kwargs['page_id']
@@ -136,7 +138,7 @@ class ContextMixin:
 
 class GetAllUsersMixin(ContextMixin, ListView):
     def get(self, request, *args, **kwargs):
-        posts = self.model.objects.all()
+        posts = self.model.objects.filter(filled=True)
         half_len = len(posts) // 2
         left_side_posts = posts[:half_len]
         right_side_posts = posts[half_len:]
@@ -164,23 +166,43 @@ class EditUserMixin(ContextMixin, UpdateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context(page_id=self.page_id,
-                                              pk=self.kwargs['pk'],
-                                              options=OPTIONS)
+                                              pk=self.kwargs['pk'])
         return combine_context(context, extra_context)
 
     def form_valid(self, form):
-        result = super().form_valid(form)
+        print('Hint!! ---> ', form.cleaned_data)
         if self.model is Teacher:
             messages.success(self.request, 'Teacher edited successfully')
         elif self.model is Student:
             messages.success(self.request, 'Student edited successfully')
-        return result
+        return super().form_valid(form)
 
     def get_success_url(self, *args, **kwargs):
         if self.model is Teacher:
             return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'])])
         elif self.model is Student:
             return reverse_lazy('edit-student', args=[str(self.kwargs['pk'])])
+
+
+class UserContinuedRegistrationMixin(ContextMixin, UpdateView):
+    template_name = 'main/continued-registration.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              pk=self.kwargs['pk'])
+        return combine_context(context, extra_context)
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        if self.model is Teacher:
+            messages.success(self.request, 'Teacher registered successfully')
+        elif self.model is Student:
+            messages.success(self.request, 'Student registered successfully')
+        return result
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse_lazy('users-home')
 
 
 class DeleteUserMixin(ContextMixin, DeleteView):

@@ -222,3 +222,11 @@ POSITIONS_SELECTOR = [
 ]
 
 FACULTIES_SELECTOR = [(fac, fac) for fac in FACULTIES]
+
+NO_PROFILE_ANCHOR_PAGE_TITLES = ['Student Profile', 'Teacher Profile']
+
+STUDENT_REQUIRED_FOR_FILLING_FIELDS = ('city', 'birthday', 'phone_number', 'faculty',
+                                       'previous_educational_institution', 'course')
+
+TEACHER_REQUIRED_FOR_FILLING_FIELDS = ('city', 'birthday', 'phone_number', 'faculty',
+                                       'date_of_employment', 'experience_in_years', 'courses')

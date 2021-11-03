@@ -4,8 +4,8 @@ from webargs.djangoparser import use_args
 
 from services.services_constants import GET_INT_COUNT, parser, STUDENT_FILTER_QUERY
 from services.services_mixins import EntityGeneratorMixin, EntitySearchPerAllFieldsMixin, GetAllUsersMixin, \
-    EditUserMixin, DeleteUserMixin, ProfileMixin
-from students.forms import EditStudentForm
+    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
+from students.forms import EditStudentForm, RegisterStudentForm
 from students.models import Student
 
 
@@ -51,4 +51,11 @@ class DeleteStudent(LoginRequiredMixin, DeleteUserMixin):
 class StudentProfile(LoginRequiredMixin, ProfileMixin):
     model = Student
     page_id = 12
+    login_url = 'login'
+
+
+class StudentContinuedRegistration(LoginRequiredMixin, UserContinuedRegistrationMixin):
+    form_class = RegisterStudentForm
+    model = Student
+    page_id = 17
     login_url = 'login'

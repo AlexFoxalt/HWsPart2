@@ -5,7 +5,7 @@ from .password_reset_views import UsersPasswordResetView, UsersPasswordResetDone
     UsersPasswordResetCompleteView
 from .tests import TestResetFormEmail
 from .views import Home, CreateUser, EditUser, GetUsersByCourse, RegisterUser, LoginUser, About, Links, \
-    LogoutUser
+    LogoutUser, UserContinuedRegistration, UserProfile
 
 urlpatterns = [
     path('', Home.as_view(), name='users-home'),
@@ -15,8 +15,10 @@ urlpatterns = [
     path('create-user/', CreateUser.as_view(), name='create-user'),
     path('edit-user/<int:pk>', EditUser.as_view(), name='edit-user'),
     path('get-users-by-course/', GetUsersByCourse.as_view(), name='get-users-by-course'),
+    path('user-profile/<str:username>', UserProfile.as_view(), name='user-profile'),
 
     path('register/', RegisterUser.as_view(), name='register'),
+    path('register/next-step/<int:pk>/', UserContinuedRegistration.as_view(), name='register-next-step'),
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', LogoutUser.as_view(), name='logout'),
 
