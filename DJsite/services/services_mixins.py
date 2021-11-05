@@ -218,10 +218,7 @@ class EditUserMixin(ContextMixin, UpdateView):
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self, *args, **kwargs):
-        if self.model is Teacher:
-            return reverse_lazy('edit-teacher', args=[str(self.kwargs['pk'])])
-        elif self.model is Student:
-            return reverse_lazy('edit-student', args=[str(self.kwargs['pk'])])
+        return reverse_lazy('user-profile', args=[self.object.user.username])
 
 
 class UserContinuedRegistrationMixin(ContextMixin, UpdateView):
