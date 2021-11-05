@@ -8,6 +8,9 @@ from services.services_constants import FAKER
 from services.services_functions import mine_faker_of_faculties
 
 
+# from services.services_models import create_new_profile_by_position
+
+
 class User(models.Model):
     user = models.OneToOneField(U, on_delete=models.CASCADE, primary_key=True)
     city = models.CharField(max_length=100, null=True, verbose_name='City')

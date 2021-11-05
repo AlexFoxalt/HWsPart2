@@ -1,12 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import NoReverseMatch, reverse_lazy, reverse
-from django.views.generic import TemplateView, CreateView, View, RedirectView
+from django.urls import NoReverseMatch, reverse_lazy
+from django.views.generic import TemplateView, CreateView, RedirectView
 from webargs.djangoparser import use_args
 
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
@@ -15,7 +14,7 @@ from services.services_functions import combine_context, get_position_from_clean
     get_pos_and_course_from_args
 from services.services_mixins import ContextMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
-    get_model_name_by_pk, save_raw_object_by_position, get_user_by_username
+    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields
 from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
 
 
@@ -119,7 +118,6 @@ class RegisterUser(ContextMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'authentication/register.html'
     page_id = 13
-    success_url = '/users-home'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -127,11 +125,12 @@ class RegisterUser(ContextMixin, CreateView):
         return combine_context(context, extra_context)
 
     def form_valid(self, form):
-        user = form.save()
-        position = form.cleaned_data.get('position')
-        next_step_user = save_raw_object_by_position(position, user)
+        # Custom version of user = form.save(), because we need to pass some extra arguments to signal handler
+        user = create_user_with_custom_fields(form)
+
         login(self.request, user)
-        return redirect(f'next-step/{next_step_user.pk}')
+
+        return redirect(f'next-step/{user.pk}')
 
 
 class UserContinuedRegistration(LoginRequiredMixin, RedirectView):

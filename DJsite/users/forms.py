@@ -1,13 +1,13 @@
 from datetime import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User as U
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from django.contrib.auth.models import User as U
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
-from services.services_models import save_raw_object_by_position
 from students.models import Student
 from .models import User, Course
 

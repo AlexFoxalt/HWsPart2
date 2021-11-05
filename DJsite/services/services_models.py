@@ -76,14 +76,31 @@ def get_model_name_by_pk(pk):
     return User.objects.get(pk=pk).position.lower()
 
 
-def save_raw_object_by_position(position, user):
-    if position == 'Student':
-        obj = Student.objects.create(user=user, position=position)
-    elif position == 'Teacher':
-        obj = Teacher.objects.create(user=user, position=position)
-    return obj
-
-
 def get_user_by_username(username):
     user = U.objects.get(username=username)
     return User.objects.get(user=user)
+
+
+def create_new_profile_by_position(instance):
+    pos = instance._position
+    if pos == 'Student':
+        Student.objects.create(user=instance, position=pos)
+    elif pos == 'Teacher':
+        Teacher.objects.create(user=instance, position=pos)
+
+
+def create_user_with_custom_fields(form):
+    data = form.cleaned_data
+    newuser = U(
+        username=data['username'],
+        email=data['email'],
+        first_name=data['first_name'].capitalize(),
+        last_name=data['last_name'].capitalize(),
+    )
+    newuser.set_password(data['password1'])
+
+    # Set some extra attrs to the instance to be used in the handler.
+    newuser._position = data['position']
+
+    newuser.save()
+    return newuser
