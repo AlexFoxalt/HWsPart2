@@ -12,17 +12,24 @@
 	{% endif %}
 {% endblock messages %}
 
-<h1>Edit {{ position }}</h1>
+<h1>Filling in data about {{ position }}</h1>
 
 <form class="edit-user-form" enctype='multipart/form-data' method="post">
     {% csrf_token %}
     <div class="form-error"> {{ form.non_field_errors }} </div>
+    
+    {% for f in form2 %}
+		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
+		<div class="edit-user-form-fields">{{ f }}</div>
+		<div class="form-error">{{ f.errors }}</div>
+	{% endfor %}
+
     {% for f in form %}
 		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
 		<div class="edit-user-form-fields">{{ f }}</div>
 		<div class="form-error">{{ f.errors }}</div>
 	{% endfor %}
 
-    <input class="submit-button" type="submit" value="Register">
+    <input class="submit-button" type="submit" value="Complete">
 </form>
 {% endblock content %}

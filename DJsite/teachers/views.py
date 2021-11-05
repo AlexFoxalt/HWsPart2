@@ -1,3 +1,4 @@
+from braces.views import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from webargs import djangoparser
@@ -8,14 +9,16 @@ from services.services_mixins import EntitySearchPerOneFieldMixin, EntityGenerat
     EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
 from teachers.forms import EditTeacherForm, RegisterTeacherForm
 from teachers.models import Teacher
+from users.forms import ExtendingUserForm
 
 parser = djangoparser.DjangoParser()
 
 
-class TeacherGenerator(EntityGeneratorMixin, LoginRequiredMixin, ListView):
+class TeacherGenerator(EntityGeneratorMixin, GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Teacher
     user_class = 'Teacher(s)'
     login_url = 'login'
+    group_required = "Staff"
 
     @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
@@ -40,15 +43,17 @@ class GetAllTeachers(LoginRequiredMixin, GetAllUsersMixin):
 
 class EditTeacher(LoginRequiredMixin, EditUserMixin):
     form_class = EditTeacherForm
+    second_form_class = ExtendingUserForm
     model = Teacher
     page_id = 6
     login_url = 'login'
 
 
-class DeleteTeacher(LoginRequiredMixin, DeleteUserMixin):
+class DeleteTeacher(GroupRequiredMixin, LoginRequiredMixin, DeleteUserMixin):
     model = Teacher
     page_id = 8
     login_url = 'login'
+    group_required = "Staff"
 
 
 class TeacherProfile(LoginRequiredMixin, ProfileMixin):
@@ -59,6 +64,7 @@ class TeacherProfile(LoginRequiredMixin, ProfileMixin):
 
 class TeacherContinuedRegistration(LoginRequiredMixin, UserContinuedRegistrationMixin):
     form_class = RegisterTeacherForm
+    second_form_class = ExtendingUserForm
     model = Teacher
     page_id = 18
     login_url = 'login'

@@ -12,6 +12,12 @@ from students.models import Student
 from .models import User, Course
 
 
+class ExtendingUserForm(ModelForm):
+    class Meta:
+        model = U
+        fields = ('first_name', 'last_name')
+
+
 class CreateUserForm(ModelForm):
     photo = forms.ImageField(label='Photo',
                              required=False)
@@ -99,7 +105,7 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = U
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']
 
 
 class LoginUserForm(AuthenticationForm):

@@ -12,12 +12,11 @@ class EditTeacherForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['photo'].widget.initial_text = 'currently---'
         self.fields['photo'].widget.input_text = 'change------'
-        print('Hint!! --> ', self.fields)
 
     class Meta:
         model = Teacher
         fields = '__all__'
-        exclude = ('position', 'users', 'filled')
+        exclude = ('position', 'user', 'filled')
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),

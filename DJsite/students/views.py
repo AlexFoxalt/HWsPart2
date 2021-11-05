@@ -1,3 +1,4 @@
+from braces.views import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from webargs.djangoparser import use_args
@@ -7,12 +8,14 @@ from services.services_mixins import EntityGeneratorMixin, EntitySearchPerAllFie
     EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
 from students.forms import EditStudentForm, RegisterStudentForm
 from students.models import Student
+from users.forms import ExtendingUserForm
 
 
-class StudentGenerator(EntityGeneratorMixin, LoginRequiredMixin, ListView):
+class StudentGenerator(EntityGeneratorMixin, GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Student
     user_class = 'Student(s)'
     login_url = 'login'
+    group_required = "Staff"
 
     @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
@@ -37,15 +40,17 @@ class GetAllStudents(LoginRequiredMixin, GetAllUsersMixin):
 
 class EditStudent(LoginRequiredMixin, EditUserMixin):
     form_class = EditStudentForm
+    second_form_class = ExtendingUserForm
     model = Student
     page_id = 5
     login_url = 'login'
 
 
-class DeleteStudent(LoginRequiredMixin, DeleteUserMixin):
+class DeleteStudent(GroupRequiredMixin, LoginRequiredMixin, DeleteUserMixin):
     model = Student
     page_id = 7
     login_url = 'login'
+    group_required = "Staff"
 
 
 class StudentProfile(LoginRequiredMixin, ProfileMixin):
@@ -56,6 +61,7 @@ class StudentProfile(LoginRequiredMixin, ProfileMixin):
 
 class StudentContinuedRegistration(LoginRequiredMixin, UserContinuedRegistrationMixin):
     form_class = RegisterStudentForm
+    second_form_class = ExtendingUserForm
     model = Student
     page_id = 17
     login_url = 'login'

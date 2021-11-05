@@ -60,39 +60,46 @@ MENU_FOR_UNLOGGED_USER = [
 HOME_PAGE_POSTS = [
     {
         'name': '/gen-students/',
-        'description': 'Generates students with opt.param. ?count= (def=10)',
-        'url_name': 'gen-students'
+        'description': '[admin only] Generates students with opt.param. ?count= (def=10)',
+        'url_name': 'gen-students',
+        'permission': 'Staff'
     },
     {
         'name': '/gen-teachers/',
-        'description': 'Generates teachers with opt.param. ?count= (def=10)',
-        'url_name': 'gen-teachers'
+        'description': '[admin only] Generates teachers with opt.param. ?count= (def=10)',
+        'url_name': 'gen-teachers',
+        'permission': 'Staff'
     },
     {
         'name': '/get-all-teachers/',
         'description': 'Returns a list of all teachers from DB. You can edit or delete any of them!',
-        'url_name': 'get-all-teachers'
+        'url_name': 'get-all-teachers',
+        'permission': None
     },
     {
         'name': '/get-all-students/',
         'description': 'Returns a list of all students from DB. You can edit or delete any of them!',
-        'url_name': 'get-all-students'
+        'url_name': 'get-all-students',
+        'permission': None
     },
     {
         'name': '/search-teachers/',
         'description': 'Makes search in Teachers table, per each named column. You can edit every of these.',
-        'url_name': 'search-teachers'
+        'url_name': 'search-teachers',
+        'permission': None
     },
     {
         'name': '/search-students/',
         'description': 'Makes search in Student table per all text type columns via Ajax technology. '
                        'You can edit every of these.',
-        'url_name': 'search-students'
+        'url_name': 'search-students',
+        'permission': None
     },
     {
         'name': '/create-user/',
-        'description': 'Creating a new user using Django Forms',
-        'url_name': 'create-user'
+        'description': '[admin only]    Creating a new user using Django Forms',
+        'url_name': 'create-user',
+        'permission': 'Staff'
     },
 ]
 

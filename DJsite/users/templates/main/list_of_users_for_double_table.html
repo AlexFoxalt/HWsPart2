@@ -1,16 +1,24 @@
 {% load static %}
 <table class="userlist-table-all-left" style="margin-top: 5px;">
 	<tr>
-    	<th style="width:50px">Edit</th>
-    	<th style="width:50px">Show</th>
+		{% if "admin" in groups %}
+	    	<th style="width:50px">Edit</th>
+	    {% endif %}
+
+	    <th style="width:50px">Show</th>
+
     	{% for column in columns %}
     		<th>{{ column }}</th>
     	{% endfor %}
     </tr>
 	{% for post in left_side_posts %}
 		<tr>
-			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% if "admin" in groups %}
+				<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% endif %}
+
 			<td><a href="{{ post.get_absolute_url }}"><button class="show-user-button">S</button></a></td>
+			
 			{% for value in post.get_fields_for_displaying_user_in_list %}
 				{% if value.url %}
 					{% if value.url|slice:":19" == '/media/user_resume/' %}
@@ -29,8 +37,12 @@
 
 	<table class="userlist-table-all-right" style="margin-top: 5px;">
 	<tr>
-    	<th style="width:50px">Edit</th>
-    	<th style="width:50px">Show</th>
+    	{% if "admin" in groups %}
+	    	<th style="width:50px">Edit</th>
+	    {% endif %}
+
+	    <th style="width:50px">Show</th>
+
     	{% for column in columns %}
     		<th>{{ column }}</th>
     	{% endfor %}
@@ -38,8 +50,12 @@
 	
 	{% for post in right_side_posts %}
 		<tr>
-			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% if "admin" in groups %}
+				<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% endif %}
+
 			<td><a href="{{ post.get_absolute_url }}"><button class="show-user-button">S</button></a></td>
+
 			{% for value in post.get_fields_for_displaying_user_in_list %}
 				{% if value.url %}
 					{% if value.url|slice:":19" == '/media/user_resume/' %}

@@ -1,5 +1,6 @@
 """Here we are working with stuff that need imports from models.py"""
 from django.contrib.auth.models import User as U
+from django.contrib.auth.models import Group
 
 from students.models import Student
 from teachers.models import Teacher
@@ -89,13 +90,16 @@ def create_new_profile_by_position(instance):
         Teacher.objects.create(user=instance, position=pos)
 
 
+def set_default_group_for_user(user):
+    my_group = Group.objects.get(name='Client')
+    my_group.user_set.add(user)
+
+
 def create_user_with_custom_fields(form):
     data = form.cleaned_data
     newuser = U(
         username=data['username'],
-        email=data['email'],
-        first_name=data['first_name'].capitalize(),
-        last_name=data['last_name'].capitalize(),
+        email=data['email']
     )
     newuser.set_password(data['password1'])
 
@@ -103,4 +107,23 @@ def create_user_with_custom_fields(form):
     newuser._position = data['position']
 
     newuser.save()
+    set_default_group_for_user(newuser)
     return newuser
+
+
+def check_if_profile_is_filled(user):
+    user = User.objects.get(pk=user.pk)
+    return user.filled
+
+
+def get_user_groups(user):
+    res = [None, ]
+    for g in user.groups.all():
+        res.append(g.name)
+    return res
+
+
+def get_initial_values_from_user(pk):
+    user = U.objects.get(pk=pk)
+    return {'first_name': user.first_name,
+            'last_name': user.last_name}

@@ -1,3 +1,4 @@
+from braces.views import GroupRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +10,7 @@ from django.views.generic import TemplateView, CreateView, RedirectView
 from webargs.djangoparser import use_args
 
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
-from services.services_error_handlers import page_not_found
+from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
     get_pos_and_course_from_args
 from services.services_mixins import ContextMixin
@@ -49,11 +50,12 @@ class Links(ContextMixin, LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-class CreateUser(ContextMixin, LoginRequiredMixin, CreateView):
+class CreateUser(ContextMixin, GroupRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = CreateUserForm
     template_name = 'main/create_user.html'
     page_id = 4
     login_url = 'login'
+    group_required = "Staff"
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -82,6 +84,10 @@ class EditUser(LoginRequiredMixin, RedirectView):
 
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
+
+        if pk != request.user.pk and not request.user.is_superuser:
+            return forbidden_error(request, 'You can\'t edit profile, that doesn\'t belong to you')
+
         try:
             return redirect(f'edit-{get_model_name_by_pk(pk)}', pk=pk)
         except NoReverseMatch:

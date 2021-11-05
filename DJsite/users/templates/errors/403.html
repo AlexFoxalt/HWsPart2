@@ -1,5 +1,9 @@
 {% extends '../main/base.html' %}
 {% block content %}
+
+{% if msg %}
 <h4 style="text-align: center;">Msg: {{ msg }}</h4>
-<div class="NotFound-error-img"></div>
+{% endif %}
+
+<div class="Forbidden-error-img"></div>
 {% endblock content %}

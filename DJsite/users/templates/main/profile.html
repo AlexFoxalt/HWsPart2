@@ -9,6 +9,17 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-3 border-right" style="min-height: 540px;">
+        	
+        	{% if user.is_superuser is False %}
+        		
+        		{% if user.pk == profile.user.pk %}
+		        	<a href="{% url 'edit-user' pk=profile.user.pk %}"><button class="edit-profile-info" title="Edit Profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
+		        {% endif %}
+
+		      	{% else %}
+			      	<a href="{% url 'edit-user' pk=profile.user.pk %}"><button class="edit-profile-info" title="Edit Profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
+		    {% endif %}
+
             <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="{{ profile.photo.url }}"><span class="font-weight-bold">{{ profile.user.username }} </span><span class="text-black-50">{{ profile.user.email }}</span><span> </span></div>
         </div>
         <div class="col-md-5 border-right" style="min-height: 540px;">
