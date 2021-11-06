@@ -1,14 +1,21 @@
 from datetime import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User as U
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from django.contrib.auth.models import User as Person
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
 from students.models import Student
 from .models import User, Course
+
+
+class ExtendingUserForm(ModelForm):
+    class Meta:
+        model = U
+        fields = ('first_name', 'last_name')
 
 
 class CreateUserForm(ModelForm):
@@ -39,7 +46,7 @@ class CreateUserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'city', 'birthday', 'email', 'phone_number', 'faculty', 'position']
+        fields = ['city', 'birthday', 'phone_number', 'faculty', 'position']
         widgets = {
             'birthday': forms.SelectDateWidget(years=range(datetime.today().year, 1900, -1)),
             'phone_number': forms.TextInput(attrs={'placeholder': '+380123456789'}),
@@ -92,12 +99,13 @@ class CreateUserForm(ModelForm):
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Login', widget=forms.TextInput())
     email = forms.CharField(label='Email', widget=forms.EmailInput())
+    position = forms.ChoiceField(label='Position', choices=POSITIONS_SELECTOR)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
 
     class Meta:
-        model = Person
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'groups']
+        model = U
+        fields = ['username', 'email', 'password1', 'password2']
 
 
 class LoginUserForm(AuthenticationForm):

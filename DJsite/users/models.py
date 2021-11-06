@@ -1,22 +1,24 @@
 from random import sample, randint
 
 import django
+from django.contrib.auth.models import User as U
 from django.db import models
 
 from services.services_constants import FAKER
 from services.services_functions import mine_faker_of_faculties
 
 
+# from services.services_models import create_new_profile_by_position
+
+
 class User(models.Model):
-    first_name = models.CharField(max_length=100, null=False, verbose_name='First Name')
-    last_name = models.CharField(max_length=100, null=False, verbose_name='Last Name')
-    city = models.CharField(max_length=100, null=False, verbose_name='City')
-    birthday = models.DateField(null=False, verbose_name='Birthday')
-    email = models.EmailField(null=False, unique=True, verbose_name='Email')
-    phone_number = models.CharField(max_length=50, null=False, unique=True, verbose_name='Phone number')
+    user = models.OneToOneField(U, on_delete=models.CASCADE, primary_key=True)
+    city = models.CharField(max_length=100, null=True, verbose_name='City')
+    birthday = models.DateField(null=True, verbose_name='Birthday')
+    phone_number = models.CharField(max_length=50, null=True, unique=True, verbose_name='Phone number')
     faculty = models.CharField(max_length=255, default='not chosen', verbose_name='Faculty')
     position = models.CharField(max_length=255, default='not chosen', verbose_name='Position')
-    time_create = models.DateTimeField(auto_now_add=True, verbose_name='Time of creation')
+    filled = models.BooleanField(default=False, verbose_name='Filled information status')
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -69,13 +71,13 @@ class User(models.Model):
         return field_value
 
     def get_fields_for_displaying_user_in_list(self):
-        return [self.first_name, self.last_name, self.email, self.position]
+        return [self.user.first_name, self.user.last_name, self.user.email, self.position]
 
     @classmethod
     def get_columns_for_displaying_user_in_list(cls):
-        return [cls.first_name.field.verbose_name,
-                cls.last_name.field.verbose_name,
-                cls.email.field.verbose_name,
+        return [U.first_name.field.verbose_name,
+                U.last_name.field.verbose_name,
+                U.email.field.verbose_name,
                 cls.position.field.verbose_name]
 
 

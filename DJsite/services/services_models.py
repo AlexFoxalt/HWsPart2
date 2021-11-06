@@ -1,5 +1,6 @@
 """Here we are working with stuff that need imports from models.py"""
-from random import sample, randint
+from django.contrib.auth.models import User as U
+from django.contrib.auth.models import Group
 
 from students.models import Student
 from teachers.models import Teacher
@@ -31,6 +32,8 @@ CONTEXT_CONTAINER = {
          'posts': HOME_PAGE_POSTS,
          'fs_positions': POSITIONS_SELECTOR,
          'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
+    17: {'title': 'Register Student', 'position': 'Student'},
+    18: {'title': 'Register Teacher', 'position': 'Teacher'},
 }
 
 
@@ -72,3 +75,55 @@ def get_and_save_object_by_its_position(position: str, form):
 
 def get_model_name_by_pk(pk):
     return User.objects.get(pk=pk).position.lower()
+
+
+def get_user_by_username(username):
+    user = U.objects.get(username=username)
+    return User.objects.get(user=user)
+
+
+def create_new_profile_by_position(instance):
+    pos = instance._position
+    if pos == 'Student':
+        Student.objects.create(user=instance, position=pos)
+    elif pos == 'Teacher':
+        Teacher.objects.create(user=instance, position=pos)
+
+
+def set_default_group_for_user(user):
+    my_group = Group.objects.get(name='Client')
+    my_group.user_set.add(user)
+
+
+def create_user_with_custom_fields(form):
+    data = form.cleaned_data
+    newuser = U(
+        username=data['username'],
+        email=data['email']
+    )
+    newuser.set_password(data['password1'])
+
+    # Set some extra attrs to the instance to be used in the handler.
+    newuser._position = data['position']
+
+    newuser.save()
+    set_default_group_for_user(newuser)
+    return newuser
+
+
+def check_if_profile_is_filled(user):
+    user = User.objects.get(pk=user.pk)
+    return user.filled
+
+
+def get_user_groups(user):
+    res = [None, ]
+    for g in user.groups.all():
+        res.append(g.name)
+    return res
+
+
+def get_initial_values_from_user(pk):
+    user = U.objects.get(pk=pk)
+    return {'first_name': user.first_name,
+            'last_name': user.last_name}

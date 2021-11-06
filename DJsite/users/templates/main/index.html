@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+{% block messages %}
+	{% if messages %}
+		<ul class="messages" id='successMessage'>
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
+<h1>{{ title }}</h1>
+<pre>
+{% if request.user.is_authenticated %}
+Welcome back {{user.username}}!
+Hope you will find all that you need :)	
+{% else %}	
+Hello stranger!
+If you want to use this site, you should register or login, if you already did one.
+{% endif %}
+
+{% if filled is False %}
+! Attention !
+Your profile is not filled by additional information.
+You won't see yourself in any list. Searching page will ignore your profile.
+Noone can find you on this site.
+{% endif %}
+
+</pre>
+{% endblock content %}

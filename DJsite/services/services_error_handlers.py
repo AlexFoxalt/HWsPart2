@@ -6,8 +6,15 @@ def page_not_found(request, exception):
     context = {
         'msg': str(exception)
     }
-    return render(request, '404.html', context=context)
+    return render(request, 'errors/404.html', context=context)
 
 
 def server_error(request):
     return HttpResponseServerError('<h1> 500 Server Error :( </h1>')
+
+
+def forbidden_error(request, exception):
+    context = {
+        'msg': str(exception)
+    }
+    return render(request, 'errors/403.html', context=context)

@@ -3,8 +3,12 @@
 	<table class="userlist-table" style="margin-top: 5px;">
 	
 	<tr>
-    	<th>Edit</th>
-    	<th>Show</th>
+    	{% if "admin" in groups %}
+	    	<th>Edit</th>
+	    {% endif %}
+
+	    <th>Show</th>
+
     	{% for column in columns %}
     		<th>{{ column }}</th>
     	{% endfor %}
@@ -15,8 +19,12 @@
 	
 	{% for post in posts %}
 		<tr>
-			<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% if "admin" in groups %}
+				<td><a href="{% url 'edit-user' pk=post.pk %}"><button class="edit-user-button">E</button></a></td>
+			{% endif %}
+
 			<td><a href="{{ post.get_absolute_url }}"><button class="show-user-button">S</button></a></td>
+
 			{% for value in post %}
 				{% if value.url %}
 					{% if value.url|slice:":19" == '/media/user_resume/' %}

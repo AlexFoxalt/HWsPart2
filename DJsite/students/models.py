@@ -17,7 +17,9 @@ class Student(User):
                               default='default_resume/no_resume.png')
     previous_educational_institution = models.CharField(max_length=100, null=True, default='-',
                                                         verbose_name='Previous educational institution')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE,
+    course = models.ForeignKey(Course,
+                               null=True,
+                               on_delete=models.CASCADE,
                                verbose_name='Course')
     invited = models.IntegerField(default=0, verbose_name='Number of invited students')
 

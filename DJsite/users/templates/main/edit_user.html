@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 
 {% block content %}
 
@@ -14,9 +14,16 @@
 
 <h1>Edit {{ position }}</h1>
 
-<form class="edit-user-form" action="" method="post">
+<form class="edit-user-form" enctype='multipart/form-data' method="post">
     {% csrf_token %}
     <div class="form-error"> {{ form.non_field_errors }} </div>
+    
+    {% for f in form2 %}
+		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
+		<div class="edit-user-form-fields">{{ f }}</div>
+		<div class="form-error">{{ f.errors }}</div>
+	{% endfor %}
+
     {% for f in form %}
 		<label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
 		<div class="edit-user-form-fields">{{ f }}</div>

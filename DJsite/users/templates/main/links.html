@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 
 {% block content %}
 
@@ -7,7 +7,9 @@
     <h2>Possible urls on this site</h2>
     <ul class="check-list">
 		{% for post in posts %}
-			<li><a class="main-menu-url-button" href="{% url post.url_name %}">{{ post.name }}</a> ---> {{ post.description }}</li>
+			{% if post.permission in groups %}
+        <li><a class="main-menu-url-button" href="{% url post.url_name %}">{{ post.name }}</a> ---> {{ post.description }}</li>
+      {% endif %}
 		{% endfor %}
     </ul>
   </div>

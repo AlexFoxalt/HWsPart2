@@ -92,3 +92,6 @@ def get_data_from_file_in_str_format(path, extension) -> str:
 
 def get_pos_and_course_from_args(args):
     return args[0].get('pos', None), args[0].get('course', None)
+
+def set_path(filename):
+    return f'authentication/password/{filename}'

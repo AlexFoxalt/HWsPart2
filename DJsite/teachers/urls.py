@@ -1,6 +1,7 @@
 from django.urls import path
 
-from teachers.views import TeacherGenerator, GetAllTeachers, GetTeachers, EditTeacher, DeleteTeacher, TeacherProfile
+from teachers.views import TeacherGenerator, GetAllTeachers, GetTeachers, EditTeacher, DeleteTeacher, TeacherProfile, \
+    TeacherContinuedRegistration
 
 urlpatterns = [
     path('gen-teachers/', TeacherGenerator.as_view(), name='gen-teachers'),
@@ -9,4 +10,7 @@ urlpatterns = [
     path('edit-teacher/<int:pk>', EditTeacher.as_view(), name='edit-teacher'),
     path('delete-teacher/<int:pk>', DeleteTeacher.as_view(), name='delete-teacher'),
     path('teacher-profile/<int:pk>/', TeacherProfile.as_view(), name='teacher-profile'),
+    path('register/next-step/<int:pk>/teacher/',
+         TeacherContinuedRegistration.as_view(),
+         name='register-next-step-teacher')
 ]

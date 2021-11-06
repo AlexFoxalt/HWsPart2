@@ -204,7 +204,7 @@ li.menu-bar-last a:hover {
 	color: #2e2e2e;
 	display: inline-block;
 	width: 100%;
-	min-height: 93vh;
+	min-height: 99vh;
 	float: left;
 	background-image: url('../images/bg1.jpg');
   background-size: cover;
@@ -478,14 +478,14 @@ label.form-label {
 
 div.login-form { 
   width:400px;
-  height:400px;
+  min-height:400px;
 	margin: 70px auto;
   background-color: gray;
   padding: 20px;
   text-align: center;
 }
 div.login-form button { 
-	margin: 20px auto 0 auto;
+	margin: 15px auto 0 auto;
 }
 label.login-form {
 	display: block;
@@ -494,7 +494,7 @@ label.login-form {
 
 div.register-form {
 	width:400px;
-  height:700px;
+  min-height:400px;
 	margin: 70px auto;
   background-color: gray;
   padding: 20px;
@@ -575,6 +575,13 @@ form.search-form-selector button {
 
 .NotFound-error-img {
 	background-image: url('../images/404v2.png');
+	min-height: 100vh;
+	background-repeat: no-repeat;
+	background-position: center -10px;
+	background-size: 30%;
+}
+.Forbidden-error-img {
+	background-image: url('../images/403.png');
 	min-height: 100vh;
 	background-repeat: no-repeat;
 	background-position: center -10px;
@@ -674,6 +681,61 @@ form.search-form-selector button {
 	outline: none;
 	border: 1px solid #CCCCCC;
 	resize: none;
+}
+.edit-profile-info {
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	background-color:#79bbff;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	width: 30px;
+	height: 30px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528ecc;
+	margin-top: 9px;
+	outline: none;
+}
+.edit-profile-info:hover {
+	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+	background-color:#378de5;
+	outline: none;
+}
+.edit-profile-info:active {
+	position:relative;
+	top:1px;
+	outline: none;
+}
+.edit-profile-info:focus {
+	outline: none;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~Email reset pass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+div.email-password-form {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  background: white;
+  border-radius: 0% 0% 0% 0% / 0% 0% 0% 0% ;
+  color: white;
+  box-shadow: 20px 20px rgba(0,0,0,.15);
+  transition: all .4s ease;
+}
+div.email-password-form:hover {
+  border-radius: 0% 0% 50% 50% / 0% 0% 5% 5% ;
+  box-shadow: 10px 10px rgba(0,0,0,.25);
+}
+div.email-password-form span {
+	color: black;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
