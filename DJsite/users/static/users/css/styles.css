@@ -134,6 +134,14 @@ li.menu-bar-last a {
 li.menu-bar-last a:hover {
   color: #04AA6D;
 }
+.index-attention-msgs {
+	background-color: rgba(255, 254, 173, 0.6);
+	display: inline-block;
+	float: right;
+	width: 500px;
+	padding: 0 10px;
+	text-align: center;
+}
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Main Menu Buttons for URLs ~~~~~~~~~~~~~~~~*/

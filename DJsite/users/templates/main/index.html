@@ -12,7 +12,7 @@
 {% endblock messages %}
 
 <h1>{{ title }}</h1>
-<pre>
+
 {% if request.user.is_authenticated %}
 Welcome back {{user.username}}!
 Hope you will find all that you need :)	
@@ -22,11 +22,19 @@ If you want to use this site, you should register or login, if you already did o
 {% endif %}
 
 {% if filled is False %}
-! Attention !
-Your profile is not filled by additional information.
-You won't see yourself in any list. Searching page will ignore your profile.
-Noone can find you on this site.
+<span class="index-attention-msgs">
+<br>
+! Attention !<br>
+Your profile is not filled by additional information.<br>
+You won't see yourself in any list. Searching page will ignore your profile.<br>
+Noone can find you on this site.<br>
+<br>
+</span>
 {% endif %}
 
-</pre>
+{% if request.user.is_active is False %}
+Activation email was sent, so you can login to your account after confirming email
+{% endif %}
+
+
 {% endblock content %}

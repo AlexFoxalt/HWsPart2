@@ -5,18 +5,22 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
 from django.shortcuts import render, redirect
-from django.urls import NoReverseMatch, reverse_lazy
+from django.urls import NoReverseMatch, reverse_lazy, reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
 from django.views.generic import TemplateView, CreateView, RedirectView
 from webargs.djangoparser import use_args
 
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
+from services.services_emails import send_registration_email
 from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
     get_pos_and_course_from_args
 from services.services_mixins import ContextMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
-    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields
+    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields, get_current_user_from_encoded_data
 from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
+from users.tokens import AccountActivationTokenGenerator
 
 
 class Home(ContextMixin, TemplateView):
@@ -134,9 +138,25 @@ class RegisterUser(ContextMixin, CreateView):
         # Custom version of user = form.save(), because we need to pass some extra arguments to signal handler
         user = create_user_with_custom_fields(form)
 
-        login(self.request, user)
+        send_registration_email(request=self.request,
+                                user_instance=user)
+        messages.success(self.request, f'Email sent! Waiting for activation...')
+        return redirect('users-home')
 
-        return redirect(f'next-step/{user.pk}')
+
+class ActivateUser(RedirectView):
+
+    def get(self, request, uidb64, token, *args, **kwargs):
+        current_user = get_current_user_from_encoded_data(uidb64)
+
+        if current_user and AccountActivationTokenGenerator().check_token(current_user, token):
+            current_user.is_active = True
+            current_user.save()
+            login(request, current_user)
+            return redirect(reverse('register-next-step',
+                                    kwargs={'pk': current_user.pk}))
+
+        # return pass TODO №15
 
 
 class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
@@ -148,6 +168,7 @@ class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         try:
+            messages.success(self.request, f'Verification complete! Now please enter additional info')
             return redirect(f'{get_model_name_by_pk(pk)}/')
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')

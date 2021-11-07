@@ -1,6 +1,8 @@
 """Here we are working with stuff that need imports from models.py"""
 from django.contrib.auth.models import User as U
 from django.contrib.auth.models import Group
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
 
 from students.models import Student
 from teachers.models import Teacher
@@ -102,6 +104,7 @@ def create_user_with_custom_fields(form):
         email=data['email']
     )
     newuser.set_password(data['password1'])
+    newuser.is_active = False
 
     # Set some extra attrs to the instance to be used in the handler.
     newuser._position = data['position']
@@ -127,3 +130,13 @@ def get_initial_values_from_user(pk):
     user = U.objects.get(pk=pk)
     return {'first_name': user.first_name,
             'last_name': user.last_name}
+
+
+def get_current_user_from_encoded_data(uidb64):
+    try:
+        user_pk = force_bytes(urlsafe_base64_decode(uidb64))
+        current_user = U.objects.get(pk=user_pk)
+    except (U.DoesNotExist, ValueError, TypeError):
+        return None
+
+    return current_user
