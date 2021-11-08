@@ -122,8 +122,5 @@ def check_and_activate_current_user(current_user, token):
 
 
 def get_profile_columns_for_class(cls, columns):
-    if cls.__name__ == 'User':
-        return [f.verbose_name for f in cls._meta.fields
-                if f.verbose_name in columns]
-    return [f.verbose_name for f in cls.model._meta.fields
-            if f.verbose_name in columns]
+    return [f.verbose_name for f in cls._meta.fields if f.verbose_name in columns]
+

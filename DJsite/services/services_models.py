@@ -10,10 +10,11 @@ from students.models import Student
 from teachers.models import Teacher
 from users.models import Course, Person
 from services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
-    KEYS_TO_POP_FOR_TEACHER
+    KEYS_TO_POP_FOR_TEACHER, USER_COLUMN_NAMES_FOR_SEARCH_PAGE, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE, \
+    TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE
 from services.services_functions import format_raw_cleaned_data_for_user, \
     set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list, \
-    release_invitational_system
+    release_invitational_system, get_profile_columns_for_class
 
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1},
@@ -34,21 +35,23 @@ CONTEXT_CONTAINER = {
     16: {'title': 'Links',
          'selected': 3,
          'posts': HOME_PAGE_POSTS,
-         'fs_positions': POSITIONS_SELECTOR,
-         'fs_courses': Course.get_all_objects_of_class_in_selector_format()},
+         'fs_positions': POSITIONS_SELECTOR},
     17: {'title': 'Register Student', 'position': 'Student'},
     18: {'title': 'Register Teacher', 'position': 'Teacher'},
 }
 
 
 def get_users_by_pos_and_course(pos: str, course: str):
+    user_columns = get_profile_columns_for_class(User, USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
     if pos == 'Student':
         course = Course.objects.get(pk=course)
-        columns = [f.get_attname() for f in Student._meta.fields]
+        profile_columns = get_profile_columns_for_class(Student, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+        columns = user_columns + profile_columns
         return Student.objects.filter(course_id=course.pk), pos, course, columns
     elif pos == 'Teacher':
         course = Course.objects.get(pk=course)
-        columns = [f.get_attname() for f in Teacher._meta.fields]
+        profile_columns = get_profile_columns_for_class(Teacher, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+        columns = user_columns + profile_columns
         return Teacher.objects.filter(courses=course.pk), pos, course, columns
 
 

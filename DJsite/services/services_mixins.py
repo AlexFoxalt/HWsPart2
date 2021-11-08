@@ -25,6 +25,7 @@ from students.models import Student
 from teachers.forms import EditTeacherForm, RegisterTeacherForm
 from teachers.models import Teacher
 from users.forms import ExtendingUserForm
+from users.models import Course
 
 
 class EntityGeneratorMixin:
@@ -170,6 +171,9 @@ class ContextMixin:
         container = CONTEXT_CONTAINER.get(page_id, None)
         if container:
             context.update(container)
+
+        if page_id == 16:
+            context['fs_courses'] = Course.get_all_objects_of_class_in_selector_format()
         return context
 
 

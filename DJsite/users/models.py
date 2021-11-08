@@ -90,7 +90,5 @@ class Course(models.Model):
 
     @classmethod
     def get_all_objects_of_class_in_selector_format(cls):
-        try:
-            return [(obj.pk, obj.name) for obj in cls.objects.all()]
-        except django.db.utils.OperationalError:
-            return [('---', '---')]
+        res = [(obj.pk, obj.name) for obj in cls.objects.all()]
+        return res if res else [('---', '---')]
