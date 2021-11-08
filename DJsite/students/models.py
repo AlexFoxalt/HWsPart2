@@ -5,10 +5,10 @@ from django.urls import reverse
 
 from services.services_constants import FAKER
 from services.services_functions import generate_random_student_avatar, get_data_from_file_in_str_format
-from users.models import User, Course
+from users.models import Person, Course
 
 
-class Student(User):
+class Student(Person):
     photo = models.ImageField(upload_to='user_photo/student/',
                               verbose_name='Photo',
                               default=generate_random_student_avatar())
@@ -59,6 +59,10 @@ class Student(User):
 
     def get_fields_for_displaying_user_in_list(self):
         return super().get_fields_for_displaying_user_in_list() + [self.photo, self.resume]
+
+    def get_fields_for_displaying_user_in_search(self):
+        return super().get_fields_for_displaying_user_in_search() + [self.previous_educational_institution,
+                                                                     self.course]
 
     @classmethod
     def get_columns_for_displaying_user_in_list(cls):

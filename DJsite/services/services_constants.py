@@ -106,10 +106,7 @@ HOME_PAGE_POSTS = [
 TEACHER_QUERY_FIELDS = ('first_name',
                         'last_name',
                         'city',
-                        'email',
                         'faculty',
-                        'phone_number',
-                        'position',
                         'birthday',
                         'date_of_employment',
                         'experience_in_years')
@@ -237,3 +234,15 @@ STUDENT_REQUIRED_FOR_FILLING_FIELDS = ('city', 'birthday', 'phone_number', 'facu
 
 TEACHER_REQUIRED_FOR_FILLING_FIELDS = ('city', 'birthday', 'phone_number', 'faculty',
                                        'date_of_employment', 'experience_in_years', 'courses')
+
+TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE = ('City',
+                                                'Birthday',
+                                                'Faculty',
+                                                'Date of employment',
+                                                'Experience in years')
+STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE = ('City',
+                                                'Birthday',
+                                                'Faculty',
+                                                'Previous educational institution',
+                                                'Course')
+USER_COLUMN_NAMES_FOR_SEARCH_PAGE = ('First Name', 'Last Name')

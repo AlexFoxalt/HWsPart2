@@ -1,12 +1,14 @@
 """Here we are working with stuff that need imports from models.py"""
-from django.contrib.auth.models import User as U
+import django
+from django.contrib.auth.models import User as User
 from django.contrib.auth.models import Group
+from django.db.models import Q
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode
 
 from students.models import Student
 from teachers.models import Teacher
-from users.models import Course, User
+from users.models import Course, Person
 from services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER
 from services.services_functions import format_raw_cleaned_data_for_user, \
@@ -24,8 +26,8 @@ CONTEXT_CONTAINER = {
     8: {'title': 'Delete Teacher', 'position': 'Teacher'},
     9: {'title': 'Create Teacher', 'url': 'create-teacher'},
     10: {'title': 'Users by course'},
-    11: {'title': 'Student Profile'},
-    12: {'title': 'Teacher Profile'},
+    11: {'title': 'Teacher Profile'},
+    12: {'title': 'Student Profile'},
     13: {'title': 'Register', 'selected': 5},
     14: {'title': 'Sign in', 'selected': 4},
     15: {'title': 'About', 'selected': 2},
@@ -76,12 +78,12 @@ def get_and_save_object_by_its_position(position: str, form):
 
 
 def get_model_name_by_pk(pk):
-    return User.objects.get(pk=pk).position.lower()
+    return Person.objects.get(pk=pk).position.lower()
 
 
 def get_user_by_username(username):
-    user = U.objects.get(username=username)
-    return User.objects.get(user=user)
+    user = User.objects.get(username=username)
+    return Person.objects.get(user=user)
 
 
 def create_new_profile_by_position(instance):
@@ -93,13 +95,19 @@ def create_new_profile_by_position(instance):
 
 
 def set_default_group_for_user(user):
-    my_group = Group.objects.get(name='Client')
+    try:
+        my_group = Group.objects.get(name='Client')
+    except django.contrib.auth.models.Group.DoesNotExist:
+        client_group = Group.objects.create(name='Client')
+        staff_group = Group.objects.create(name='Staff')
+        my_group = client_group
+
     my_group.user_set.add(user)
 
 
 def create_user_with_custom_fields(form):
     data = form.cleaned_data
-    newuser = U(
+    newuser = User(
         username=data['username'],
         email=data['email']
     )
@@ -115,7 +123,7 @@ def create_user_with_custom_fields(form):
 
 
 def check_if_profile_is_filled(user):
-    user = User.objects.get(pk=user.pk)
+    user = Person.objects.get(pk=user.pk)
     return user.filled
 
 
@@ -127,7 +135,7 @@ def get_user_groups(user):
 
 
 def get_initial_values_from_user(pk):
-    user = U.objects.get(pk=pk)
+    user = User.objects.get(pk=pk)
     return {'first_name': user.first_name,
             'last_name': user.last_name}
 
@@ -135,8 +143,31 @@ def get_initial_values_from_user(pk):
 def get_current_user_from_encoded_data(uidb64):
     try:
         user_pk = force_bytes(urlsafe_base64_decode(uidb64))
-        current_user = U.objects.get(pk=user_pk)
-    except (U.DoesNotExist, ValueError, TypeError):
+        current_user = User.objects.get(pk=user_pk)
+    except (User.DoesNotExist, ValueError, TypeError):
         return None
 
     return current_user
+
+
+def check_if_courses_exists():
+    return Course.objects.all().exists()
+
+
+def create_courses_from_1st_to_5th():
+    names = ('First', 'Second', 'Third', 'Fourth', 'Fifth')
+    for name in names:
+        Course.objects.create(name=name)
+
+
+def check_if_courses_exists_and_create_if_not():
+    status = check_if_courses_exists()
+    if not status:
+        create_courses_from_1st_to_5th()
+
+
+def add_filters_for_user_fields(or_cond, text):
+    text_fields = ('user__first_name', 'user__last_name')
+    for field in text_fields:
+        or_cond |= Q(**{'{}__contains'.format(field): text})
+    return or_cond

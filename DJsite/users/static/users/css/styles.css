@@ -59,18 +59,31 @@ li.alert-success {
 	text-shadow:0px 1px 0px #2f6627;
 }
 li.alert-danger {
-	box-shadow:inset 0px 1px 0px 0px #cf866c;
-	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
-	background-color:#d0451b;
-	border-radius:3px;
-	border:1px solid #942911;
+	background-color:#ff4d40;
+	border:1px solid #780800;
 	display:inline-block;
 	color:#ffffff;
 	font-family:Arial;
 	font-size:20px;
-	padding:6px 24px;
+	padding:16px 31px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #854629;
+	text-shadow:0px 1px 0px #2f6627;
+}
+li.profile-alert-success {
+	float: right;
+	font-size:22px;
+	color: #44c767;
+	font-family:Arial;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+	text-align: center;
+	width: 100%;
+	position: relative;
+	bottom: -150px;
+	left: -10px;
+	background-color: rgba(156, 255, 182, 0.5);
+	border-radius:28px;
+	border:1px solid #18ab29;
 }
 
 /* --------------------- */
@@ -656,6 +669,9 @@ form.search-form-selector button {
 .download-resume-button:active {
 	position:relative;
 	top:1px;
+}
+.download-resume-button:focus {
+	outline: none;
 }
 .profile-invited {
 	box-shadow: 0px 1px 0px 0px #fff6af;

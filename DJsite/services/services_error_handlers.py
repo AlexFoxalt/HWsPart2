@@ -3,9 +3,16 @@ from django.shortcuts import render
 
 
 def page_not_found(request, exception):
-    context = {
-        'msg': str(exception)
-    }
+    if isinstance(exception, dict):
+        context = {
+            'msg': exception['msg'],
+            'link': exception['link'],
+            'link_text': exception['link_text']
+        }
+    else:
+        context = {
+            'msg': str(exception),
+        }
     return render(request, 'errors/404.html', context=context)
 
 

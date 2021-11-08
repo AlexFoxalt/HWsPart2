@@ -1,9 +1,7 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
 
 from .password_reset_views import UsersPasswordResetView, UsersPasswordResetDoneView, UsersPasswordResetConfirmView, \
     UsersPasswordResetCompleteView
-from .tests import TestResetFormEmail
 from .views import Home, CreateUser, EditUser, GetUsersByCourse, RegisterUser, LoginUser, About, Links, \
     LogoutUser, UserContinuedRegistration, UserProfile, ActivateUser
 

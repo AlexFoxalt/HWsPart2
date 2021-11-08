@@ -2,6 +2,8 @@
 
 import django
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -9,22 +11,25 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
+from services.services_constants import MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER, \
+    NO_PROFILE_ANCHOR_PAGE_TITLES, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE, USER_COLUMN_NAMES_FOR_SEARCH_PAGE, \
+    STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE
+from services.services_error_handlers import page_not_found, forbidden_error
+from services.services_functions import from_dict_to_list_of_dicts_format, combine_context, \
+    get_profile_columns_for_class
+from services.services_models import CONTEXT_CONTAINER, check_if_profile_is_filled, get_user_groups, \
+    get_initial_values_from_user, add_filters_for_user_fields
+
 from students.forms import RegisterStudentForm, EditStudentForm
 from students.models import Student
 from teachers.forms import EditTeacherForm, RegisterTeacherForm
 from teachers.models import Teacher
-from services.services_constants import OPTIONS, MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER, \
-    NO_PROFILE_ANCHOR_PAGE_TITLES
-from services.services_error_handlers import page_not_found, forbidden_error
-from services.services_functions import from_dict_to_list_of_dicts_format, combine_context
-from services.services_models import CONTEXT_CONTAINER, check_if_profile_is_filled, get_user_groups, \
-    get_initial_values_from_user
 from users.forms import ExtendingUserForm
 
 
 class EntityGeneratorMixin:
     model = None
-    template_name = 'entity_generator.html'
+    template_name = 'main/entity_generator.html'
     context_object_name = 'content'
 
     @classmethod
@@ -32,29 +37,39 @@ class EntityGeneratorMixin:
         try:
             cls.model.generate_entity(count)
         except (IndexError, ValueError):
-            return page_not_found(request, 'You should create at least 1 Course, if you want to use generator')
+            exception = {'msg': 'You should create at least 1 Course, if you want to use generator',
+                         'link': 'http://127.0.0.1:8000/admin/users/course/add/',
+                         'link_text': 'Add course'}
+            return page_not_found(request, exception)
 
-        posts = cls.model.objects.all().order_by('-id')[:count][::-1]
+        posts = cls.model.objects.all().order_by('-user_id')[:count][::-1]
 
         context = {
             'title': f'{user_class} generator',
             'user_class': user_class,
             'posts': posts,
-            'menu': MENU_FOR_LOGGED_USER
+            'menu': MENU_FOR_LOGGED_USER,
+            'auth_buttons_ids': [4, 5, 7],
         }
         return render(request, cls.template_name, context=context)
 
 
 class EntitySearchMixinBase:
     model = None
-    template_name = 'search_of_users.html'
+    template_name = 'main/search_of_users.html'
     context_object_name = 'content'
 
     @classmethod
     def get_context_data(cls, request):
         posts = cls.model.objects.all()
         class_name = cls.model.__name__
-        columns = [f.verbose_name for f in cls.model._meta.fields]
+
+        if class_name == 'Teacher':
+            profile_columns = get_profile_columns_for_class(cls, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+        elif class_name == 'Student':
+            profile_columns = get_profile_columns_for_class(cls, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+
+        user_columns = get_profile_columns_for_class(User, USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
 
         context = {
             'title': f'{class_name}s searching',
@@ -62,7 +77,7 @@ class EntitySearchMixinBase:
             'posts': posts,
             'menu': MENU_FOR_LOGGED_USER,
             'auth_buttons_ids': [4, 5, 7],
-            'columns': columns
+            'columns': user_columns + profile_columns
         }
 
         if not request.user.is_superuser:
@@ -84,7 +99,10 @@ class EntitySearchPerOneFieldMixin(EntitySearchMixinBase):
 
         for key, value in searching_keys.items():
             if value is not None and value:
-                context['posts'] = context['posts'].filter(**{f'{key}__contains': value})
+                try:
+                    context['posts'] = context['posts'].filter(**{f'{key}__contains': value})
+                except FieldError:
+                    context['posts'] = context['posts'].filter(**{f'user__{key}__contains': value})
                 applied_filters.append(f'{key} --- {value}')
 
         context['applied_filters'] = applied_filters
@@ -108,6 +126,8 @@ class EntitySearchPerAllFieldsMixin(EntitySearchMixinBase):
 
             for field in text_fields:
                 or_cond |= Q(**{'{}__contains'.format(field): searching_keys})
+
+            or_cond = add_filters_for_user_fields(or_cond, text['text'])
 
             context['posts'] = context['posts'].filter(or_cond)
 

@@ -5,10 +5,10 @@ from datetime import datetime
 from random import randint
 
 from services.services_constants import FAKER
-from users.models import User, Course
+from users.models import Person, Course
 
 
-class Teacher(User):
+class Teacher(Person):
     photo = models.ImageField(upload_to='user_photo/teacher/',
                               verbose_name='Photo',
                               default='default_avatar/teacher_avatar.png')
@@ -47,6 +47,10 @@ class Teacher(User):
 
     def get_fields_for_displaying_user_in_list(self):
         return super().get_fields_for_displaying_user_in_list() + [self.photo]
+
+    def get_fields_for_displaying_user_in_search(self):
+        return super().get_fields_for_displaying_user_in_search() + [self.date_of_employment,
+                                                                     self.experience_in_years]
 
     @classmethod
     def get_columns_for_displaying_user_in_list(cls):

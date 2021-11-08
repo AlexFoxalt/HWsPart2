@@ -6,8 +6,6 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
 from django.shortcuts import render, redirect
 from django.urls import NoReverseMatch, reverse_lazy, reverse
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_decode
 from django.views.generic import TemplateView, CreateView, RedirectView
 from webargs.djangoparser import use_args
 
@@ -15,12 +13,12 @@ from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
 from services.services_emails import send_registration_email
 from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
-    get_pos_and_course_from_args
+    get_pos_and_course_from_args, check_and_activate_current_user
 from services.services_mixins import ContextMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
-    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields, get_current_user_from_encoded_data
+    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields, get_current_user_from_encoded_data, \
+    check_if_courses_exists, create_courses_from_1st_to_5th, check_if_courses_exists_and_create_if_not
 from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
-from users.tokens import AccountActivationTokenGenerator
 
 
 class Home(ContextMixin, TemplateView):
@@ -145,18 +143,18 @@ class RegisterUser(ContextMixin, CreateView):
 
 
 class ActivateUser(RedirectView):
-
     def get(self, request, uidb64, token, *args, **kwargs):
         current_user = get_current_user_from_encoded_data(uidb64)
+        status = check_and_activate_current_user(current_user, token)
 
-        if current_user and AccountActivationTokenGenerator().check_token(current_user, token):
-            current_user.is_active = True
-            current_user.save()
+        if status:
             login(request, current_user)
+            messages.success(self.request, f'Verification complete! Now please enter additional info')
             return redirect(reverse('register-next-step',
                                     kwargs={'pk': current_user.pk}))
-
-        # return pass TODO №15
+        else:
+            messages.error(self.request, f'This account is already activated!')
+            return redirect(reverse_lazy('users-home'))
 
 
 class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
@@ -166,9 +164,11 @@ class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
     login_url = 'login'
 
     def get(self, request, *args, **kwargs):
+        # If it is first launch, we have no courses for registration. Let's create them
+        check_if_courses_exists_and_create_if_not()
+
         pk = kwargs.get("pk")
         try:
-            messages.success(self.request, f'Verification complete! Now please enter additional info')
             return redirect(f'{get_model_name_by_pk(pk)}/')
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')

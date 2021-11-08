@@ -1,11 +1,13 @@
 """All possible util functions that DON'T need any project imports except CONSTANTS"""
 import ast
 from random import choice, randint
+from typing import Union
 
 import docx
 from PyPDF2 import PdfFileReader
 
 from services.services_constants import FACULTIES
+from users.tokens import AccountActivationTokenGenerator
 
 
 def mine_faker_of_faculties() -> str:
@@ -57,41 +59,71 @@ def release_invitational_system(form, position):
         user.increase_invitational_number()
 
 
-def read_txt_file(path) -> str:
-    with open(path, 'r') as file:
-        res = file.read()
-    return res
+def read_txt_file(path) -> Union[str, None]:
+    try:
+        with open(path, 'r') as file:
+            res = file.read()
+        return res
+    except:
+        return None
 
 
-def read_docx_file(path) -> str:
-    doc = docx.Document(path)
-    text = []
-    for para in doc.paragraphs:
-        text.append(para.text)
-    return '\n'.join(text)
+def read_docx_file(path) -> Union[str, None]:
+    try:
+        doc = docx.Document(path)
+        text = []
+        for para in doc.paragraphs:
+            text.append(para.text)
+        return '\n'.join(text)
+    except:
+        return None
 
 
-def read_pdf_file(path) -> str:
-    reader = PdfFileReader(path)
-    pageObj = reader.getNumPages()
-    text = []
-    for page_count in range(pageObj):
-        page = reader.getPage(page_count)
-        text.append(page.extractText())
-    return '\n'.join(text)
+def read_pdf_file(path) -> Union[str, None]:
+    try:
+        reader = PdfFileReader(path)
+        pageObj = reader.getNumPages()
+        text = []
+        for page_count in range(pageObj):
+            page = reader.getPage(page_count)
+            text.append(page.extractText())
+        return '\n'.join(text)
+    except:
+        return None
 
 
 def get_data_from_file_in_str_format(path, extension) -> str:
     if extension == 'txt':
-        return read_txt_file(path)
+        res = read_txt_file(path)
     elif extension == 'docx':
-        return read_docx_file(path)
+        res = read_docx_file(path)
     elif extension == 'pdf':
-        return read_pdf_file(path)
+        res = read_pdf_file(path)
+    else:
+        res = None
+
+    return res if res else 'Something went wrong while reading this file :('
 
 
 def get_pos_and_course_from_args(args):
     return args[0].get('pos', None), args[0].get('course', None)
 
+
 def set_path(filename):
     return f'authentication/password/{filename}'
+
+
+def check_and_activate_current_user(current_user, token):
+    if current_user and AccountActivationTokenGenerator().check_token(current_user, token):
+        current_user.is_active = True
+        current_user.save()
+        return True
+    return False
+
+
+def get_profile_columns_for_class(cls, columns):
+    if cls.__name__ == 'User':
+        return [f.verbose_name for f in cls._meta.fields
+                if f.verbose_name in columns]
+    return [f.verbose_name for f in cls.model._meta.fields
+            if f.verbose_name in columns]

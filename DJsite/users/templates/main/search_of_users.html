@@ -14,6 +14,8 @@
 
 <h1>List of users: {{ user_class }}</h1>
 
+<!----------------------- Search form -------------------------->
+
 {% if title == 'Students searching' %}
 	<form class="search-form">
 	    {% for dict in searching_fields %}
@@ -50,6 +52,8 @@
 	{% endif %}
 
 {% endif %}
+
+<!------------------------------------------------------------------>
 
 <div id="replaceable-content" class="col-6">
 	{% include 'main/posts-results-partial.html' %}
