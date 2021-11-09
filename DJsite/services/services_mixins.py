@@ -2,7 +2,7 @@
 
 import django
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -290,6 +290,11 @@ class UserContinuedRegistrationMixin(ContextMixin, UpdateView):
 class DeleteUserMixin(ContextMixin, DeleteView):
     template_name = 'main/delete_user.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.user.pk != kwargs.get('pk') and not request.user.is_staff:
+            return forbidden_error(request, 'You haven\'t permissions for deleting this account!')
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs['pk']
@@ -300,12 +305,8 @@ class DeleteUserMixin(ContextMixin, DeleteView):
         return combine_context(context, extra_context)
 
     def get_success_url(self, *args, **kwargs):
-        if self.model is Teacher:
-            messages.success(self.request, 'Teacher deleted successfully')
-            return reverse_lazy('get-all-teachers')
-        elif self.model is Student:
-            messages.success(self.request, 'Student deleted successfully')
-            return reverse_lazy('get-all-students')
+        messages.success(self.request, 'User deleted successfully')
+        return reverse_lazy('users-home')
 
 
 class PasswordResetMixin:

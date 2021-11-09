@@ -45,12 +45,6 @@ class EditStudent(LoginRequiredMixin, EditUserMixin):
     login_url = 'login'
 
 
-class DeleteStudent(StaffPermissionAndLoginRequired, DeleteUserMixin):
-    model = Student
-    page_id = 7
-    login_url = 'login'
-
-
 class StudentProfile(LoginRequiredMixin, ProfileMixin):
     model = Student
     page_id = 12

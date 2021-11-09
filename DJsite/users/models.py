@@ -132,7 +132,7 @@ class Person(models.Model):
         return field_value
 
     def get_fields_for_displaying_user_in_list(self):
-        return [self.user.first_name, self.user.last_name, self.user.email, self.position]
+        return [self.user.first_name, self.user.last_name, self.user.nickname, self.position]
 
     def get_fields_for_displaying_user_in_search(self):
         return [self.user.first_name,
@@ -145,7 +145,7 @@ class Person(models.Model):
     def get_columns_for_displaying_user_in_list(cls):
         return [get_user_model().first_name.field.verbose_name,
                 get_user_model().last_name.field.verbose_name,
-                get_user_model().email.field.verbose_name,
+                get_user_model().nickname.field.verbose_name,
                 cls.position.field.verbose_name]
 
 

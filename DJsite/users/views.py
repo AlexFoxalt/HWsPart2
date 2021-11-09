@@ -1,6 +1,6 @@
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.exceptions import BadRequest
@@ -15,7 +15,7 @@ from services.services_emails import send_registration_email
 from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
     get_pos_and_course_from_args, check_and_activate_current_user
-from services.services_mixins import ContextMixin, StaffPermissionAndLoginRequired
+from services.services_mixins import ContextMixin, StaffPermissionAndLoginRequired, DeleteUserMixin
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
     get_model_name_by_pk, create_user_with_custom_fields, get_current_user_from_encoded_data, \
     check_if_courses_exists_and_create_if_not, get_user_by_pk
@@ -94,6 +94,12 @@ class EditUser(LoginRequiredMixin, RedirectView):
             return redirect(f'edit-{get_model_name_by_pk(pk)}', pk=pk)
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')
+
+
+class DeleteUser(LoginRequiredMixin, DeleteUserMixin):
+    model = get_user_model()
+    page_id = 7
+    login_url = 'login'
 
 
 class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
