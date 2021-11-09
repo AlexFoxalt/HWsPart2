@@ -180,3 +180,13 @@ def add_filters_for_user_fields(or_cond, text):
 
 def get_last_added_user():
     return CustomUser.objects.latest('id')
+
+
+def get_role_of_user(user):
+    if user.is_authenticated:
+        if user.is_staff:
+            return 'admin'
+        else:
+            return get_model_name_by_pk(user.pk)
+    else:
+        return 'anonymous'

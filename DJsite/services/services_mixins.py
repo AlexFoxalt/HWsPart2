@@ -19,7 +19,8 @@ from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context, \
     get_profile_columns_for_class
 from services.services_models import CONTEXT_CONTAINER, check_if_profile_is_filled, get_user_groups, \
-    get_initial_values_from_user, add_filters_for_user_fields, get_last_added_user
+    get_initial_values_from_user, add_filters_for_user_fields, get_last_added_user, get_model_name_by_pk, \
+    get_role_of_user
 
 from students.forms import RegisterStudentForm, EditStudentForm
 from students.models import Student
@@ -55,6 +56,7 @@ class EntityGeneratorMixin:
             'posts': posts,
             'menu': MENU_FOR_LOGGED_USER,
             'auth_buttons_ids': [4, 5, 7],
+            'role': get_role_of_user(request.user)
         }
         return render(request, cls.template_name, context=context)
 
@@ -82,7 +84,8 @@ class EntitySearchMixinBase:
             'posts': posts,
             'menu': MENU_FOR_LOGGED_USER,
             'auth_buttons_ids': [4, 5, 7],
-            'columns': user_columns + profile_columns
+            'columns': user_columns + profile_columns,
+            'role': get_role_of_user(request.user)
         }
 
         if not request.user.is_superuser:
@@ -153,7 +156,7 @@ class ContextMixin:
     def get_user_context(self, **kwargs):
         context = kwargs
         context['selected'] = 0
-        context['no_profile_anchor'] = NO_PROFILE_ANCHOR_PAGE_TITLES
+        context['role'] = get_role_of_user(self.request.user)
 
         try:
             page_id = kwargs['page_id']

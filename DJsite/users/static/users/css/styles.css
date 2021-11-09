@@ -101,7 +101,17 @@ li.menu-bar {
   font-size: 22px;
   font-family: Bookman;
 }
-li.username {
+li.username-teacher {
+	float: right;
+  font-size: 23px;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  padding: 15px 60px 13px 60px;
+  text-decoration: none;
+  background-color: #0444aa;
+}
+li.username-student {
 	float: right;
   font-size: 23px;
   font-family: Georgia, serif;
@@ -110,6 +120,16 @@ li.username {
   padding: 15px 60px 13px 60px;
   text-decoration: none;
   background-color: #04AA6D;
+}
+li.username-admin {
+	float: right;
+  font-size: 23px;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  padding: 15px 60px 13px 60px;
+  text-decoration: none;
+  background-color: #aa042b;
 }
 
 li.menu-bar a {
@@ -235,6 +255,11 @@ table.userlist-table, th, td {
 	padding: 4px;
 	border-bottom: 1px solid #ddd;
 }
+table.userlist-table-myself, th, td {
+	text-align: center;
+	padding: 4px;
+	border-bottom: 1px solid #ddd;
+}
 table.userlist-table {
 	width: 100%;
 	height: 100%;
@@ -247,6 +272,12 @@ table.userlist-table tr:hover {
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
+}
+
+.self-profile {
+	background-color: rgba(248, 255, 143, 0.5);
+	border: 1px solid rgb(248, 255, 143);
+	border-radius: 20px;
 }
 
 .fast-search {

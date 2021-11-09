@@ -21,13 +21,13 @@
 <ul class="menu-bar">
   {% if request.user.is_authenticated %}
     {% if request.user.pk == pk %}
-      <li class="username">{{ user.nickname }}
+      <li class="username-{{role}}">{{ user.nickname }}
         {% if filled is False %}
           [unfilled]
         {% endif %}
       </li>
     {% else %}
-      <a style="color: inherit; text-decoration: none;" href="{% url 'user-profile' pk=user.pk %}"><li class="username">{{ user.nickname }}</a>
+      <a style="color: inherit; text-decoration: none;" href="{% url 'user-profile' pk=user.pk %}"><li class="username-{{role}}">{{ user.nickname }}</a>
         {% if filled is False %}
           <a style="color: inherit; text-decoration: none;" href="{% url 'register-next-step' pk=user.pk %}" title="Fill profile">[unfilled]</a>
         {% endif %}
