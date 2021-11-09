@@ -20,7 +20,7 @@
 
 <ul class="menu-bar">
   {% if request.user.is_authenticated %}
-    {% if title in no_profile_anchor %}
+    {% if request.user.pk == pk %}
       <li class="username">{{ user.nickname }}
         {% if filled is False %}
           [unfilled]

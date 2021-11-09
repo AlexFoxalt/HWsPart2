@@ -60,13 +60,13 @@ MENU_FOR_UNLOGGED_USER = [
 HOME_PAGE_POSTS = [
     {
         'name': '/gen-students/',
-        'description': '[admin only] Generates students with opt.param. ?count= (def=10)',
+        'description': '[admin only] Generates students with opt.param. ?count= (def=10) | Pass: 123faker123',
         'url_name': 'gen-students',
         'permission': 'Staff'
     },
     {
         'name': '/gen-teachers/',
-        'description': '[admin only] Generates teachers with opt.param. ?count= (def=10)',
+        'description': '[admin only] Generates teachers with opt.param. ?count= (def=10) | Pass: 123faker123',
         'url_name': 'gen-teachers',
         'permission': 'Staff'
     },

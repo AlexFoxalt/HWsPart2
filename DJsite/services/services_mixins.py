@@ -200,8 +200,10 @@ class ProfileMixin(ContextMixin, DetailView):
     context_object_name = 'profile'
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        pk = kwargs.get('object').pk
         context = super().get_context_data(**kwargs)
-        extra_context = self.get_user_context(page_id=self.page_id)
+        extra_context = self.get_user_context(page_id=self.page_id,
+                                              pk=pk)
         return combine_context(context, extra_context)
 
 
