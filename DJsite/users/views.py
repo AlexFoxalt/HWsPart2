@@ -9,15 +9,16 @@ from django.urls import NoReverseMatch, reverse_lazy, reverse
 from django.views.generic import TemplateView, CreateView, RedirectView
 from webargs.djangoparser import use_args
 
+import users
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
 from services.services_emails import send_registration_email
 from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
     get_pos_and_course_from_args, check_and_activate_current_user
-from services.services_mixins import ContextMixin
+from services.services_mixins import ContextMixin, StaffPermissionAndLoginRequired
 from services.services_models import get_users_by_pos_and_course, get_and_save_object_by_its_position, \
-    get_model_name_by_pk, get_user_by_username, create_user_with_custom_fields, get_current_user_from_encoded_data, \
-    check_if_courses_exists, create_courses_from_1st_to_5th, check_if_courses_exists_and_create_if_not
+    get_model_name_by_pk, create_user_with_custom_fields, get_current_user_from_encoded_data, \
+    check_if_courses_exists_and_create_if_not, get_user_by_pk
 from users.forms import CreateUserForm, RegisterUserForm, LoginUserForm
 
 
@@ -52,12 +53,11 @@ class Links(ContextMixin, LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context=combine_context(context, extra_context))
 
 
-class CreateUser(ContextMixin, GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class CreateUser(ContextMixin, StaffPermissionAndLoginRequired, CreateView):
     form_class = CreateUserForm
     template_name = 'main/create_user.html'
     page_id = 4
     login_url = 'login'
-    group_required = "Staff"
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -199,11 +199,14 @@ class UserProfile(LoginRequiredMixin, RedirectView):
     login_url = 'login'
 
     def get(self, request, *args, **kwargs):
-        user = get_user_by_username(kwargs.get("username"))
         try:
+            user = get_user_by_pk(kwargs.get("pk"))
             return redirect(f'{user.position.lower()}-profile', pk=user.pk)
         except NoReverseMatch:
             return page_not_found(request, 'Position of user error, no such users!')
+        except AttributeError:
+            return page_not_found(request, 'User has no position. Maybe you are an admin? '
+                                           'Admins have not yet come up with a profile :)')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

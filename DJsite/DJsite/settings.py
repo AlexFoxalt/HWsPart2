@@ -101,6 +101,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.CustomUser"
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -130,8 +132,12 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+# Path to media files
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Flash messages
 
 try:
     from django.contrib.messages import constants as messages
@@ -156,3 +162,9 @@ EMAIL_HOST_USER = 'alexfoxalt@gmail.com'
 EMAIL_HOST_PASSWORD = "xqzhemnmnpvjmucq"
 EMAIL_PORT = 587
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+
+# Login / Logout
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'users-home'

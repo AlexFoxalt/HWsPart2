@@ -2,7 +2,8 @@
 
 import django
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.http import JsonResponse
@@ -18,7 +19,7 @@ from services.services_error_handlers import page_not_found, forbidden_error
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context, \
     get_profile_columns_for_class
 from services.services_models import CONTEXT_CONTAINER, check_if_profile_is_filled, get_user_groups, \
-    get_initial_values_from_user, add_filters_for_user_fields
+    get_initial_values_from_user, add_filters_for_user_fields, get_last_added_user
 
 from students.forms import RegisterStudentForm, EditStudentForm
 from students.models import Student
@@ -38,6 +39,9 @@ class EntityGeneratorMixin:
         try:
             cls.model.generate_entity(count)
         except (IndexError, ValueError):
+            last_added_user = get_last_added_user()
+            last_added_user.delete()
+
             exception = {'msg': 'You should create at least 1 Course, if you want to use generator',
                          'link': 'http://127.0.0.1:8000/admin/users/course/add/',
                          'link_text': 'Add course'}
@@ -66,11 +70,11 @@ class EntitySearchMixinBase:
         class_name = cls.model.__name__
 
         if class_name == 'Teacher':
-            profile_columns = get_profile_columns_for_class(cls, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+            profile_columns = get_profile_columns_for_class(cls.model, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
         elif class_name == 'Student':
-            profile_columns = get_profile_columns_for_class(cls, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
+            profile_columns = get_profile_columns_for_class(cls.model, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
 
-        user_columns = get_profile_columns_for_class(User, USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
+        user_columns = get_profile_columns_for_class(get_user_model(), USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
 
         context = {
             'title': f'{class_name}s searching',
@@ -242,7 +246,7 @@ class EditUserMixin(ContextMixin, UpdateView):
         return super().post(request, *args, **kwargs)
 
     def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('user-profile', args=[self.object.user.username])
+        return reverse_lazy('user-profile', args=[self.object.user.pk])
 
 
 class UserContinuedRegistrationMixin(ContextMixin, UpdateView):
@@ -309,3 +313,16 @@ class PasswordResetMixin:
         context = super().get_context_data(**kwargs)
         extra_context = self.get_user_context()
         return combine_context(context, extra_context)
+
+
+class StaffPermissionAndLoginRequired(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        _user = request.user
+
+        if not _user.is_authenticated:
+            return self.handle_no_permission()
+
+        if not _user.is_staff:
+            return forbidden_error(request, 'You have no permissions for this stuff!')
+
+        return super().dispatch(request, *args, **kwargs)

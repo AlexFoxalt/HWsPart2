@@ -1,5 +1,6 @@
 import django
-from django.contrib.auth.models import User, Group
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from services.services_constants import FAKER
 from services.services_functions import mine_faker_of_faculties
@@ -8,10 +9,11 @@ from services.services_functions import mine_faker_of_faculties
 def create_random_user():
     first_name = FAKER.first_name()
     last_name = FAKER.last_name()
+    nickname = f'bot_{first_name.lower()}_{last_name.lower()}'
 
-    user = User(
-        username=f'gen_{first_name}_{last_name}',
+    user = get_user_model()(
         email=FAKER.email(),
+        nickname=nickname,
         first_name=first_name,
         last_name=last_name
     )

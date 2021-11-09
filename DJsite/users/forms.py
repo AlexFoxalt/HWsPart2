@@ -2,19 +2,18 @@ from datetime import datetime
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
 from students.models import Student
-from users.models import Course, Person
+from users.models import Course, Person, CustomUser
 
 
 class ExtendingUserForm(ModelForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('first_name', 'last_name')
 
 
@@ -97,17 +96,17 @@ class CreateUserForm(ModelForm):
 
 
 class RegisterUserForm(UserCreationForm):
-    username = forms.CharField(label='Login', widget=forms.TextInput())
     email = forms.CharField(label='Email', widget=forms.EmailInput())
+    nickname = forms.CharField(label='Nickname', widget=forms.TextInput())
     position = forms.ChoiceField(label='Position', choices=POSITIONS_SELECTOR)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput())
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        model = CustomUser
+        fields = ['email', 'nickname', 'password1', 'password2']
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'login-form'}))
+    username = forms.CharField(label='Email', widget=forms.TextInput(attrs={'class': 'login-form'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'login-form'}))

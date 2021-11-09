@@ -6,7 +6,7 @@ from webargs.djangoparser import use_args
 
 from services.services_constants import GET_INT_COUNT, TEACHER_FILTER_QUERY
 from services.services_mixins import EntitySearchPerOneFieldMixin, EntityGeneratorMixin, GetAllUsersMixin, \
-    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
+    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin, StaffPermissionAndLoginRequired
 from teachers.forms import EditTeacherForm, RegisterTeacherForm
 from teachers.models import Teacher
 from users.forms import ExtendingUserForm
@@ -14,11 +14,10 @@ from users.forms import ExtendingUserForm
 parser = djangoparser.DjangoParser()
 
 
-class TeacherGenerator(EntityGeneratorMixin, GroupRequiredMixin, LoginRequiredMixin, ListView):
+class TeacherGenerator(EntityGeneratorMixin, StaffPermissionAndLoginRequired, ListView):
     model = Teacher
     user_class = 'Teacher(s)'
     login_url = 'login'
-    group_required = "Staff"
 
     @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
@@ -49,11 +48,10 @@ class EditTeacher(LoginRequiredMixin, EditUserMixin):
     login_url = 'login'
 
 
-class DeleteTeacher(GroupRequiredMixin, LoginRequiredMixin, DeleteUserMixin):
+class DeleteTeacher(StaffPermissionAndLoginRequired, DeleteUserMixin):
     model = Teacher
     page_id = 8
     login_url = 'login'
-    group_required = "Staff"
 
 
 class TeacherProfile(LoginRequiredMixin, ProfileMixin):

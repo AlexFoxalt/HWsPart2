@@ -21,13 +21,13 @@
 <ul class="menu-bar">
   {% if request.user.is_authenticated %}
     {% if title in no_profile_anchor %}
-      <li class="username">{{ user.username }}
+      <li class="username">{{ user.nickname }}
         {% if filled is False %}
           [unfilled]
         {% endif %}
       </li>
     {% else %}
-      <a style="color: inherit; text-decoration: none;" href="{% url 'user-profile' username=user.username %}"><li class="username">{{ user.username }}</a>
+      <a style="color: inherit; text-decoration: none;" href="{% url 'user-profile' pk=user.pk %}"><li class="username">{{ user.nickname }}</a>
         {% if filled is False %}
           <a style="color: inherit; text-decoration: none;" href="{% url 'register-next-step' pk=user.pk %}" title="Fill profile">[unfilled]</a>
         {% endif %}
@@ -56,6 +56,12 @@
     {% endif %}
 
   {% endfor %}
+
+  {% if back_button %}
+    <li class="menu-bar"><a id="back-link" class="active" title="Go back"><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
+  {% endif %}
+
+
 </ul>
 
 <div class="content">

@@ -1,6 +1,6 @@
 """Here we are working with stuff that need imports from models.py"""
 import django
-from django.contrib.auth.models import User as User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.utils.encoding import force_bytes
@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_decode
 
 from students.models import Student
 from teachers.models import Teacher
-from users.models import Course, Person
+from users.models import Course, Person, CustomUser
 from services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER, USER_COLUMN_NAMES_FOR_SEARCH_PAGE, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE, \
     TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE
@@ -42,7 +42,7 @@ CONTEXT_CONTAINER = {
 
 
 def get_users_by_pos_and_course(pos: str, course: str):
-    user_columns = get_profile_columns_for_class(User, USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
+    user_columns = get_profile_columns_for_class(get_user_model(), USER_COLUMN_NAMES_FOR_SEARCH_PAGE)
     if pos == 'Student':
         course = Course.objects.get(pk=course)
         profile_columns = get_profile_columns_for_class(Student, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE)
@@ -84,8 +84,10 @@ def get_model_name_by_pk(pk):
     return Person.objects.get(pk=pk).position.lower()
 
 
-def get_user_by_username(username):
-    user = User.objects.get(username=username)
+def get_user_by_pk(pk):
+    user = get_user_model().objects.get(pk=pk)
+    if user.is_staff:
+        return user
     return Person.objects.get(user=user)
 
 
@@ -110,9 +112,9 @@ def set_default_group_for_user(user):
 
 def create_user_with_custom_fields(form):
     data = form.cleaned_data
-    newuser = User(
-        username=data['username'],
-        email=data['email']
+    newuser = get_user_model()(
+        email=data['email'],
+        nickname=data['nickname']
     )
     newuser.set_password(data['password1'])
     newuser.is_active = False
@@ -122,6 +124,7 @@ def create_user_with_custom_fields(form):
 
     newuser.save()
     set_default_group_for_user(newuser)
+
     return newuser
 
 
@@ -138,7 +141,7 @@ def get_user_groups(user):
 
 
 def get_initial_values_from_user(pk):
-    user = User.objects.get(pk=pk)
+    user = get_user_model().objects.get(pk=pk)
     return {'first_name': user.first_name,
             'last_name': user.last_name}
 
@@ -146,8 +149,8 @@ def get_initial_values_from_user(pk):
 def get_current_user_from_encoded_data(uidb64):
     try:
         user_pk = force_bytes(urlsafe_base64_decode(uidb64))
-        current_user = User.objects.get(pk=user_pk)
-    except (User.DoesNotExist, ValueError, TypeError):
+        current_user = get_user_model().objects.get(pk=user_pk)
+    except (get_user_model().DoesNotExist, ValueError, TypeError):
         return None
 
     return current_user
@@ -174,3 +177,7 @@ def add_filters_for_user_fields(or_cond, text):
     for field in text_fields:
         or_cond |= Q(**{'{}__contains'.format(field): text})
     return or_cond
+
+
+def get_last_added_user():
+    return CustomUser.objects.latest('id')
