@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from .password_reset_views import UsersPasswordResetView, UsersPasswordResetDoneView, UsersPasswordResetConfirmView, \
     UsersPasswordResetCompleteView

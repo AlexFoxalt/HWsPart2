@@ -30,6 +30,8 @@ urlpatterns = [
     path('', include('teachers.urls')),
     path('', include('students.urls')),
 
+    path('oauth/', include('social_django.urls', namespace='social')),
+
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
