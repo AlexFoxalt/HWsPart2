@@ -12,7 +12,7 @@ from webargs.djangoparser import use_args
 import users
 from services.services_constants import POSITION_AND_COURSE_FILTER_QUERY, parser
 from services.services_emails import send_registration_email
-from services.services_error_handlers import page_not_found, forbidden_error
+from services.services_error_handlers import not_found, forbidden
 from services.services_functions import combine_context, get_position_from_cleaned_data, \
     get_pos_and_course_from_args, check_and_activate_current_user
 from services.services_mixins import ContextMixin, StaffPermissionAndLoginRequired, DeleteUserMixin
@@ -67,7 +67,7 @@ class CreateUser(ContextMixin, StaffPermissionAndLoginRequired, CreateView):
     def form_valid(self, form):
         position = get_position_from_cleaned_data(form)
         if not position:
-            return page_not_found(self.request, 'Position can not be NoneType!')
+            return not_found(self.request, 'Position can not be NoneType!')
         status, user_position = get_and_save_object_by_its_position(position, form)
 
         if status:
@@ -88,12 +88,12 @@ class EditUser(LoginRequiredMixin, RedirectView):
         pk = kwargs.get("pk")
 
         if pk != request.user.pk and not request.user.is_superuser:
-            return forbidden_error(request, 'You can\'t edit profile, that doesn\'t belong to you')
+            return forbidden(request, 'You can\'t edit profile, that doesn\'t belong to you')
 
         try:
             return redirect(f'edit-{get_model_name_by_pk(pk)}', pk=pk)
         except NoReverseMatch:
-            return page_not_found(request, 'Position of user error, no such users!')
+            return not_found(request, 'Position of user error, no such users!')
 
 
 class DeleteUser(LoginRequiredMixin, DeleteUserMixin):
@@ -112,10 +112,10 @@ class GetUsersByCourse(ContextMixin, LoginRequiredMixin, TemplateView):
         pos, course = get_pos_and_course_from_args(args)
 
         if pos is None or course is None:
-            return page_not_found(request, 'Position or Course can not be NoneType. '
-                                           'Maybe be you don\'t create a Course?')
+            return not_found(request, 'Position or Course can not be NoneType. '
+                                      'Maybe be you don\'t create a Course?')
         elif course == '---':
-            return page_not_found(request, 'We didn\'t find any Course. Yoo can create it in admin panel')
+            return not_found(request, 'We didn\'t find any Course. Yoo can create it in admin panel')
 
         user_list, pos, course, columns = get_users_by_pos_and_course(pos, course)
 
@@ -177,7 +177,7 @@ class UserContinuedRegistration(LoginRequiredMixin, RedirectView):
         try:
             return redirect(f'{get_model_name_by_pk(pk)}/')
         except NoReverseMatch:
-            return page_not_found(request, 'Position of user error, no such users!')
+            return not_found(request, 'Position of user error, no such users!')
 
 
 class LoginUser(ContextMixin, LoginView):
@@ -209,10 +209,10 @@ class UserProfile(LoginRequiredMixin, RedirectView):
             user = get_user_by_pk(kwargs.get("pk"))
             return redirect(f'{user.position.lower()}-profile', pk=user.pk)
         except NoReverseMatch:
-            return page_not_found(request, 'Position of user error, no such users!')
+            return not_found(request, 'Position of user error, no such users!')
         except AttributeError:
-            return page_not_found(request, 'User has no position. Maybe you are an admin? '
-                                           'Admins have not yet come up with a profile :)')
+            return not_found(request, 'User has no position. Maybe you are an admin? '
+                                      'Admins have not yet come up with a profile :)')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Error parser for webargs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

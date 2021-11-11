@@ -472,6 +472,7 @@ table.userlist-table-all-right tr:hover {
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
 	margin-top: 15px;
+	width: 150px;
 }
 .login-via-github-button:hover {
 	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);

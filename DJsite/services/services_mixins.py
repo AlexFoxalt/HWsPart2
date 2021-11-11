@@ -15,7 +15,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from services.services_constants import MENU_FOR_LOGGED_USER, MENU_FOR_UNLOGGED_USER, \
     NO_PROFILE_ANCHOR_PAGE_TITLES, TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE, USER_COLUMN_NAMES_FOR_SEARCH_PAGE, \
     STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE
-from services.services_error_handlers import page_not_found, forbidden_error
+from services.services_error_handlers import not_found, forbidden
 from services.services_functions import from_dict_to_list_of_dicts_format, combine_context, \
     get_profile_columns_for_class
 from services.services_models import CONTEXT_CONTAINER, check_if_profile_is_filled, get_user_groups, \
@@ -46,7 +46,7 @@ class EntityGeneratorMixin:
             exception = {'msg': 'You should create at least 1 Course, if you want to use generator',
                          'link': 'http://127.0.0.1:8000/admin/users/course/add/',
                          'link_text': 'Add course'}
-            return page_not_found(request, exception)
+            return not_found(request, exception)
 
         posts = cls.model.objects.all().order_by('-user_id')[:count][::-1]
 
@@ -216,7 +216,7 @@ class EditUserMixin(ContextMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         if pk != request.user.pk and not request.user.is_superuser:
-            return forbidden_error(request, 'You can\'t edit profile, that doesn\'t belong to you')
+            return forbidden(request, 'You can\'t edit profile, that doesn\'t belong to you')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -298,7 +298,7 @@ class DeleteUserMixin(ContextMixin, DeleteView):
 
     def get(self, request, *args, **kwargs):
         if request.user.pk != kwargs.get('pk') and not request.user.is_staff:
-            return forbidden_error(request, 'You haven\'t permissions for deleting this account!')
+            return forbidden(request, 'You haven\'t permissions for deleting this account!')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -330,6 +330,6 @@ class StaffPermissionAndLoginRequired(AccessMixin):
             return self.handle_no_permission()
 
         if not _user.is_staff:
-            return forbidden_error(request, 'You have no permissions for this stuff!')
+            return forbidden(request, 'You have no permissions for this stuff!')
 
         return super().dispatch(request, *args, **kwargs)

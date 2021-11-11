@@ -7,7 +7,7 @@ from services.services_models import get_role_of_user
 GO_BACK_BUTTON = {'name': 'Go back', 'url': 'back-link'}
 
 
-def page_not_found(request, exception):
+def not_found(request, exception):
     if isinstance(exception, dict):
         context = {
             'msg': exception['msg'],
@@ -29,10 +29,19 @@ def server_error(request):
     return HttpResponseServerError('<h1> 500 Server Error :( </h1>')
 
 
-def forbidden_error(request, exception):
+def forbidden(request, exception):
     context = {
         'msg': str(exception),
         'back_button': True,
         'role': get_role_of_user(request.user)
     }
     return render(request, 'errors/403.html', context=context)
+
+
+def method_not_allowed(request, exception):
+    context = {
+        'msg': str(exception),
+        'back_button': True,
+        'role': get_role_of_user(request.user)
+    }
+    return render(request, 'errors/405.html', context=context)
