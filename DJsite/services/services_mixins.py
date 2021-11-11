@@ -265,6 +265,7 @@ class UserContinuedRegistrationMixin(ContextMixin, UpdateView):
         if 'form2' not in context:
             context['form2'] = self.second_form_class
 
+        context['user'] = get_object_or_404(get_user_model(), pk=self.kwargs['pk'])
         return combine_context(context, extra_context)
 
     def post(self, request, *args, **kwargs):

@@ -108,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = "users.CustomUser"
 
 AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend'
 )
@@ -115,8 +116,26 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GITHUB_KEY = 'd25e4e96278a1ac6a3d3'
 SOCIAL_AUTH_GITHUB_SECRET = '6da4e6be7f947e723b95d7201736d3868844fa1e'
 
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '236222524187-j8h594kdiisgeu53ih5tg56k7gujb0m4.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+
+    'services.google_pipeline.create_user',
+
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details'
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -179,22 +198,6 @@ EMAIL_PORT = 587
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
 
 # Login / Logout
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+LOGIN_URL = '/auth/login/google-oauth2/'
 LOGIN_REDIRECT_URL = '/'
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-
-    'students.services.facebook_pipeline.cleanup_social_account',
-
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details'
-)
+LOGOUT_REDIRECT_URL = '/'

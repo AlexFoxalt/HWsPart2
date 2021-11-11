@@ -91,7 +91,12 @@ def get_user_by_pk(pk):
 
 
 def create_new_profile_by_position(instance):
-    pos = instance._position
+    try:
+        pos = instance._position
+    except AttributeError:
+        Student.objects.create(user=instance, position='Student')
+        return
+
     if pos == 'Student':
         Student.objects.create(user=instance, position=pos)
     elif pos == 'Teacher':

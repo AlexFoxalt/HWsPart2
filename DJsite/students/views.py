@@ -9,6 +9,7 @@ from services.services_mixins import EntityGeneratorMixin, EntitySearchPerAllFie
 from students.forms import EditStudentForm, RegisterStudentForm
 from students.models import Student
 from users.forms import ExtendingUserForm
+from users.models import CustomUser
 
 
 class StudentGenerator(EntityGeneratorMixin, StaffPermissionAndLoginRequired, ListView):
