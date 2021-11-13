@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block content %}
+
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
 
 <div class="profile">
@@ -20,7 +21,18 @@
 			      	<a href="{% url 'edit-user' pk=profile.user.pk %}"><button class="edit-profile-info" title="Edit Profile"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></a>
 		    {% endif %}
 
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="{{ profile.photo.url }}"><span class="font-weight-bold">{{ profile.user.username }} </span><span class="text-black-50">{{ profile.user.email }}</span><span> </span></div>
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="{{ profile.photo.url }}"><span class="font-weight-bold">{{ profile.user.nickname }}</span><span class="text-black-50">{{ profile.user.email }}</span><span> </span></div>
+
+            {% block messages %}
+				{% if messages %}
+					<ul class="messages" id="successMessage">
+			    	{% for message in messages %}
+			    		<li {% if message.tags %} class="profile-{{ message.tags }}"{% endif %}> {{ message }} </li>
+			    	{% endfor %}
+					</ul>
+				{% endif %}
+			{% endblock messages %}
+
         </div>
         <div class="col-md-5 border-right" style="min-height: 540px;">
             <div class="p-3 py-5">

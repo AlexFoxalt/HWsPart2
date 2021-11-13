@@ -5,17 +5,17 @@ from webargs.djangoparser import use_args
 
 from services.services_constants import GET_INT_COUNT, parser, STUDENT_FILTER_QUERY
 from services.services_mixins import EntityGeneratorMixin, EntitySearchPerAllFieldsMixin, GetAllUsersMixin, \
-    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin
+    EditUserMixin, DeleteUserMixin, ProfileMixin, UserContinuedRegistrationMixin, StaffPermissionAndLoginRequired
 from students.forms import EditStudentForm, RegisterStudentForm
 from students.models import Student
 from users.forms import ExtendingUserForm
+from users.models import CustomUser
 
 
-class StudentGenerator(EntityGeneratorMixin, GroupRequiredMixin, LoginRequiredMixin, ListView):
+class StudentGenerator(EntityGeneratorMixin, StaffPermissionAndLoginRequired, ListView):
     model = Student
     user_class = 'Student(s)'
     login_url = 'login'
-    group_required = "Staff"
 
     @parser.use_kwargs(GET_INT_COUNT, location="query")
     def get(self, request, count, *args, **kwargs):
@@ -44,13 +44,6 @@ class EditStudent(LoginRequiredMixin, EditUserMixin):
     model = Student
     page_id = 5
     login_url = 'login'
-
-
-class DeleteStudent(GroupRequiredMixin, LoginRequiredMixin, DeleteUserMixin):
-    model = Student
-    page_id = 7
-    login_url = 'login'
-    group_required = "Staff"
 
 
 class StudentProfile(LoginRequiredMixin, ProfileMixin):

@@ -1,6 +1,16 @@
 {% extends '../main/base.html' %}
 {% block content %}
 
+{% block messages %}
+	{% if messages %}
+		<ul class="messages" id="successMessage">
+    	{% for message in messages %}
+    		<li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{ message }} </li>
+    	{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock messages %}
+
 <div class="login-form">
 
 <h1 class="login-form"> {{ title }} </h1>
@@ -18,6 +28,16 @@
 	<p style="font-size: 15px;"><a style="text-decoration: none;" href="{% url 'reset_password' %}">Forgot password?</a></p>
 
 	<button type="submit" class="submit-button">Login</button>
+	
+	<p>
+	<a href="{% url 'social:begin' 'github' %}" title="Login via GitHub" class="login-via-github-button">
+		<i style="font-size:20px;" class="fa fa-github" aria-hidden="true"> GitHub</i>
+	</a>
+	<a href="{% url 'social:begin' 'google-oauth2' %}" title="Login via Google" class="login-via-github-button">
+		<i style="font-size:20px;" class="fa fa-google" aria-hidden="true"></i> Google</i>
+	</a>
+	</p>
+
 </form>
 
 </div>

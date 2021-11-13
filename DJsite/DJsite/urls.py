@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.static import serve
 
-from services.services_error_handlers import page_not_found, forbidden_error
+from services.services_error_handlers import method_not_allowed, forbidden, not_found
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
@@ -29,6 +29,8 @@ urlpatterns = [
     path('', include('users.urls')),
     path('', include('teachers.urls')),
     path('', include('students.urls')),
+
+    path('oauth/', include('social_django.urls', namespace='social')),
 
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
@@ -42,5 +44,6 @@ if settings.DEBUG:
                   ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = page_not_found
-handler403 = forbidden_error
+handler405 = method_not_allowed
+handler404 = not_found
+handler403 = forbidden

@@ -23,7 +23,7 @@ SECRET_KEY = 'django-insecure-=yen%^!9@r#l8x6$^%i%wcfjx#i(l+o^+9lw)i%sux$h&iex18
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'debug_toolbar',
+    'social_django',
     'users.apps.UsersConfig',
     'teachers.apps.TeachersConfig',
     'students.apps.StudentsConfig'
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 ROOT_URLCONF = 'DJsite.urls'
@@ -66,6 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -101,6 +105,38 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.CustomUser"
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
+SOCIAL_AUTH_GITHUB_KEY = 'd25e4e96278a1ac6a3d3'
+SOCIAL_AUTH_GITHUB_SECRET = '6da4e6be7f947e723b95d7201736d3868844fa1e'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '236222524187-j8h594kdiisgeu53ih5tg56k7gujb0m4.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+
+    'services.google_pipeline.create_user',
+
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details'
+)
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -130,8 +166,12 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+# Path to media files
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Flash messages
 
 try:
     from django.contrib.messages import constants as messages
@@ -152,7 +192,12 @@ except Exception as e:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'students.lms.2@gmail.com'
-EMAIL_HOST_PASSWORD = "cqmjwtzowykqnkoc"
+EMAIL_HOST_USER = 'alexfoxalt@gmail.com'
+EMAIL_HOST_PASSWORD = "xqzhemnmnpvjmucq"
 EMAIL_PORT = 587
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+
+# Login / Logout
+LOGIN_URL = '/auth/login/google-oauth2/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

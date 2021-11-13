@@ -59,18 +59,31 @@ li.alert-success {
 	text-shadow:0px 1px 0px #2f6627;
 }
 li.alert-danger {
-	box-shadow:inset 0px 1px 0px 0px #cf866c;
-	background:linear-gradient(to bottom, #d0451b 5%, #bc3315 100%);
-	background-color:#d0451b;
-	border-radius:3px;
-	border:1px solid #942911;
+	background-color:#ff4d40;
+	border:1px solid #780800;
 	display:inline-block;
 	color:#ffffff;
 	font-family:Arial;
 	font-size:20px;
-	padding:6px 24px;
+	padding:16px 31px;
 	text-decoration:none;
-	text-shadow:0px 1px 0px #854629;
+	text-shadow:0px 1px 0px #2f6627;
+}
+li.profile-alert-success {
+	float: right;
+	font-size:22px;
+	color: #44c767;
+	font-family:Arial;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+	text-align: center;
+	width: 100%;
+	position: relative;
+	bottom: -150px;
+	left: -10px;
+	background-color: rgba(156, 255, 182, 0.5);
+	border-radius:28px;
+	border:1px solid #18ab29;
 }
 
 /* --------------------- */
@@ -88,7 +101,17 @@ li.menu-bar {
   font-size: 22px;
   font-family: Bookman;
 }
-li.username {
+li.username-teacher {
+	float: right;
+  font-size: 23px;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  padding: 15px 60px 13px 60px;
+  text-decoration: none;
+  background-color: #0444aa;
+}
+li.username-student {
 	float: right;
   font-size: 23px;
   font-family: Georgia, serif;
@@ -97,6 +120,16 @@ li.username {
   padding: 15px 60px 13px 60px;
   text-decoration: none;
   background-color: #04AA6D;
+}
+li.username-admin {
+	float: right;
+  font-size: 23px;
+  font-family: Georgia, serif;
+  color: white;
+  text-align: center;
+  padding: 15px 60px 13px 60px;
+  text-decoration: none;
+  background-color: #aa042b;
 }
 
 li.menu-bar a {
@@ -133,6 +166,14 @@ li.menu-bar-last a {
 }
 li.menu-bar-last a:hover {
   color: #04AA6D;
+}
+.index-attention-msgs {
+	background-color: rgba(255, 254, 173, 0.6);
+	display: inline-block;
+	float: right;
+	width: 500px;
+	padding: 0 10px;
+	text-align: center;
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -214,6 +255,11 @@ table.userlist-table, th, td {
 	padding: 4px;
 	border-bottom: 1px solid #ddd;
 }
+table.userlist-table-myself, th, td {
+	text-align: center;
+	padding: 4px;
+	border-bottom: 1px solid #ddd;
+}
 table.userlist-table {
 	width: 100%;
 	height: 100%;
@@ -226,6 +272,12 @@ table.userlist-table tr:hover {
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
+}
+
+.self-profile {
+	background-color: rgba(248, 255, 143, 0.5);
+	border: 1px solid rgb(248, 255, 143);
+	border-radius: 20px;
 }
 
 .fast-search {
@@ -345,6 +397,7 @@ table.userlist-table-all-right tr:hover {
 	padding:5px 9px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #263666;
+	width: 30px;
 }
 .edit-user-button:hover {
 	background:linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
@@ -368,6 +421,7 @@ table.userlist-table-all-right tr:hover {
 	padding:5px 9px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #2f6627;
+	width: 30px;
 }
 .show-user-button:hover {
 	background:linear-gradient(to bottom, #5cbf2a 5%, #45c74e 100%);
@@ -399,6 +453,32 @@ table.userlist-table-all-right tr:hover {
 	background-color:#f24437;
 }
 .delete-confirm-button:active {
+	position:relative;
+	top:1px;
+}
+.login-via-github-button {
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+	background-color:#ffffff;
+	border-radius:20px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:2px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+	margin-top: 15px;
+	width: 150px;
+}
+.login-via-github-button:hover {
+	background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+	background-color:#f6f6f6;
+}
+.login-via-github-button:active {
 	position:relative;
 	top:1px;
 }
@@ -648,6 +728,9 @@ form.search-form-selector button {
 .download-resume-button:active {
 	position:relative;
 	top:1px;
+}
+.download-resume-button:focus {
+	outline: none;
 }
 .profile-invited {
 	box-shadow: 0px 1px 0px 0px #fff6af;
