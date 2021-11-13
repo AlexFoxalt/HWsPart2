@@ -55,8 +55,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['nickname']
 
     class Meta:
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = _('Пользователь')
+        verbose_name_plural = _('Пользователи')
 
     def clean(self):
         super().clean()
@@ -88,8 +88,8 @@ class Person(models.Model):
     filled = models.BooleanField(default=False, verbose_name='Filled status')
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
