@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from users.models import Student
+
+from students.models import Student
 
 
 class Command(BaseCommand):
