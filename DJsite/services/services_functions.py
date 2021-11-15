@@ -2,7 +2,7 @@
 import ast
 from random import choice, randint
 from typing import Union
-
+from datetime import datetime
 import docx
 from PyPDF2 import PdfFileReader
 
@@ -124,3 +124,8 @@ def check_and_activate_current_user(current_user, token):
 def get_profile_columns_for_class(cls, columns):
     return [f.verbose_name for f in cls._meta.fields if f.verbose_name in columns]
 
+
+def get_age_from_birthday(birthday):
+    today = datetime.today()
+    age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+    return age
