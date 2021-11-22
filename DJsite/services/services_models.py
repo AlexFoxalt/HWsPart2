@@ -1,4 +1,5 @@
 """Here we are working with stuff that need imports from models.py"""
+
 import django
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -6,15 +7,15 @@ from django.db.models import Q
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode
 
-from students.models import Student
-from teachers.models import Teacher
-from users.models import Course, Person, CustomUser
 from services.services_constants import OPTIONS, HOME_PAGE_POSTS, POSITIONS_SELECTOR, KEYS_TO_POP_FOR_STUDENT, \
     KEYS_TO_POP_FOR_TEACHER, USER_COLUMN_NAMES_FOR_SEARCH_PAGE, STUDENT_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE, \
     TEACHER_PROFILE_COLUMN_NAMES_FOR_SEARCH_PAGE
 from services.services_functions import format_raw_cleaned_data_for_user, \
     set_cleaned_data_value_to_list_of_objects, get_list_of_objects_from_cleaned_data, get_objects_by_list, \
     release_invitational_system, get_profile_columns_for_class
+from students.models import Student
+from teachers.models import Teacher
+from users.models import Course, Person, CustomUser
 
 CONTEXT_CONTAINER = {
     1: {'title': 'Main Page', 'selected': 1},

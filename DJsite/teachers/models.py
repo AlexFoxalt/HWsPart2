@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 from datetime import datetime
-from random import randint
+from random import randint, sample
 
 from services.services_constants import FAKER
 from users.models import Person, Course
@@ -36,7 +36,7 @@ class Teacher(Person):
             'birthday': FAKER.date_between(start_date='-70y', end_date='-25y'),
             'position': 'Teacher',
             'date_of_employment': FAKER.date_between(start_date='-30y', end_date='today'),
-            'experience_in_years': randint(1, 30),
+            'experience_in_years': randint(1, 30)
         })
 
     def __str__(self):

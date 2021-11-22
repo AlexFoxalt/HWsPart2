@@ -154,7 +154,9 @@ class ActivateUser(RedirectView):
         status = check_and_activate_current_user(current_user, token)
 
         if status:
-            login(request, current_user)
+            login(request,
+                  current_user,
+                  backend='django.contrib.auth.backends.ModelBackend')
             messages.success(self.request, f'Verification complete! Now please enter additional info')
             return redirect(reverse('register-next-step',
                                     kwargs={'pk': current_user.pk}))

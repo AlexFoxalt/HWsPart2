@@ -55,8 +55,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['nickname']
 
     class Meta:
-        verbose_name = _('User')
-        verbose_name_plural = _('Users')
+        verbose_name = _('Пользователь')
+        verbose_name_plural = _('Пользователи')
 
     def clean(self):
         super().clean()
@@ -88,8 +88,8 @@ class Person(models.Model):
     filled = models.BooleanField(default=False, verbose_name='Filled status')
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -98,19 +98,23 @@ class Person(models.Model):
     @classmethod
     def generate_entity(cls, count):
         for _ in range(count):
-            user = create_random_user()
+            user = create_random_user(cls.__name__)
             profile_data = create_random_profile_data(user)
 
             cls._extend_fields(profile_data)
 
-            if cls.__name__ == 'Teacher':
+            if user._position == 'Teacher':
+                profile = cls.objects.filter(user=user)
+
                 courses = Course.objects.all()
                 random_courses = sample(list(courses), randint(1, len(courses)))
-                obj = cls.objects.create(**profile_data)
-                obj.courses.set(random_courses)
+
+                profile.update(**profile_data)
+                profile[0].courses.set(random_courses)
                 continue
 
-            cls.objects.create(**profile_data)
+            profile = cls.objects.filter(user=user)
+            profile.update(**profile_data)
 
     def __iter__(self):
         return self

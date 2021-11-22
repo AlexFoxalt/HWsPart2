@@ -7,6 +7,7 @@ from django.forms import ModelForm
 
 from services.services_constants import FACULTIES_SELECTOR, POSSIBLE_EXTENSIONS_FOR_PROFILE, INVALID_DOMAIN_NAMES, \
     POSITIONS_SELECTOR
+from services.services_functions import get_age_from_birthday
 from students.models import Student
 from users.models import Course, Person, CustomUser
 
@@ -83,8 +84,7 @@ class CreateUserForm(ModelForm):
 
     def clean_birthday(self):
         birthday = self.cleaned_data['birthday']
-        today = datetime.today()
-        age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+        age = get_age_from_birthday(birthday)
 
         if age < 18:
             raise ValidationError('This site is 18+ only', code='invalid')

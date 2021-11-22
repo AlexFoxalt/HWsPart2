@@ -6,7 +6,7 @@ from services.services_constants import FAKER
 from services.services_functions import mine_faker_of_faculties
 
 
-def create_random_user():
+def create_random_user(position):
     first_name = FAKER.first_name()
     last_name = FAKER.last_name()
     nickname = f'bot_{first_name.lower()}_{last_name.lower()}'
@@ -18,6 +18,9 @@ def create_random_user():
         last_name=last_name
     )
     user.set_password('123faker123')
+    # Set some extra attrs to the instance to be used in the handler.
+    user._position = position
+
     user.save()
 
     try:
